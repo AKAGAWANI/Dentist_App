@@ -1,5 +1,6 @@
 require('dotenv');
 const mongoose = require('mongoose');
+const encoder = require('urlencode')
 const {
   ResourceAPI,
 }  = require('../../commons/externals/externalsManager');
@@ -45,10 +46,7 @@ Service.prototype.regPseudoUser = async function (req) {
 
     otpData.to = contact;
     otpData.body = envproperties.OTP_CONTENT.replace('<OTP>', genOTP);
-    otpData.template = envproperties.OTP_TEMPLATE;
-    otpData.var1 = genOTP;
-    otpData.var2 = envproperties.OTP_VALIDITY;
-
+    otpData.body = encoder.encode(otpData.body)
     smsObj.sendSMS(otpData);
 
     let encryptFirstName = CryptoUtil.encrypt(firstName || name);

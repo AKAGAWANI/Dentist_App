@@ -3,9 +3,7 @@ const logger = require('../../../../logger/logger');
 
 async function init() {
   const client = createClient({
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-    password: process.env.REDIS_PWD,
-  });
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`  });
   
   client.on('error', (err) => { logger.error(`[REDIS] ${err}`); console.log('[REDIS] Error Stack Trace => ', err); });
   
