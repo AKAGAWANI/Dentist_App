@@ -42,7 +42,13 @@ const UserSchema = mongoose.Schema({
   passwordOtp: String,
   otpExpiry: Date,
   token: Object,
+  isAdmin:{
+    type:Boolean,
+    default:false
+  }
 });
 
 // export model user with UserSchema
 module.exports = mongoose.model('Users', UserSchema);
+
+

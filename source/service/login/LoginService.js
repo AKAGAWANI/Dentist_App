@@ -14,7 +14,8 @@ const {
   API
 } = require('../../commons/config/ConfigManager');
 const logger = require('../../commons/logger/logger');
-
+const { User, Account } = require("../../commons/models/mongo/mongodb");
+const mongoose = require('mongoose');
 function Service() {}
 
 Service.prototype.generateAccessToken = async function(userId) {
@@ -105,5 +106,44 @@ Service.prototype.updatePassword = async function(userId, password){
 Service.prototype.updateUser = async function(userId, tokenObj) {
   return repository.updateUser(userId, tokenObj);
 }
+Service.prototype.findUser = async function(email,mobile) {
+  const emailENC = crypto.encrypt(email);
+  const mobileENC = crypto.encrypt(mobile);
+  return repository.getUserByFilterParam({$or:[{email: emailENC},{mobile: mobileENC}]  });
+}
+Service.prototype.regUser = async function (req) {
+  const { contact, password, email } = req.body;
+  let encryptMobile = CryptoUtil.encrypt(contact, true);
+  let encryptEmail = CryptoUtil.encrypt(email, true);
+    const genOTP = utils.generateNumericOTP();
+    const otpData = { otp: genOTP };
+    otpData.to = contact;
+    otpData.body = envproperties.OTP_CONTENT.replace('<OTP>', genOTP);
+    otpData.body = encoder.encode(otpData.body)
+    smsObj.sendSMS(otpData);
+    let encryptFirstName = CryptoUtil.encrypt(firstName || name||"");
+    let encryptLastName = CryptoUtil.encrypt(lastName||"");
+    let encryptFullName = CryptoUtil.encrypt(name || (`${firstName} ${lastName}`)||"");
+    let encryptPassowrd = CryptoUtil.hash(password);
+    let timeout = envproperties.OTP_VALIDITY;
+    let pseudoUserId = new mongoose.Types.ObjectId().toHexString();
 
+
+  const accountId = new mongoose.Types.ObjectId().toHexString();
+
+  user._id = account._id = accountId;
+  user.mobile = account.mobile = encryptMobile;
+  user.email = account.email = encryptEmail;
+  user.password = encryptPassowrd;
+  user.updatedAt = new Date();
+  // user.devices= userObj.devices
+
+  // PermissionTemplate Loading 
+  // user.apps = PermissionTemplate.apps;
+
+  await user.save();
+  await account.save();
+
+  return accountId;
+};
 module.exports = new Service();

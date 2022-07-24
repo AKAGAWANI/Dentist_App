@@ -14,8 +14,12 @@ const {
 const {
   ds,
   url,
+  utility
 } = require('../../commons/util/UtilManager');
+const { crypto: CryptoUtil } = require('../../commons/util/UtilManager');
+const userRepository = require('../user/UserRepository');
 
+const userService = require('../user/UserService')
 function Controller() { }
 
 Controller.prototype.refresh = async function (req, res, _next) {
@@ -343,4 +347,85 @@ Controller.prototype.twitterCallback = async function (req, res, next) {
   }
 }
 
+Controller.prototype.generateOtp = async function (req, res, next) {
+  try {
+    console.log("i am here to check")
+    const params = { ...req.body, ...req.query, ...req.params };
+    // let PasswordDecrypt
+    if (utility.isValidEmail(params.email) == false) {
+      return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a valid email ...'));
+    }
+
+    if (utility.isValidMobileNumber(params.contact) == false) {
+      return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a valid mobile number ...'));
+    }
+    const user = await service.findUser(params.email, params.contact);
+    //same for otp creation user exist or not
+    if (user!=undefined&&params.email != CryptoUtil.decrypt(user.email)&&user!=undefined) {
+      return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a correct combination your email is incorrect ...'));
+
+    } else if(user!=undefined&&params.mobile != CryptoUtil.decrypt(user.contact)){
+      return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a correct combination your mobile number is incorrect ...'));
+
+    }else{
+      if (params.password == "5050") {
+        if (!user) {
+          let userId = await service.regUser(req.body)
+            res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+              data: { userId: userId, isCreated: false },
+              message: 'OTP generated for verification'
+            }));
+        } else {
+  
+          if (CryptoUtil.hashCompare(params.password, user.password) == false) {
+            return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('Invalid Password...'));
+          }
+          if (await service.isTooSoonToRetry(user)) {
+            return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
+          } else {
+            const otp = await service.generateLoginOTP();
+            const msg = await service.prepareOTPMessage(user, otp);
+            let fdbck = null;
+            try {
+              fdbck = await service.sendOTP(msg);
+            } catch (e) { logger.error(e); }
+            const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
+            if (otpSent) { await service.saveOTPtoProfile(user, msg); }
+            return res.status(Response.success.Created.code).json(Response.success.Created.json({
+              message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
+              metadata: { feedback: fdbck,isAdmin:user.isAdmin==undefined?false:user.isAdmin }
+            }));
+          }
+        }
+      }
+      else {//if password is not 5050
+        if (!user) {
+          return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('User not found, please register yourself...'));
+        }
+        if (CryptoUtil.hashCompare(params.password, user.password) == false) {
+          return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('Invalid Password...'));
+        }
+        if (await service.isTooSoonToRetry(user)) {
+          return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
+        } else {
+          const otp = await service.generateLoginOTP();
+          const msg = await service.prepareOTPMessage(user, otp);
+          let fdbck = null;
+          try {
+            fdbck = await service.sendOTP(msg);
+          } catch (e) { logger.error(e); }
+          const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
+          if (otpSent) { await service.saveOTPtoProfile(user, msg); }
+          return res.status(Response.success.Created.code).json(Response.success.Created.json({
+            message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
+            metadata: { feedback: fdbck,isAdmin:user.isAdmin==undefined?false:user.isAdmin }
+          }));
+        }
+      }
+    }
+  } catch (error) {
+    logger.error(e.message);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+}
 module.exports = new Controller();
