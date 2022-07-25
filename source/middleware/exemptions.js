@@ -11,7 +11,8 @@ async function main(requestedPath = '') {
       "/login/guest",
       "/login/local",
       "/login/google",
-      "/login/facebook"
+      "/login/facebook",
+      "/login/generateOtp"
     ]
 
     if (0 < exemptedAPIs.filter(x => requestedPath.startsWith(x)).length) return true;

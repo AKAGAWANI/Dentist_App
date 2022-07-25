@@ -147,6 +147,7 @@ function sendSMS(data) {
     // if (data.var3 !== undefined) {
     //   url += `&var3=${data.var3}`;
     // }
+    console.log("545454545454",data)
     let apiKey = process.env.SMSPROVIDER_APIKEY
     let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=1007163342408187064`
     logger.info(url);

@@ -349,7 +349,7 @@ Controller.prototype.twitterCallback = async function (req, res, next) {
 
 Controller.prototype.generateOtp = async function (req, res, next) {
   try {
-    console.log("i am here to check")
+    console.log("i am here to check",req.body)
     const params = { ...req.body, ...req.query, ...req.params };
     // let PasswordDecrypt
     if (utility.isValidEmail(params.email) == false) {
@@ -364,7 +364,7 @@ Controller.prototype.generateOtp = async function (req, res, next) {
     if (user!=undefined&&params.email != CryptoUtil.decrypt(user.email)&&user!=undefined) {
       return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a correct combination your email is incorrect ...'));
 
-    } else if(user!=undefined&&params.mobile != CryptoUtil.decrypt(user.contact)){
+    } else if(user!=undefined&&params.contact != CryptoUtil.decrypt(user.mobile)){
       return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a correct combination your mobile number is incorrect ...'));
 
     }else{
@@ -376,7 +376,7 @@ Controller.prototype.generateOtp = async function (req, res, next) {
               message: 'OTP generated for verification'
             }));
         } else {
-  
+            console.log("======>",CryptoUtil.hashCompare(params.password, user.password),user.password,params.password)
           if (CryptoUtil.hashCompare(params.password, user.password) == false) {
             return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('Invalid Password...'));
           }
@@ -390,6 +390,7 @@ Controller.prototype.generateOtp = async function (req, res, next) {
               fdbck = await service.sendOTP(msg);
             } catch (e) { logger.error(e); }
             const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
+            console.log("otpSentotpSentotpSentotpSent",otpSent)
             if (otpSent) { await service.saveOTPtoProfile(user, msg); }
             return res.status(Response.success.Created.code).json(Response.success.Created.json({
               message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
@@ -424,7 +425,8 @@ Controller.prototype.generateOtp = async function (req, res, next) {
       }
     }
   } catch (error) {
-    logger.error(e.message);
+    console.log("hjhjhjhjhjh",error)
+    logger.error(error.message);
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
 }
