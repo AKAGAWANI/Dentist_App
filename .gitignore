@@ -22,7 +22,7 @@ dist/
 #environment files
 
 source/package-lock.json
-
+source/.env
 # Maven
 target/
 dist/
