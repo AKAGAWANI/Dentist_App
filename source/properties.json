@@ -19,7 +19,7 @@
     "OTP_LEN": "4",
     "OTP_VALIDITY": "600",
     "OTP_SUB": "Welcome to Doctor Dentist Application",
-    "OTP_CONTENT": "Dear Sir/Madam,\nYour One Time Password (OTP) is <OTP>. This OTP is valid for 60 seconds. Please do not share this One Time Password with anyone. Regards, Doctor Dentist App Team.",
+    "OTP_CONTENT": "OTP to login to DOCTOR-DENTIST is <OTP>. Keep Smiling !",
     "OTP_INVALID_MSG": "Invalid OTP",
     "OTP_TEMPLATE": "GM_OTP_TEMP",
     "REG_TEMP": "GM_REG_TEMP",

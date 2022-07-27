@@ -134,23 +134,25 @@ function sendSMS(data) {
     //   },
     // );
 
-    const accessKey = process.env.TWOFACTOR_ACCESS_KEY;
-    let url = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=${accessKey}&to=${data.to}&from=GRAYMA&templatename=${data.template}`;
-    if (data.var1 !== undefined) {
-      url += `&var1=${data.var1}`;
-    }
+    // const accessKey = process.env.TWOFACTOR_ACCESS_KEY;
+    // let url = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=${accessKey}&to=${data.to}&from=GRAYMA&templatename=${data.template}`;
+    // if (data.var1 !== undefined) {
+    //   url += `&var1=${data.var1}`;
+    // }
 
-    if (data.var2 !== undefined) {
-      url += `&var2=${data.var2}`;
-    }
+    // if (data.var2 !== undefined) {
+    //   url += `&var2=${data.var2}`;
+    // }
 
-    if (data.var3 !== undefined) {
-      url += `&var3=${data.var3}`;
-    }
+    // if (data.var3 !== undefined) {
+    //   url += `&var3=${data.var3}`;
+    // }
+    console.log("545454545454",data)
+    let apiKey = process.env.SMSPROVIDER_APIKEY
+    let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=1007163342408187064`
     logger.info(url);
     fetch(url)
-      .then((res) => res.json())
-      .then((json) => logger.info(JSON.stringify(json)));
+      .then((res) => logger.info(res.body))
   } catch (error) {
     logger.error(error);
   }
