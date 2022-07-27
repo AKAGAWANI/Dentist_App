@@ -4,7 +4,7 @@ function GeneralUtil() { }
 
 GeneralUtil.prototype.generateNumericOTP = function() {
   const digits = '0123456789';
-  const otpLength = 4;//envproperties.OTP_LEN;
+  const otpLength = 6;//envproperties.OTP_LEN;
   let otp = '';
 
   for (let i = 1; i <= otpLength; i++) {
