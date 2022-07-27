@@ -12,6 +12,7 @@ router.get('/error', Service.login.error);
 router.patch('/otp', Service.login.otp);
 router.patch('/local', Service.login.local);
 router.get('/guest', Service.login.guest);
+router.put('/generateOtp', Service.login.generateOtp);
 
 router.put('/reset/password', Service.login.resetPassword);
 
