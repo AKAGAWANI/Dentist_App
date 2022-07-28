@@ -5,7 +5,7 @@ const InvalidRequest = require('./error/InvalidRequest');
 const NotFound       = require('./error/NotFound');
 const Expired        = require('./error/Expired');
 const LimitExceeded  = require('./error/LimitExceeded');
-
+const AlreadyExist   = require('./error/AlreadyExist')
 // success
 const Ok       = require('./success/Ok');
 const Accepted = require('./success/Accepted');
@@ -19,6 +19,7 @@ module.exports = {
     InvalidRequest,
     LimitExceeded,
     NotFound,
+    AlreadyExist
   },
   success: {
     Accepted,
