@@ -7,6 +7,7 @@ async function main() {
     await mongoose.connect(process.env.MONGODB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false
     });
     mongoose.set('debug', (collectionName, method, query, doc) => {
       logger.info(`MONGO => ${collectionName}.${method} => ${JSON.stringify(query)} | ${JSON.stringify(doc)}`);

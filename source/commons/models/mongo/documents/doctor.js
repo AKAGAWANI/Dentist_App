@@ -41,7 +41,7 @@ const DoctorSchema = mongoose.Schema({
       reviewedDate: Date,
       comments:[
         {
-          reviewComment: String,
+          commentDescription: String,
           commentedUserId: String,
           commentedUserName: String,
           commentedUserMail: String,

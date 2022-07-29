@@ -217,7 +217,7 @@ Controller.prototype.addReview = async function(req,res, next){
 }
 
 
-
+//Listing all the reviews for a particular doctor
 Controller.prototype.getReviews = async function (req, res, next) {
   try {
     let id = req.params.doctorId;
@@ -234,5 +234,54 @@ Controller.prototype.getReviews = async function (req, res, next) {
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
 };
+
+//Adding Comment for a review
+
+Controller.prototype.addComment = async function(req, res, next){
+  try {
+    //Getting review details from body
+    let {doctorId, reviewId, commentDescription, commentedUserId, commentedUserName, commentedUserMail, commentedDate } = req.body;
+    let commentObj = {};
+    commentObj = {
+      _id : new mongoose.Types.ObjectId().toHexString(),
+      commentDescription: commentDescription,
+      commentedUserId: commentedUserId,
+      commentedUserName: commentedUserName,
+      commentedUserMail: commentedUserMail,
+      commentedDate: Date.now(commentedDate)
+    }
+
+    let data = await service.findReviewByIdAndAddComment(doctorId, reviewId, commentObj);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: data,
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+
+}
+
+Controller.prototype.getReviewComments = async function(req, res, next){
+  try{
+    let doctorId = req.params.doctorId;
+    let reviewId = req.params.reviewId;
+    // console.log(id);
+    let allReviews = await service.findAllReviewComments(doctorId, reviewId);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: allReviews,
+      })
+    );
+
+  }catch(e){
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+}
 
 module.exports = new Controller();
