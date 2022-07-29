@@ -14,6 +14,7 @@ const Authenticate = require('../middleware/authentication');
 const Login      = require('./route/login');
 const Logout     = require('./route/logout');
 const User       = require('./route/user');
+const Test       = require('./route/test');
 
 
 // stand alone route mappings defined below
@@ -21,5 +22,6 @@ router.use('/', Authenticate);
 router.use('/login', Login);
 router.use('/logout', Logout);
 router.use('/api/user', User);
+router.use('/api/test', Test);
 
 module.exports = router;
