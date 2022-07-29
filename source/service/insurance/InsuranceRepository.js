@@ -1,19 +1,14 @@
 const { Insurance } = require("../../commons/models/mongo/mongodb");
-const mongoose = require('mongoose');
 
 function Repository () {}
 
-Repository.prototype.createInsurance = async function (dataObj) {
-    const insurance = new Insurance();
-    const insuranceId = new mongoose.Types.ObjectId().toHexString();
+/********************* DOCTOR'S REPO ***********************/
 
-    insurance._id = insuranceId;
-    insurance.logo = dataObj.logo;
-    insurance.name = dataObj.name;
 
-    await insurance.save();
-
-    return insuranceId;
+Repository.prototype.createDocument = async function (dataObj) {
+    modelName = Insurance;
+    const instance = await modelName.create(dataObj);
+    return instance;
 
 }
 

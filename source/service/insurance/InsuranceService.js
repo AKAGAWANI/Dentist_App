@@ -1,4 +1,5 @@
 const repository    = require('./InsuranceRepository');
+const mongoose = require('mongoose');
 
 function Service(){} 
 
@@ -7,19 +8,17 @@ Service.prototype.addInsurance = async function (req) {
     const  name  = req.body.name;
     if(logo != null && name != null){
       let dataObj = {
+        _id:new mongoose.Types.ObjectId().toHexString(),
         logo:logo,
         name:name
       };
       const insurance = await repository.createInsurance(dataObj);
       if(insurance != null){
-        let data = {};
-        data.insuranceId = insurance;
-
+        let data = insurance;
         return data;
       }else{
         return false;
       }
-
     }else{
         return false;
     }

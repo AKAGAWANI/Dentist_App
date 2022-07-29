@@ -24,4 +24,9 @@ router.get("/test/list", ServiceManager.doctor.getTests);
 //Listing one test with id
 router.get("/test/list/:id", ServiceManager.doctor.getTest);
 
+/****************** Reviews ROUTES *********************/
+//Add Test
+router.post("/review/add", ServiceManager.doctor.addReview);
+router.get("/review/list/:doctorId", ServiceManager.doctor.getReviews);
+
 module.exports = router;

@@ -23,6 +23,20 @@ Service.prototype.getAllTests = async function () {
   return repository.getAll("Test");
 };
 
+/***************** DOCTOR REVIEW SERVICES ***********************/
+//Service to find whether doctor exists or not
+Service.prototype.findDoctorByIdAndAddReview = async function(id,data){
+  let query = {'_id': id};
+  let updation = { $push: {'review':data} };
+  return repository.getByIDAndUpdate(id,updation,"Doctor");
+}
+
+Service.prototype.findAllReviews = async function(id){
+  let query = {'_id': id};
+  let filter = {'review':1};
+  return repository.getByIdWithFilter(query,filter,"Doctor");   
+}
+
 /******************** COMMON SERVICE  *****************/
 Service.prototype.addDetails = async function (data, modelName) {
   return repository.createDocument(data, modelName);
