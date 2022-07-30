@@ -281,6 +281,7 @@ Controller.prototype.registerPseudoUser = async function (req, res, next) {
 
   try {
     const pseudoUserId = await service.regPseudoUser(req);
+    // console.log()
     if (!pseudoUserId) {
       res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json('User already exists'));
     } else {
