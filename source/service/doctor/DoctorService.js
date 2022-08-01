@@ -1,30 +1,38 @@
-require("dotenv");
-const repository = require("./DoctorRepository");
+require('dotenv');
+const repository = require('./DoctorRepository');
 
 function Service() {}
 
-/***************** PROBLEM SERVICES ***********************/
-//Service to find whether problem exists or not
-Service.prototype.findProblemById = async function (id) {
-  return repository.getById(id, "Problem");
+/****************** DOCTOR'S SERVICES ***********************/
+Service.prototype.findDoctorById = async function(id) {
+  return repository.getById(id, 'Doctor');
+};
+Service.prototype.getAllDoctor = async function() {
+  return repository.getAll('Doctor');
 };
 
-Service.prototype.getAllProblems = async function () {
-  return repository.getAll("Problem");
+/***************** PROBLEM SERVICES ***********************/
+//Service to find whether problem exists or not
+Service.prototype.findProblemById = async function(id) {
+  return repository.getById(id, 'Problem');
+};
+
+Service.prototype.getAllProblems = async function() {
+  return repository.getAll('Problem');
 };
 
 /***************** TEST SERVICES ***********************/
 //Service to find whether test exists or not
-Service.prototype.findTestById = async function (id) {
-  return repository.getById(id, "Test");
+Service.prototype.findTestById = async function(id) {
+  return repository.getById(id, 'Test');
 };
 
-Service.prototype.getAllTests = async function () {
-  return repository.getAll("Test");
+Service.prototype.getAllTests = async function() {
+  return repository.getAll('Test');
 };
 
 /******************** COMMON SERVICE  *****************/
-Service.prototype.addDetails = async function (data, modelName) {
+Service.prototype.addDetails = async function(data, modelName) {
   return repository.createDocument(data, modelName);
 };
 
