@@ -29,6 +29,28 @@ const DoctorSchema = mongoose.Schema({
       displayName: String,
     },
   ],
+  review:[
+    {
+      _id : String,
+      reviewDescription: String,
+      reviewRating: Number,
+      reviewedUserId: String,
+      reviewedUserName:String,
+      reviewedUserMail:String,
+      reviewedUserMobile:String,
+      reviewedDate: Date,
+      comments:[
+        {
+          commentDescription: String,
+          commentedUserId: String,
+          commentedUserName: String,
+          commentedUserMail: String,
+          commentedDate: Date
+        }
+      ]
+
+    }
+  ]
 });
 
 //Adding middlewares

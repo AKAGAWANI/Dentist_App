@@ -4,6 +4,8 @@ const Problem = require('./documents/problem');
 const Test = require('./documents/test');
 const Doctor = require('./documents/doctor');
 const Consultation = require('./documents/consulatation');
+const Banner = require('./documents/banner');
+const Insurance = require('./documents/insurance');
 
 module.exports = {
   Account,
@@ -11,5 +13,7 @@ module.exports = {
   Problem,
   Test,
   Doctor,
-  Consultation
+  Consultation,
+  Banner,
+  Insurance
 };
