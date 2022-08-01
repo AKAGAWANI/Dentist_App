@@ -14,6 +14,7 @@ const Authenticate = require("../middleware/authentication");
 const Login = require("./route/login");
 const Logout = require("./route/logout");
 const User = require("./route/user");
+const Banner = require("./route/banner");
 const Doctor = require("./route/doctor");
 const Insurance  = require('./route/insurance');
 
@@ -23,6 +24,7 @@ const Insurance  = require('./route/insurance');
 router.use("/login", Login);
 router.use("/logout", Logout);
 router.use("/api/user", User);
+router.use("/api/banner", Banner);
 router.use("/api/doctor", Doctor);
 router.use('/api/insurance',Insurance);
 
