@@ -32,4 +32,18 @@ Repository.prototype.getById = async function (id, modelName) {
   const instance = await modelName.findOne({ _id: id });
   return instance ? instance.toJSON() : null;
 };
+
+//used to findOne and update the document
+Repository.prototype.getByIDAndUpdate = async function(query, updation, modelName){
+  modelName = modelName === "Problem" ? Problem : modelName === "Test" ? Test : Doctor;
+  const instance = await modelName.findOneAndUpdate(query, updation, { new: true } );
+  return instance ? instance.toJSON() : null;
+}
+
+//used to get all collection from specified model
+Repository.prototype.getByIdWithFilter = async function (query, filter, modelName) {
+  modelName = modelName === "Problem" ? Problem : modelName === "Test" ? Test : Doctor;
+  const instance = await modelName.find(query,filter);
+  return instance.length ? instance : null;
+};
 module.exports = new Repository();
