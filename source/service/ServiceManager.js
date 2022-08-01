@@ -4,4 +4,5 @@ module.exports = {
   user: require("./user/UserController"),
   banner: require("./banner/BannerController"),
   doctor: require("./doctor/DoctorController"),
+  insurance : require('./insurance/InsuranceController')
 };

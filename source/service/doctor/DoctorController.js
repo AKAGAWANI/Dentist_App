@@ -1,6 +1,8 @@
-const Response = require("../../commons/responses/EcomResponseManager");
-const logger = require("../../commons/logger/logger");
-const service = require("./DoctorService");
+const Response  = require("../../commons/responses/EcomResponseManager");
+const logger    = require("../../commons/logger/logger");
+const service   = require("./DoctorService");
+const mongoose  = require('mongoose');
+
 
 function Controller() {}
 
@@ -179,5 +181,107 @@ Controller.prototype.getTest = async function (req, res, next) {
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
 };
+
+/******************************  PROBLEMS'S APIS *******************************/
+//Adding Reviews
+
+Controller.prototype.addReview = async function(req,res, next){
+  try {
+    //Getting review details from body
+    let {doctorId, reviewDescription, reviewRating, reviewedUserId, reviewedUserName, reviewedUserMobile, reviewedUserMail, reviewedDate } = req.body;
+    let reviewObj = {};
+    reviewObj = {
+      _id : new mongoose.Types.ObjectId().toHexString(),
+      reviewDescription: reviewDescription,
+      reviewRating: reviewRating,
+      reviewedUserId: reviewedUserId,
+      reviewedUserName:reviewedUserName,
+      reviewedUserMail:reviewedUserMail,
+      reviewedUserMobile:reviewedUserMobile,
+      reviewedDate: Date.now(reviewedDate),
+      comments:[ ]
+    }
+
+    let data = await service.findDoctorByIdAndAddReview(doctorId,reviewObj);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: data,
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+
+}
+
+
+//Listing all the reviews for a particular doctor
+Controller.prototype.getReviews = async function (req, res, next) {
+  try {
+    let id = req.params.doctorId;
+    // console.log(id);
+    let allReviews = await service.findAllReviews(id);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: allReviews,
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+};
+
+//Adding Comment for a review
+
+Controller.prototype.addComment = async function(req, res, next){
+  try {
+    //Getting review details from body
+    let {doctorId, reviewId, commentDescription, commentedUserId, commentedUserName, commentedUserMail, commentedDate } = req.body;
+    let commentObj = {};
+    commentObj = {
+      _id : new mongoose.Types.ObjectId().toHexString(),
+      commentDescription: commentDescription,
+      commentedUserId: commentedUserId,
+      commentedUserName: commentedUserName,
+      commentedUserMail: commentedUserMail,
+      commentedDate: Date.now(commentedDate)
+    }
+
+    let data = await service.findReviewByIdAndAddComment(doctorId, reviewId, commentObj);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: data,
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+
+}
+
+Controller.prototype.getReviewComments = async function(req, res, next){
+  try{
+    let doctorId = req.params.doctorId;
+    let reviewId = req.params.reviewId;
+    // console.log(id);
+    let allReviews = await service.findAllReviewComments(doctorId, reviewId);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: allReviews,
+      })
+    );
+
+  }catch(e){
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+}
 
 module.exports = new Controller();
