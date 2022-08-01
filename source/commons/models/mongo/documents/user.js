@@ -45,7 +45,35 @@ const UserSchema = mongoose.Schema({
   isAdmin:{
     type:Boolean,
     default:false
-  }
+  }, 
+   appointmentDetails:[{
+    _id: String,
+    patientName: String,
+    patientAge: String,
+    scheduleDate: Date,
+    docterId:String,
+    problem: [
+      {
+        _id: String,
+        problemName: String,
+        displayName: String,
+        icons: [String],
+      },
+    ],
+    test: [
+      {
+        _id: String,
+        testName: String,
+        description: String,
+        icons: [String],
+        displayName: String,
+      },
+    ],
+    appointmentType:{
+      type: String
+    }
+
+  }],
 });
 
 // export model user with UserSchema

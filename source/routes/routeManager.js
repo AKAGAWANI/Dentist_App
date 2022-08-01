@@ -15,6 +15,7 @@ const Login = require("./route/login");
 const Logout = require("./route/logout");
 const User = require("./route/user");
 const Doctor = require("./route/doctor");
+const appointment = require("./route/appointment")
 
 // stand alone route mappings defined below
 //router.use("/", Authenticate);
@@ -22,5 +23,7 @@ router.use("/login", Login);
 router.use("/logout", Logout);
 router.use("/api/user", User);
 router.use("/api/doctor", Doctor);
+router.use("/api/appointment", appointment);
+
 
 module.exports = router;
