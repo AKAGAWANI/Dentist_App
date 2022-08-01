@@ -104,7 +104,7 @@ Service.prototype.validateAndReg = async function (req) {
       data.refreshToken = accessToken.refresh_token;
       data.expiresAt = accessToken.expires_at;
 
-      return data;
+      return data; 
 
     } else {
       return false;

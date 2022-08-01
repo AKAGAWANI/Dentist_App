@@ -1,27 +1,46 @@
-const Test=require('../../commons/models/mongo/mongodb');
+const {Test}=require('../../commons/models/mongo/mongodb');
 const mongoose=require('mongoose');
-const { test } = require('../ServiceManager');
+const service = require('./TestService');
+  
+function Controller() { }
 
-function Repository () {}
-
-Repository.prototype.listTest=async function(){
-    return test.find().exec();
+Controller.prototype.listTest=async function(){
+    try{
+        const test=await Test.find().exec();
+        if (test) {
+            res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+              message: 'Test list fetched successfully',
+              test: test,
+            }));
+          } else {
+            res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json(
+              'Due to some issue, test was not fetched'
+            ));
+          };
+        return test;
+    }catch(e){
+        return res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json());
+    }
+    
 }
 
-Repository.prototype.createTest=async function(testObj){
-
-    const test=new Test();
-
-    const testId=new mongoose.Types.ObjectId().toHexString();
-    test._id=testId;
-    test.testName=testObj.testName;
-    test.description=testObj.description;
-    test.icons=testObj.icons;
-    test.displayname=testObj.displayname;
-
-    await test.save();
-
-    return testId;
+Controller.prototype.create=async function(req,res,next){
+    try {
+        const test = await service.createTest(req);
+        if (test) {
+          res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+            message: 'Test is created successfully',
+            test: test,
+          }));
+        } else {
+          res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json(
+            'Test creation failed'
+          ));
+        };
+      } catch (e) {
+        logger.error(e.message);
+        res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+      }
 }
 
-module.exports=new Repository();
+module.exports=new Controller();
