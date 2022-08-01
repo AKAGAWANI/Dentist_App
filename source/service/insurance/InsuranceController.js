@@ -5,6 +5,41 @@ const service       = require('./InsuranceService');
 
 function Controller () {}
 
+Controller.prototype.add = async function (req, res, next) {
+  try {
+  
+    let { _id, name, email, age, mobile, country,
+    state, city,gender,address, amount,date } = req.body;
+  
+    let isInsuranceAdded = await service.addDetails(
+      { _id, name, email, age, mobile, country,
+        state, city,gender,address, amount,date },
+      "Insurance"
+    );
+
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: {
+          name: isInsuranceAdded.name,
+          email: isInsuranceAdded.email,
+          age: isInsuranceAdded.age,
+          mobile: isInsuranceAdded.mobile,
+          country: isInsuranceAdded.country,
+          state: isInsuranceAdded.state,
+          city: isInsuranceAdded.city,
+          gender: isInsuranceAdded.gender,
+          address: isInsuranceAdded.address,
+          amount: isInsuranceAdded.amount,
+          date: isInsuranceAdded.date,
+        },
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+};
+
 Controller.prototype.createInsurance = async function(req, res, next) {
   try {
     const data = await service.addInsurance(req);
