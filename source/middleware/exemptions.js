@@ -13,7 +13,7 @@ async function main(requestedPath = '') {
       "/login/google",
       "/login/facebook",
       "/login/generateOtp",
-      // "/appointment/bookAppointment",
+      "/appointment/bookAppointment",
       "/appointment/listAppointments"
     ]
 

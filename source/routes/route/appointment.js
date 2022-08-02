@@ -7,7 +7,7 @@ router.use(express.json());
 
 router.post("/bookAppointment", ServiceManager.appointment.bookAppointment);
 
-router.get("listAppointments",ServiceManager.appointment.listAppointments)
+router.get("/listAppointments",ServiceManager.appointment.listAppointments)
 
 
 module.exports = router;

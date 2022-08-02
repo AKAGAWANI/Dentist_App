@@ -11,7 +11,7 @@ const {
   
   Repository.prototype.getAllAppointment = async function (query) {
     const instance = await Appointment.find(query).exec();
-    return instance ? instance.toJSON() : null;
+    return instance.length>0 ? instance : [];
   },
 
   Repository.prototype.createDoc = async function (data) {

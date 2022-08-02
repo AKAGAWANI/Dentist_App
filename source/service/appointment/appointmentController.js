@@ -31,10 +31,10 @@ function Controller() { }
 
 Controller.prototype.bookAppointment = async function (req, res, next) {
   try {
-    // const userRes = await User.findOne({ "token.refresh_token": req.headers.refreshtoken || req.headers.refreshkey }).exec();
-    // if(!userRes){
-    //  return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('User not found'));
-    // }
+    const userRes = await User.findOne({ "token.refresh_token": req.headers.refreshtoken || req.headers.refreshkey }).exec();
+    if(!userRes){
+     return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('User not found'));
+    }
     if(validRequest(req.body)){
       return res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json('You need to filled all the details .'));
     }
@@ -52,6 +52,7 @@ Controller.prototype.listAppointments = async function (req, res, next) {
     let allData = await appointmentService.getAll({});
     return res.status(Response.success.Ok.code).json(Response.success.Ok.json({data: allData,message:"All apointment list fetched successfully ."}));
   } catch (error) {
+    console.log(error);
     logger.error(error.message);
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
