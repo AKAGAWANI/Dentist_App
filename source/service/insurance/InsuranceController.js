@@ -14,7 +14,7 @@ Controller.prototype.add = async function (req, res, next) {
     let isInsuranceAdded = await service.addDetails(
       { _id, name, email, age, mobile, country,
         state, city,gender,address, amount,date },
-      "Insurance"
+      "Insurancesubmission"
     );
 
     return res.status(Response.success.Ok.code).json(
