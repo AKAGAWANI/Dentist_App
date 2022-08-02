@@ -6,5 +6,6 @@ module.exports = {
   consultation: require('./consultation/ConsultationController'),
   insurance : require('./insurance/InsuranceController'),
   problem:require('./problems/problemController'),
-  banner:require('./banner/BannerController')
+  banner:require('./banner/BannerController'),
+  admin:require('./admin/AdminController')
 };

@@ -96,9 +96,9 @@ Controller.prototype.otp = async function (req, res, next) {
       if (!user) {
         return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('User not found, please register yourself...'));
       } else {
-        if (await service.isTooSoonToRetry(user)) {
-          return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
-        } else {
+        // if (await service.isTooSoonToRetry(user)) {
+        //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
+        // } else {
           const otp = await service.generateLoginOTP();
           const msg = await service.prepareOTPMessage(user, otp);
           let fdbck = null;
@@ -116,7 +116,7 @@ Controller.prototype.otp = async function (req, res, next) {
             metadata: { feedback: fdbck }
           }));
         }
-      }
+      // }
     }
   } catch (e) {
     logger.error(e);
@@ -380,9 +380,9 @@ Controller.prototype.generateOtp = async function (req, res, next) {
           if (CryptoUtil.hashCompare(params.password, user.password) == false) {
             return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('Invalid Password...'));
           }
-          if (await service.isTooSoonToRetry(user)) {
-            return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
-          } else {
+          // if (await service.isTooSoonToRetry(user)) {
+          //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
+          // } else {
             const otp = await service.generateLoginOTP();
             const msg = await service.prepareOTPMessage(user, otp);
             let fdbck = null;
@@ -396,7 +396,7 @@ Controller.prototype.generateOtp = async function (req, res, next) {
               message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
               metadata: { feedback: fdbck,isAdmin:user.isAdmin==undefined?false:user.isAdmin }
             }));
-          }
+          // }
         }
       }
       else {//if password is not 5050
@@ -406,9 +406,9 @@ Controller.prototype.generateOtp = async function (req, res, next) {
         if (CryptoUtil.hashCompare(params.password, user.password) == false) {
           return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('Invalid Password...'));
         }
-        if (await service.isTooSoonToRetry(user)) {
-          return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
-        } else {
+        // if (await service.isTooSoonToRetry(user)) {
+        //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
+        // } else {
           const otp = await service.generateLoginOTP();
           const msg = await service.prepareOTPMessage(user, otp);
           let fdbck = null;
@@ -421,7 +421,7 @@ Controller.prototype.generateOtp = async function (req, res, next) {
             message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
             metadata: { feedback: fdbck,isAdmin:user.isAdmin==undefined?false:user.isAdmin }
           }));
-        }
+        // }
       }
     }
   } catch (error) {

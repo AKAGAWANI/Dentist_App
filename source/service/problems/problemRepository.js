@@ -10,7 +10,7 @@ Repository.prototype.createDoc = async function (data) {
 
 Repository.prototype.getAllProblem = async function (query) {
     const instance = await Problems.find(query).exec();
-    return instance ? instance.toJSON() : null;
+    return instance.length>0 ? instance : [];
 }
 
 Repository.prototype.getProlem=async function(query){

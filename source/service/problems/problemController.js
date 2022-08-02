@@ -57,16 +57,16 @@ Controller.prototype.list = async function (req, res,next) {
     try {
         let listData = await service.findAllProblem({})
 
-        if (!listData) {
+        if (listData.length==0) {
             return res.status(Response.error.NotFound.code).json(Response.error.NotFound.json("List data is empty"));
         }
         return res.status(Response.success.Ok.code).json(Response.success.Ok.json({
             message: 'List found successfully',
-            data: created
+            data: listData
         }));    
     }
     catch (error) {
-        logger.error(err.message);
+        logger.error(error.message);
         return res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());    
     }
 }
