@@ -3,5 +3,6 @@ module.exports = {
   logout: require("./logout/LogoutController"),
   user: require("./user/UserController"),
   doctor: require("./doctor/DoctorController"),
-  insurance : require('./insurance/InsuranceController')
+  insurance : require('./insurance/InsuranceController'),
+  app : require('./app/AppController')
 };

@@ -4,6 +4,7 @@ const Problem = require("./documents/problem");
 const Test = require("./documents/test");
 const Doctor = require("./documents/doctor");
 const Insurance   = require('./documents/insurance');
+const AppReview = require('./documents/appReview');
 
 module.exports = {
   Account,
@@ -11,5 +12,6 @@ module.exports = {
   Problem,
   Test,
   Doctor,
-  Insurance
+  Insurance,
+  AppReview
 };

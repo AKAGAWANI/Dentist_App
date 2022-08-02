@@ -16,6 +16,7 @@ const Logout = require("./route/logout");
 const User = require("./route/user");
 const Doctor = require("./route/doctor");
 const Insurance  = require('./route/insurance');
+const App = require('./route/app');
 
 
 // stand alone route mappings defined below
@@ -25,6 +26,7 @@ router.use("/logout", Logout);
 router.use("/api/user", User);
 router.use("/api/doctor", Doctor);
 router.use('/api/insurance',Insurance);
+router.use('/api/app', App);
 
 
 module.exports = router;
