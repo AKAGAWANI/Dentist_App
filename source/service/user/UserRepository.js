@@ -19,7 +19,7 @@ Repository.prototype.findUserByEmail = async function(email) {
 }
 Repository.prototype.createUserWithMobile = async function(userObj) {
   
-  const user = new User();
+  const user = new User(); 
   const account = new Account();
 
   const accountId = new mongoose.Types.ObjectId().toHexString();

@@ -11,9 +11,10 @@ const router = express.Router();
 const Authenticate = require('../middleware/authentication');
 
 // stand alone routes imports
-const Login = require('./route/login');
-const Logout = require('./route/logout');
-const User = require('./route/user');
+const Login      = require('./route/login');
+const Logout     = require('./route/logout');
+const User       = require('./route/user');
+const Test       = require('./route/test');
 const Doctor = require('./route/doctor');
 const appointment = require("./route/appointment")
 const Insurance  = require('./route/insurance');
@@ -25,10 +26,11 @@ const Problem=require('./route/problem')
 const policy = require ('./route/policy')
 
 // stand alone route mappings defined below
-router.use("/", Authenticate);
-router.use("/login", Login);
-router.use("/logout", Logout);
-router.use("/api/user", User);
+router.use('/', Authenticate);
+router.use('/login', Login);
+router.use('/logout', Logout);
+router.use('/api/user', User);
+router.use('/api/test', Test);
 router.use("/api/banner", Banner);
 router.use("/api/doctor", Doctor);
 router.use("/api/appointment", appointment);

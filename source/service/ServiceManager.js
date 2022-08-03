@@ -10,6 +10,7 @@ module.exports = {
   problem:require('./problems/problemController'),
   banner:require('./banner/BannerController'),
   admin:require('./admin/AdminController'),
-  policy:require('./policy/policyController')
+  policy:require('./policy/policyController'),
+  test: require('./test/TestController'),
 
 };
