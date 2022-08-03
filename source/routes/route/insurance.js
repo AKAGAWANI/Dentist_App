@@ -7,6 +7,6 @@ const ServiceManager    = require('../../service/ServiceManager');
 router.use(express.json());
 router.post("/submitDetails", ServiceManager.insurance.add);
 router.post('/create', profileImage.single('logo'), ServiceManager.insurance.createInsurance);
-router.get('/create', ServiceManager.insurance.getAllInsurances);
+router.get('/list', ServiceManager.insurance.getAllInsurances);
 
 module.exports = router;
