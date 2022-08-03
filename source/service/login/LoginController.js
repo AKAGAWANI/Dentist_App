@@ -139,6 +139,7 @@ Controller.prototype.local = async function (req, res, next) {
       try {
 
         const token = await service.generateAccessToken(user._id);
+        console.log("======",token);
         await service.updateUser(user._id, token);
 
         const data = {
