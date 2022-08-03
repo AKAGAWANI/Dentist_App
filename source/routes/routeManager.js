@@ -17,6 +17,8 @@ const User = require('./route/user');
 const Doctor = require('./route/doctor');
 const appointment = require("./route/appointment")
 const Insurance  = require('./route/insurance');
+const App = require('./route/app');
+
 const Banner =require('./route/banner')
 const Admin=require('./route/admin')
 const Problem=require('./route/problem')
@@ -31,6 +33,7 @@ router.use("/api/banner", Banner);
 router.use("/api/doctor", Doctor);
 router.use("/api/appointment", appointment);
 router.use('/api/insurance',Insurance);
+router.use('/api/app', App);
 router.use('/api/admin',Admin)
 router.use('/api/problem',Problem)
 router.use("/api/policy", policy);
