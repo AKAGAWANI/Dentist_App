@@ -12,11 +12,13 @@ OAuth2.prototype.getAccessToken = async function (userId = '') {
     await HydraClient.ensureClient();
   
     const authorizationURI = await HydraClient.getAuthorizationURI();
+    console.log("-----------------authorizationURI=====",authorizationURI);
     const initiateCheckin  = await fetch(authorizationURI, { redirect: 'manual' });
     
     accessToken = await HydraClient.getAccessToken(initiateCheckin, userId);
 
   } catch (e) {
+    console.log("======================",e);
     logger.error(e.message);
     return Response.error.InternalError.json();
   }
