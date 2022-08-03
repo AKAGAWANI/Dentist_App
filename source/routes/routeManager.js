@@ -17,8 +17,10 @@ const User = require('./route/user');
 const Doctor = require('./route/doctor');
 const appointment = require("./route/appointment")
 const Insurance  = require('./route/insurance');
+const Banner =require('./route/banner')
+const Admin=require('./route/admin')
+const Problem=require('./route/problem')
 const policy = require ('./route/policy')
-const Banner = require ('./route/banner')
 
 // stand alone route mappings defined below
 router.use("/", Authenticate);
@@ -29,6 +31,8 @@ router.use("/api/banner", Banner);
 router.use("/api/doctor", Doctor);
 router.use("/api/appointment", appointment);
 router.use('/api/insurance',Insurance);
+router.use('/api/admin',Admin)
+router.use('/api/problem',Problem)
 router.use("/api/policy", policy);
 
 

@@ -6,7 +6,9 @@ module.exports = {
   appointment: require("./appointment/appointmentController"),
   consultation: require('./consultation/ConsultationController'),
   insurance : require('./insurance/InsuranceController'),
-  banner: require('./banner/BannerController'),
+  problem:require('./problems/problemController'),
+  banner:require('./banner/BannerController'),
+  admin:require('./admin/AdminController'),
   policy:require('./policy/policyController')
 
 };

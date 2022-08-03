@@ -13,8 +13,7 @@ async function main(requestedPath = '') {
       "/login/google",
       "/login/facebook",
       "/login/generateOtp",
-      "/appointment/bookAppointment",
-      "/appointment/listAppointments"
+      "/api/admin/createAdmin"
     ]
 
     if (0 < exemptedAPIs.filter(x => requestedPath.startsWith(x)).length) return true;
