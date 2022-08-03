@@ -49,3 +49,4 @@ Controller.prototype.getBanners = async function (req, res, next) {
   }
 };
 
+module.exports = new Controller()
