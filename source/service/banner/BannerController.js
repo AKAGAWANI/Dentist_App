@@ -14,7 +14,8 @@ Controller.prototype.add = async function (req, res, next) {
 
   if (req.files && req.files.image) {
       var file = await S3.doUpload(req.files.image, 'banner');
-  } 
+    } 
+   
     let isBannerAdded = await service.addDetails(
       { _id,file, rowLocation, redirectLink},
       "Banner"
@@ -54,4 +55,4 @@ Controller.prototype.getBanners = async function (req, res, next) {
 
 
 
-module.exports = new Controller();
+module.exports = new Controller()
