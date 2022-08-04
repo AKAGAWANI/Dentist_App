@@ -36,6 +36,7 @@ const UserSchema = mongoose.Schema({
     default: Date.now(),
   },
   updatedAt: Date,
+  profile: String,
   email: String,
   mobile: String,
   password: String,

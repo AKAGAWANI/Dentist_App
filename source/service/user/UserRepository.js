@@ -43,4 +43,12 @@ Repository.prototype.createUserWithMobile = async function(userObj) {
   return accountId;
 }
 
+Repository.prototype.updateProfile = async function(data) {
+  const isUpdated = await User.updateOne(
+    { _id: data.userId },
+    { ...data }
+  );
+  return isUpdated.ok ? true : false;
+};
+
 module.exports = new Repository();
