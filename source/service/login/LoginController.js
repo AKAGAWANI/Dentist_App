@@ -385,7 +385,15 @@ Controller.prototype.generateOtp = async function (req, res, next) {
           //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
           // } else {
             const otp = await service.generateLoginOTP();
-            const msg = await service.prepareOTPMessage(user, otp);
+            const msg = {
+              mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
+              email: user.email ? crypto.decrypt(user.email) : null,
+              template: envproperties.LOGIN_SMS_TEMPLATE,
+              subject: process.OTP_SUB,
+              body: envproperties.LOGIN_OTP.replace('<OTP>', otp).replace('{#var#}', "DDA"),
+              var1: otp,
+              var2: process.env.LOCAL_OTP_VALIDITY,
+            }
             let fdbck = null;
             try {
               fdbck = await service.sendOTP(msg);
