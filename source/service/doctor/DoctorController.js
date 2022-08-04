@@ -58,6 +58,23 @@ Controller.prototype.add = async function (req, res, next) {
   }
 };
 
+//getting doctors
+Controller.prototype.getCityDoctors=async function (req, res, next) {
+  try {
+    let city = req.params.city;
+    let doctors = await service.getDoctorByCity(city);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: doctors,
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+};
+
 /******************************  PROBLEMS'S APIS *******************************/
 //Adding problems
 Controller.prototype.problemAdd = async function (req, res, next) {

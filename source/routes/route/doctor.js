@@ -7,6 +7,8 @@ router.use(express.json());
 /**************  DOCTOR ROUTES ***************/
 //Add doctor
 router.post("/create", ServiceManager.doctor.add);
+//Get Doctor
+router.get("list/:city",ServiceManager.doctor.getCityDoctors);
 
 /****************** PROBLEM ROUTES *********************/
 //Add problem

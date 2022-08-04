@@ -149,7 +149,7 @@ function sendSMS(data) {
     // }
     console.log("545454545454",data)
     let apiKey = process.env.SMSPROVIDER_APIKEY
-    let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=1007163342408187064`
+    let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${data.template}`
     logger.info(url);
     fetch(url)
       .then((res) => logger.info(res.body))
