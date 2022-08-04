@@ -1,13 +1,17 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const ServiceManager = require("../../service/ServiceManager");
+const ServiceManager = require('../../service/ServiceManager');
 
 router.use(express.json());
 
+router.post('/bookAppointment', ServiceManager.appointment.bookAppointment);
 
-router.post("/bookAppointment", ServiceManager.appointment.bookAppointment);
+router.get('/listAppointments', ServiceManager.appointment.listAppointments);
 
-router.get("/listAppointments",ServiceManager.appointment.listAppointments)
+//get appointmnet Id using userId
+router.get('/list', ServiceManager.appointment.getAppointmentDeatils);
 
+//cancel appointmnet using appointmentId
+router.patch('/cancel', ServiceManager.appointment.cancelAppointment);
 
 module.exports = router;
