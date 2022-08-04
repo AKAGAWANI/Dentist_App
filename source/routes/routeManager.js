@@ -25,8 +25,10 @@ const Admin=require('./route/admin')
 const Problem=require('./route/problem')
 const policy = require ('./route/policy')
 
+
 // stand alone route mappings defined below
-router.use('/', Authenticate);
+// router.use('/', Authenticate);
+router.use('/api/admin',Admin)
 router.use('/login', Login);
 router.use('/logout', Logout);
 router.use('/api/user', User);
@@ -36,7 +38,6 @@ router.use("/api/doctor", Doctor);
 router.use("/api/appointment", appointment);
 router.use('/api/insurance',Insurance);
 router.use('/api/app', App);
-router.use('/api/admin',Admin)
 router.use('/api/problem',Problem)
 router.use("/api/policy", policy);
 
