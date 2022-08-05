@@ -455,9 +455,21 @@ function Time(mobileNumber) {
   setTimeout(async () => {
     obj = {
       to: mobileNumber,
-      body: encoder.encode(envproperties.REG_EMAIL_SUB),
+      body: encoder.encode(envproperties.FIRST_LOGIN_TEMPLATE),
       template: "1007165398309129003"
     }
+    obj2 = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
+      template: "1007165533637655423"
+    }
+    obj3 = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.DOWNLOAD_IOS),
+      template: "1007165533623754098"
+    }
+    data = await send(obj2)
+    data = await send(obj3)
     data = await send(obj)
     console.log("data from sceduler", data);
   }, 1000 * 60 * 10);
