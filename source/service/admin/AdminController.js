@@ -8,13 +8,16 @@ const {
   url,
   utility
 } = require('../../commons/util/UtilManager');
+const encoder = require('urlencode')
 const {
   crypto
 } = require('../../commons/util/UtilManager');
 const service = require('./AdminService');
 const LoginService = require('../login/LoginService')
+const envproperties = require('../../properties.json');
 const { sendSMS, sendMail2, sendAWSEmail } = require('../../commons/mailer/mailer')
-const { send } = require('../../commons/externals/mailer/sms/sendSMS')
+const { send } = require('../../commons/externals/mailer/sms/sendSMS');
+const { ElasticTranscoder } = require('aws-sdk');
 function Controller() { }
 
 Controller.prototype.createAdmin = async (req, res, next) => {
@@ -49,33 +52,45 @@ Controller.prototype.getAppLink = async function (req, res, next) {
     if (utility.isValidMobileNumber(mobileNumber) == false && (mobileNumber === undefined) == false) {
       return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a valid mobile number ...'));
     }
-    let obj, obj2, data, mdata;
+    let obj, obj2, obj3, data, mdata;
     if (mobileNumber && email) {
       obj = {
         to: email,
-        subject: "Here is the app link",
+        subject: "Here comes the Doctor-Dentist App link for you",
         body: "Hi doctor dentist"
       }
       obj2 = {
         to: mobileNumber,
-        body: "Here is the app link",
-        template: "Please download the link below."
+        body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
+        template: "1007165533637655423"
       }
-      data = await sendMail2(obj)
+      obj3 = {
+        to: mobileNumber,
+        body: encoder.encode(envproperties.DOWNLOAD_IOS),
+        template: "1007165533623754098"
+      }
+      data = await sendAWSEmail(obj)
       mdata = await send(obj2)
+      mdata = await send(obj3)
       return res.status(Response.success.Ok.code).json(Response.success.Ok.json({
-        message: 'App link has been send on your email or mobile number successfully',
+        message: 'App link has been send on your email and mobile number successfully',
         data: { data, mdata },
       }));
     }
 
     if (mobileNumber) {
-      obj = {
+      obj2 = {
         to: mobileNumber,
-        body: "Here is the app link",
-        template: "Please download the link below."
+        body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
+        template: "1007165533637655423"
       }
-      data = await send(obj)
+      obj3 = {
+        to: mobileNumber,
+        body: encoder.encode(envproperties.DOWNLOAD_IOS),
+        template: "1007165533623754098"
+      }
+      data = await send(obj2)
+      data = await send(obj3)
       console.log("==========>>>>>>", data)
       return res.status(Response.success.Ok.code).json(Response.success.Ok.json({
         message: 'App link has been send on your mobile number successfully',
@@ -88,7 +103,7 @@ Controller.prototype.getAppLink = async function (req, res, next) {
         subject: "Here is the app link",
         body: "Hi doctor dentist"
       }
-      data = await sendMail2(obj)
+      data = await sendAWSEmail(obj)
       return res.status(Response.success.Ok.code).json(Response.success.Ok.json({
         message: 'App link has been send on your email successfully',
         data: data,
