@@ -11,6 +11,7 @@ const DoctorSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
   qualification: String,
+
   location: String,
   availability: [
     {
@@ -32,6 +33,15 @@ const DoctorSchema = mongoose.Schema({
       slot: [{ time: String, isAvailable: Boolean }] //This will contains time like {time:"2:00 PM",isAvailable:1} or {time:"9:30 AM",isAvailable:1}.
     }
   ],
+
+  location: {
+    _id: String,
+    flatNo: Number,
+    city: String,
+    district: String,
+    state: String
+  },
+
   problem: [
     {
       _id: String,

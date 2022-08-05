@@ -10,6 +10,9 @@ Service.prototype.findDoctorById = async function(id) {
 Service.prototype.getAllDoctor = async function() {
   return repository.getAll('Doctor');
 };
+Service.prototype.getDoctorByCity=async function(city) {
+  return repository.getByCity(city, 'Doctor');
+};
 
 Service.prototype.validateAvailability = function(availability) {
   return repository.isCorrectDetails(availability);
