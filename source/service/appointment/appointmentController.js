@@ -418,7 +418,7 @@ Controller.prototype.rescheduleAppointment = async function(req, res) {
       details.doctorId
     );
 
-    details.scheduleDate = scheduleDate;\
+    details.scheduleDate = scheduleDate;
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
         data: details,
