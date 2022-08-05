@@ -39,7 +39,7 @@ Service.prototype.createAppointment = async function(req) {
     problem: req.problem,
     test: req.test,
     userId: req.userId,
-    doctorId: req.docterId,
+    doctorId: req.doctorId,
     appointmentType: req.appointmentType
   };
   return await repository.createDoc(obj);
@@ -51,6 +51,13 @@ Service.prototype.updateUser = async function(userId, data) {
 
 Service.prototype.cancelAppointment = async function(appointmentId) {
   return repository.cancelById(appointmentId);
+};
+
+Service.prototype.rescheduleAppointment = async function(
+  appointmentId,
+  scheduleDate
+) {
+  return repository.rescheduleById(appointmentId, scheduleDate);
 };
 
 Service.prototype.makeSlotAvailable = async function(

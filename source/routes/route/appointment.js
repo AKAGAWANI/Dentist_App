@@ -14,4 +14,7 @@ router.get('/list', ServiceManager.appointment.getAppointmentDeatils);
 //cancel appointmnet using appointmentId
 router.patch('/cancel', ServiceManager.appointment.cancelAppointment);
 
+//reschedule appointmnet using appointmentId
+router.patch('/reschedule', ServiceManager.appointment.rescheduleAppointment);
+
 module.exports = router;

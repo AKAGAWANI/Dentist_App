@@ -95,7 +95,7 @@ Repository.prototype.makeSlotAvailable = async function(
   doctorId
 ) {
   let { availabilityId, slotId } = scheduleDate;
-  Doctor.updateOne(
+  await Doctor.updateOne(
     { _id: doctorId },
     {
       $set: {
@@ -105,6 +105,16 @@ Repository.prototype.makeSlotAvailable = async function(
     {
       arrayFilters: [{ 'index._id': availabilityId }, { 'count._id': slotId }]
     }
+  );
+};
+
+Repository.prototype.rescheduleById = async function(
+  appointmentId,
+  scheduleDate
+) {
+  return await Appointment.updateOne(
+    { _id: appointmentId },
+    { $set: { scheduleDate: scheduleDate } }
   );
 };
 module.exports = new Repository();
