@@ -40,10 +40,10 @@ app.use('/', RouteManager);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  res.locals.message = 'Welcome to Null-Void';
+  res.locals.message = 'Welcome to Doctor Dentist App';
   res.locals.error   = {
-    status: 'Beware!!! Vilgax is around somewhere',
-    stack: 'Find the null-void projector and leave immediately; you do not have omnitrix :P',
+    status: 'Root Route',
+    stack: 'You have called for root API or the API that you want does not exist',
   }
   res.render('error');
 });
