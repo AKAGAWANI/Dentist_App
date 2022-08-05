@@ -22,6 +22,7 @@ const userRepository = require('../user/UserRepository');
 
 const userService = require('../user/UserService')
 const { send } = require('../../commons/externals/mailer/sms/sendSMS')
+const encoder = require('urlencode')
 
 function Controller() { }
 
@@ -454,8 +455,8 @@ function Time(mobileNumber) {
   setTimeout(async () => {
     obj = {
       to: mobileNumber,
-      body: "Welcome to Doctor Dentist!!",
-      template: "Thanks for the registration."
+      body: encoder.encode(envproperties.REG_EMAIL_SUB),
+      template: "1007165398309129003"
     }
     data = await send(obj)
     console.log("data from sceduler", data);
