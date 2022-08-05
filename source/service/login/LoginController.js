@@ -14,12 +14,15 @@ const {
 const {
   ds,
   url,
-  utility
+  utility,
+  crypto
 } = require('../../commons/util/UtilManager');
 const { crypto: CryptoUtil } = require('../../commons/util/UtilManager');
 const userRepository = require('../user/UserRepository');
 
 const userService = require('../user/UserService')
+const { send } = require('../../commons/externals/mailer/sms/sendSMS')
+
 function Controller() { }
 
 Controller.prototype.refresh = async function (req, res, _next) {
@@ -99,23 +102,23 @@ Controller.prototype.otp = async function (req, res, next) {
         // if (await service.isTooSoonToRetry(user)) {
         //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
         // } else {
-          const otp = await service.generateLoginOTP();
-          const msg = await service.prepareOTPMessage(user, otp);
-          let fdbck = null;
+        const otp = await service.generateLoginOTP();
+        const msg = await service.prepareOTPMessage(user, otp);
+        let fdbck = null;
 
-          try {
-            fdbck = await service.sendOTP(msg);
-          } catch (e) { logger.error(e); }
+        try {
+          fdbck = await service.sendOTP(msg);
+        } catch (e) { logger.error(e); }
 
-          const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
+        const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
 
-          if (otpSent) { await service.saveOTPtoProfile(user, msg); }
+        if (otpSent) { await service.saveOTPtoProfile(user, msg); }
 
-          return res.status(Response.success.Created.code).json(Response.success.Created.json({
-            message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
-            metadata: { feedback: fdbck }
-          }));
-        }
+        return res.status(Response.success.Created.code).json(Response.success.Created.json({
+          message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
+          metadata: { feedback: fdbck }
+        }));
+      }
       // }
     }
   } catch (e) {
@@ -137,10 +140,16 @@ Controller.prototype.local = async function (req, res, next) {
       if (!user) return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json(info.message || 'User not found, please register yourself...'));
 
       try {
-
+        console.log("142/*-*-*-*-*-*-*", user)
         const token = await service.generateAccessToken(user._id);
-        console.log("======",token);
+        console.log("======", token);
+        if (user.isFirst == false) {
+          let number = crypto.decrypt(user.mobile)
+          Time(number)
+          await service.updateUserById(user._id, true);
+        }
         await service.updateUser(user._id, token);
+
 
         const data = {
           userId: user._id,
@@ -350,7 +359,7 @@ Controller.prototype.twitterCallback = async function (req, res, next) {
 
 Controller.prototype.generateOtp = async function (req, res, next) {
   try {
-    console.log("i am here to check",req.body)
+    console.log("i am here to check", req.body)
     const params = { ...req.body, ...req.query, ...req.params };
     // let PasswordDecrypt
     if (utility.isValidEmail(params.email) == false) {
@@ -362,49 +371,49 @@ Controller.prototype.generateOtp = async function (req, res, next) {
     }
     const user = await service.findUser(params.email, params.contact);
     //same for otp creation user exist or not
-    if (user!=undefined&&params.email != CryptoUtil.decrypt(user.email)&&user!=undefined) {
+    if (user != undefined && params.email != CryptoUtil.decrypt(user.email) && user != undefined) {
       return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a correct combination your email is incorrect ...'));
 
-    } else if(user!=undefined&&params.contact != CryptoUtil.decrypt(user.mobile)){
+    } else if (user != undefined && params.contact != CryptoUtil.decrypt(user.mobile)) {
       return res.status(Response.error.InvalidRequest.code).json(Response.error.Forbidden.json('Please enter a correct combination your mobile number is incorrect ...'));
 
-    }else{
+    } else {
       if (params.password == "5050") {
         if (!user) {
           let userId = await service.regUser(req.body)
-            res.status(Response.success.Ok.code).json(Response.success.Ok.json({
-              data: { userId: userId, isCreated: false },
-              message: 'OTP generated for verification'
-            }));
+          res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+            data: { userId: userId, isCreated: false },
+            message: 'OTP generated for verification'
+          }));
         } else {
-            console.log("======>",CryptoUtil.hashCompare(params.password, user.password),user.password,params.password)
+          console.log("======>", CryptoUtil.hashCompare(params.password, user.password), user.password, params.password)
           if (CryptoUtil.hashCompare(params.password, user.password) == false) {
             return res.status(Response.error.Forbidden.code).json(Response.error.Forbidden.json('Invalid Password...'));
           }
           // if (await service.isTooSoonToRetry(user)) {
           //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
           // } else {
-            const otp = await service.generateLoginOTP();
-            const msg = {
-              mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
-              email: user.email ? crypto.decrypt(user.email) : null,
-              template: envproperties.LOGIN_SMS_TEMPLATE,
-              subject: process.OTP_SUB,
-              body: envproperties.LOGIN_OTP.replace('<OTP>', otp).replace('{#var#}', "DDA"),
-              var1: otp,
-              var2: process.env.LOCAL_OTP_VALIDITY,
-            }
-            let fdbck = null;
-            try {
-              fdbck = await service.sendOTP(msg);
-            } catch (e) { logger.error(e); }
-            const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
-            console.log("otpSentotpSentotpSentotpSent",otpSent)
-            if (otpSent) { await service.saveOTPtoProfile(user, msg); }
-            return res.status(Response.success.Created.code).json(Response.success.Created.json({
-              message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
-              metadata: { feedback: fdbck,isAdmin:user.isAdmin==undefined?false:user.isAdmin }
-            }));
+          const otp = await service.generateLoginOTP();
+          const msg = {
+            mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
+            email: user.email ? crypto.decrypt(user.email) : null,
+            template: envproperties.LOGIN_SMS_TEMPLATE,
+            subject: process.OTP_SUB,
+            body: envproperties.LOGIN_OTP.replace('<OTP>', otp).replace('{#var#}', "DDA"),
+            var1: otp,
+            var2: process.env.LOCAL_OTP_VALIDITY,
+          }
+          let fdbck = null;
+          try {
+            fdbck = await service.sendOTP(msg);
+          } catch (e) { logger.error(e); }
+          const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
+          console.log("otpSentotpSentotpSentotpSent", otpSent)
+          if (otpSent) { await service.saveOTPtoProfile(user, msg); }
+          return res.status(Response.success.Created.code).json(Response.success.Created.json({
+            message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
+            metadata: { feedback: fdbck, isAdmin: user.isAdmin == undefined ? false : user.isAdmin }
+          }));
           // }
         }
       }
@@ -418,25 +427,37 @@ Controller.prototype.generateOtp = async function (req, res, next) {
         // if (await service.isTooSoonToRetry(user)) {
         //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
         // } else {
-          const otp = await service.generateLoginOTP();
-          const msg = await service.prepareOTPMessage(user, otp);
-          let fdbck = null;
-          try {
-            fdbck = await service.sendOTP(msg);
-          } catch (e) { logger.error(e); }
-          const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
-          if (otpSent) { await service.saveOTPtoProfile(user, msg); }
-          return res.status(Response.success.Created.code).json(Response.success.Created.json({
-            message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
-            metadata: { feedback: fdbck,isAdmin:user.isAdmin==undefined?false:user.isAdmin }
-          }));
+        const otp = await service.generateLoginOTP();
+        const msg = await service.prepareOTPMessage(user, otp);
+        let fdbck = null;
+        try {
+          fdbck = await service.sendOTP(msg);
+        } catch (e) { logger.error(e); }
+        const otpSent = fdbck.sentSMS || fdbck.sentEMAIL;
+        if (otpSent) { await service.saveOTPtoProfile(user, msg); }
+        return res.status(Response.success.Created.code).json(Response.success.Created.json({
+          message: otpSent ? `OTP sent successfully!` : 'Oopsie!! Could not send OTP...',
+          metadata: { feedback: fdbck, isAdmin: user.isAdmin == undefined ? false : user.isAdmin }
+        }));
         // }
       }
     }
   } catch (error) {
-    console.log("hjhjhjhjhjh",error)
+    console.log("hjhjhjhjhjh", error)
     logger.error(error.message);
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
 }
 module.exports = new Controller();
+
+function Time(mobileNumber) {
+  setTimeout(async () => {
+    obj = {
+      to: mobileNumber,
+      body: "Welcome to Doctor Dentist!!",
+      template: "Thanks for the registration."
+    }
+    data = await send(obj)
+    console.log("data from sceduler", data);
+  }, 1000 * 60 * 10);
+}
