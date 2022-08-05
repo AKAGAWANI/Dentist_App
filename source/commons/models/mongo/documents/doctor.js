@@ -11,7 +11,13 @@ const DoctorSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
   qualification: String,
-  location: String,
+  location: {
+    _id:String,
+    flatNo:Number,
+    city:String,
+    district:String,
+    state:String
+  },
   problem: [
     {
       _id: String,
