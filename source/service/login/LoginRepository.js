@@ -28,8 +28,17 @@ Repository.prototype.updateUser = async function(userId, tokenObj) {
   }, {
     token: tokenObj
   });
+  
 }
 
+Repository.prototype.updateUserById = async function(userId, value) {
+  return User.findByIdAndUpdate({
+    _id: userId
+  }, {
+    isFirst: value
+  });
+  
+}
 
 
 module.exports = new Repository();

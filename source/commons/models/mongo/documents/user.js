@@ -74,6 +74,10 @@ const UserSchema = mongoose.Schema({
     }
 
   }],
+  isFirst:{
+    type:Boolean,
+    default:false
+  }
 });
 
 // export model user with UserSchema
