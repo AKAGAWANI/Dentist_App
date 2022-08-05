@@ -45,8 +45,9 @@ Service.prototype.regPseudoUser = async function (req) {
     const otpData = { otp: genOTP };
 
     otpData.to = contact;
-    otpData.body = envproperties.OTP_CONTENT.replace('<OTP>', genOTP);
+    otpData.body = envproperties.SIGNUP_OTP.replace('<OTP>', genOTP).replace('{#var#}', " DDA");
     otpData.body = encoder.encode(otpData.body)
+    otpData.template = envproperties.SIGNUP_SMS_TEMPLATE
     smsObj.sendSMS(otpData);
 
     let encryptFirstName = CryptoUtil.encrypt(firstName || name);
