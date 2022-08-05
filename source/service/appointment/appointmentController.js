@@ -57,4 +57,21 @@ Controller.prototype.listAppointments = async function (req, res, next) {
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
 };
+
+
+Controller.prototype.getPatients = async function (req, res, next) {
+  try {
+    let id = req.params.doctorId;
+
+    let allPatients = await service.findAllPatients(id);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: allPatients,
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+};
 module.exports = new Controller();

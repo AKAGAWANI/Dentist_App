@@ -9,6 +9,11 @@ const {
     return instance ? instance.toJSON() : null;
   }
   
+  Repository.prototype.getPatientById = async function (doctorId) {
+    const instance = await Appointment.find({ docterId: doctorId }, { apps: 1 }).exec();
+    return instance ? instance.toJSON() : null;
+  }
+
   Repository.prototype.getAllAppointment = async function (query) {
     const instance = await Appointment.find(query).exec();
     return instance.length>0 ? instance : [];

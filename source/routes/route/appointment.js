@@ -9,5 +9,6 @@ router.post("/bookAppointment", ServiceManager.appointment.bookAppointment);
 
 router.get("/listAppointments",ServiceManager.appointment.listAppointments)
 
+router.get("/getPatient/:doctorId", ServiceManager.appointment.getPatients);
 
 module.exports = router;
