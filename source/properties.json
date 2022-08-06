@@ -30,7 +30,9 @@
     "LOGIN_OTP": "OTP to login to DOCTOR-DENTIST is <OTP>. Don't share the OTP with anyone. Keep Smiling ! {#var#}",
     "LOGIN_SMS_TEMPLATE": "1007165944298573670",
     "FORGOT_PASSWORD_OTP": "OTP to Change Password for DOCTOR-DENTIST is <OTP>. Don't share the OTP with anyone. Keep Smiling ! {#var#}",
-    "FORGOT_PASSWORD_TEMPLATE": "1007165533562446406"
-
+    "FORGOT_PASSWORD_TEMPLATE": "1007165533562446406",
+    "DOWNLOAD_ANDROID":"We highly honor your interest in DOCTOR-DENTIST. For seamless experience we suggest to download the android app https://tinyurl.com/bdcve24k. Always with you !",
+    "DOWNLOAD_IOS":"We highly honor your interest in DOCTOR-DENTIST. We would convey that apple iOS version is about to get launch in next 15 days. Always with you !",
+    "FIRST_LOGIN_TEMPLATE":"Thank you for visiting and using DOCTOR-DENTIST. Hope to see you again soon!"
 
 }

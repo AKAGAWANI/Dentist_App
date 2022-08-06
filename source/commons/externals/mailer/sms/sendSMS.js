@@ -19,7 +19,7 @@ async function send(msg) {
 
   console.log("545454545454")
     let apiKey = process.env.SMSPROVIDER_APIKEY
-    let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${msg.to}&SenderID=DRTETH&Message=${msg.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=1007163342408187064`
+    let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${msg.to}&SenderID=DRTETH&Message=${msg.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${msg.template}`
     // logger.info(url);
     let data=await axios(url)
   return data.data;

@@ -42,6 +42,7 @@ Service.prototype.regPseudoUser = async function (req) {
 
   if (user == null) {
     const genOTP = utils.generateNumericOTP();
+    console.log("454545454545454545",genOTP)
     const otpData = { otp: genOTP };
 
     otpData.to = contact;
@@ -70,7 +71,7 @@ Service.prototype.regPseudoUser = async function (req) {
         "email": encryptEmail,
       }
     });
-
+    console.log("748787878787",pseudoUserId);
     return pseudoUserId;
   }
 
