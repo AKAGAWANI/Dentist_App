@@ -401,7 +401,7 @@ Controller.prototype.generateOtp = async function (req, res, next) {
             email: user.email ? crypto.decrypt(user.email) : null,
             template: envproperties.LOGIN_SMS_TEMPLATE,
             subject: process.OTP_SUB,
-            body: envproperties.LOGIN_OTP.replace('<OTP>', otp).replace('{#var#}', "DDA"),
+            body: envproperties.LOGIN_OTP.replace('<OTP>', otp).replace('{#var#}', "e52dwnzI4WX"),
             var1: otp,
             var2: process.env.LOCAL_OTP_VALIDITY,
           }
