@@ -2,6 +2,7 @@ const passport = require('passport');
 const Response = require('../../commons/responses/EcomResponseManager');
 const service = require('./LoginService');
 const logger = require('../../commons/logger/logger');
+const envproperties = require('../../properties.json');
 const {
   User
 } = require('../../commons/models/mongo/mongodb');
