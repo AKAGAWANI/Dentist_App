@@ -1,25 +1,26 @@
-const { User, Account } = require("../../commons/models/mongo/mongodb");
+const { User, Account } = require('../../commons/models/mongo/mongodb');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+const smsObj = require('../../commons/mailer/mailer.js');
 
-
-function Repository () {}
+function Repository() {}
 
 Repository.prototype.deleteAccount = async function(_id) {
-  await User.remove({_id});
-  await Account.remove({_id});
+  await User.remove({ _id });
+  await Account.remove({ _id });
   return true;
-}
+};
 
 Repository.prototype.findUserByMobile = async function(mobile) {
   return User.findOne({ mobile: mobile }).exec();
-}
+};
 
 Repository.prototype.findUserByEmail = async function(email) {
   return User.findOne({ email }).exec();
-}
+};
 Repository.prototype.createUserWithMobile = async function(userObj) {
-  
-  const user = new User(); 
+  const user = new User();
   const account = new Account();
 
   const accountId = new mongoose.Types.ObjectId().toHexString();
@@ -32,15 +33,68 @@ Repository.prototype.createUserWithMobile = async function(userObj) {
   account.fullName = userObj.name;
   user.password = userObj.password;
   user.updatedAt = new Date();
-  user.devices= userObj.devices
+  user.devices = userObj.devices;
 
-  // PermissionTemplate Loading 
+  // PermissionTemplate Loading
   // user.apps = PermissionTemplate.apps;
 
   await user.save();
   await account.save();
 
   return accountId;
-}
+};
+Repository.prototype.sendOTPThroughEmail = async function(email, name) {
+  /*********** SENDING OTP TO THE USER'S EMAIL *********/
+  let file = ``,
+    subject = ``;
+
+  //Register template
+  if (name == 'Register') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/registerEmailTemplate.html'
+    );
+    subject = 'Here comes your Signup OTP';
+  }
+
+  //Login template
+  if (name == 'Login') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/loginEmailTemplate.html'
+    );
+    subject = 'Here comes your Login OTP';
+  }
+
+  //ForgetPassword template
+  if (name == 'ForgetPassword') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/forgetpasswordEmailTemplate.html'
+    );
+    subject = 'Here comes your Login OTP';
+  }
+
+  //App link template
+  if (name == 'AppLink') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/applinkEmailTemplate.html'
+    );
+    subject = 'Here comes the Doctor-Dentist App link for you';
+  }
+
+  await fs.readFile(file, 'utf8', async function(error, data) {
+    let template = data;
+    smsObj.sendMail2({
+      to: email,
+      body: subject,
+      template
+    });
+    if (error) {
+      throw error;
+    }
+  });
+};
 
 module.exports = new Repository();
