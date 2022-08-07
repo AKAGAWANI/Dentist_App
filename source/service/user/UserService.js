@@ -57,7 +57,7 @@ Service.prototype.regPseudoUser = async function(req) {
     otpData.template = envproperties.SIGNUP_SMS_TEMPLATE;
     smsObj.sendSMS(otpData);
 
-    await repository.sendOTPThroughEmail(email, 'Register');
+    await repository.sendOTPThroughEmail(email, genOTP, 'Register');
 
     let encryptFirstName = CryptoUtil.encrypt(firstName || name);
     let encryptLastName = CryptoUtil.encrypt(lastName);
