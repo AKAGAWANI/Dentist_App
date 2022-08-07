@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 const smsObj = require('../../commons/mailer/mailer.js');
+const ejs = require('ejs');
 
 function Repository() {}
 
@@ -43,7 +44,7 @@ Repository.prototype.createUserWithMobile = async function(userObj) {
 
   return accountId;
 };
-Repository.prototype.sendOTPThroughEmail = async function(email, name) {
+Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
   /*********** SENDING OTP TO THE USER'S EMAIL *********/
   let file = ``,
     subject = ``;
@@ -85,11 +86,12 @@ Repository.prototype.sendOTPThroughEmail = async function(email, name) {
   }
 
   await fs.readFile(file, 'utf8', async function(error, data) {
-    let template = data;
+    data = ejs.render(data, { USEROTP: otp });
+
     smsObj.sendMail2({
       to: email,
       body: subject,
-      template
+      template: data
     });
     if (error) {
       throw error;

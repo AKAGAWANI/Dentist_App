@@ -132,7 +132,7 @@ Controller.prototype.otp = async function(req, res, next) {
 
         try {
           fdbck = await service.sendOTP(msg);
-          await service.sendOTPEmail(msg.email, 'ForgetPassword');
+          await service.sendOTPEmail(msg.email, otp, 'ForgetPassword');
         } catch (e) {
           logger.error(e);
         }
@@ -565,7 +565,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
           let fdbck = null;
           try {
             fdbck = await service.sendOTP(msg);
-            await service.sendOTPEmail(msg.email, 'Login');
+            await service.sendOTPEmail(msg.email, otp, 'Login');
           } catch (e) {
             logger.error(e);
           }
