@@ -54,7 +54,7 @@ Repository.prototype.sendOTPThroughEmail = async function(email, name) {
       __dirname,
       '../../views/templates/registerEmailTemplate.html'
     );
-    subject = 'Here comes your Signup OTP';
+    subject = 'Here comes your Signup (New User) OTP';
   }
 
   //Login template

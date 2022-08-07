@@ -92,9 +92,9 @@ Controller.prototype.getAppLink = async function(req, res, next) {
         body: encoder.encode(envproperties.DOWNLOAD_IOS),
         template: '1007165533623754098'
       };
-      data = await sendAWSEmail(obj);
+      //  data = await sendAWSEmail(obj);
       //send otp through mail
-      await service.sendEmail(email, 'AppLink');
+      data = await service.sendEmail(email, 'AppLink');
 
       mdata = await send(obj2);
       mdata = await send(obj3);

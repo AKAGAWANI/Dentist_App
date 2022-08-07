@@ -99,7 +99,7 @@ Service.prototype.sendOTP = async function(msg) {
 };
 
 Service.prototype.sendOTPEmail = async function(email, name) {
-  return await UserRepository.sendOTPThroughEmail(msg.email, name);
+  return await UserRepository.sendOTPThroughEmail(email, name);
 };
 
 Service.prototype.saveOTPtoProfile = async function(user, msg) {
