@@ -63,7 +63,7 @@ Service.prototype.prepareOTPMessage = async function (user, otp) {
     email: user.email ? crypto.decrypt(user.email) : null,
     template: envproperties.FORGOT_PASSWORD_TEMPLATE,
     subject: process.OTP_SUB,
-    body: envproperties.FORGOT_PASSWORD_OTP.replace('<OTP>', otp).replace('{#var#}', "DDA"),
+    body: envproperties.FORGOT_PASSWORD_OTP.replace('<OTP>', otp).replace('{#var#}', "e52dwnzI4WX"),
     var1: otp,
     var2: process.env.LOCAL_OTP_VALIDITY,
   }
@@ -71,12 +71,14 @@ Service.prototype.prepareOTPMessage = async function (user, otp) {
 
 Service.prototype.sendOTP = async function (msg) {
   let smsFeed, emailFeed;
-  if (msg.mobile) try { msg.to = msg.mobile; 
+  if (msg.mobile) try {
+    msg.to = msg.mobile;
     msg.body = encoder.encode(msg.body)
-    smsFeed = await Mailer.sms.send(msg) } catch (e) { logger.error(e) }
-  if (msg.email)  try { emailFeed = await Mailer.email.send(msg) } catch (e) { logger.error(e) }
+    smsFeed = await Mailer.sms.send(msg)
+  } catch (e) { logger.error(e) }
+  if (msg.email) try { emailFeed = await Mailer.email.send(msg) } catch (e) { logger.error(e) }
 
-  const sentSMS = smsFeed==undefined?false:true
+  const sentSMS = smsFeed == undefined ? false : true
   const sentEMAIL = !!((emailFeed || {}).ResponseMetadata || {}).RequestId;
   return { sentSMS, sentEMAIL };
 }
@@ -129,7 +131,7 @@ Service.prototype.regUser = async function (req) {
   let encryptPassowrd = CryptoUtil.hash(password);
   let timeout = envproperties.OTP_VALIDITY;
   let pseudoUserId = new mongoose.Types.ObjectId().toHexString();
-  let otpEncrypt=  CryptoUtil.hash(genOTP);
+  let otpEncrypt = CryptoUtil.hash(genOTP);
 
   const accountId = new mongoose.Types.ObjectId().toHexString();
   const user = new User();
@@ -152,4 +154,8 @@ Service.prototype.regUser = async function (req) {
 
   return accountId;
 };
+Service.prototype.updateUserById = async function (userId, value) {
+  return repository.updateUserById(userId, value);
+}
+
 module.exports = new Service();

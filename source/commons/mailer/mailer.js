@@ -37,6 +37,24 @@ function sendEmail(data) {
   });
 }
 
+async function sendMail2(data) {
+  var transporter = nodeMailer.createTransport({
+    service: "gmail",
+    auth: {
+      "user": "no-replymailer@mobiloitte.com",
+      "pass": "%FEy=9FF@"
+
+    },
+  });
+  var mailOptions = {
+    from: "no-replymailer@mobiloitte.com",
+    to: data.to,
+    subject: data.body,
+    html: data.template
+  };
+  return await transporter.sendMail(mailOptions)
+}
+
 function sendAWSEmail(data) {
   AWS.config.update({
     accessKeyId: process.env.AWS_KEY,
@@ -147,9 +165,9 @@ function sendSMS(data) {
     // if (data.var3 !== undefined) {
     //   url += `&var3=${data.var3}`;
     // }
-    console.log("545454545454",data)
+    console.log("545454545454", data)
     let apiKey = process.env.SMSPROVIDER_APIKEY
-    let url= `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${data.template}`
+    let url = `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${data.template}`
     logger.info(url);
     fetch(url)
       .then((res) => logger.info(res.body))
@@ -162,4 +180,5 @@ module.exports = {
   sendEmail,
   sendAWSEmail,
   sendSMS,
+  sendMail2
 };

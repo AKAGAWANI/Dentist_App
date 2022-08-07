@@ -26,7 +26,8 @@ const Problem = require('./route/problem');
 const policy = require('./route/policy');
 
 // stand alone route mappings defined below
-//router.use('/', Authenticate);
+// router.use('/', Authenticate);
+router.use('/api/admin', Admin);
 router.use('/login', Login);
 router.use('/logout', Logout);
 router.use('/api/user', User);
