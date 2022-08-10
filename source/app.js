@@ -15,6 +15,13 @@ app.use(cors());
 // a bit more security
 app.use(helmet());
 
+// API docs
+const swaggerUI    = require('swagger-ui-express');
+const swaggerDoc   = require('./commons/meta/api-docs/swagger');
+
+// api manual
+app.use('/manual', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+
 app.set("view engine", "jade");
 app.use(appLog('common', {
   stream: fs.createWriteStream(`./logs/${process.env.FILE_API_LOG}`, { flags: 'a' })
