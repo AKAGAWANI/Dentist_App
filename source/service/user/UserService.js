@@ -124,13 +124,10 @@ Service.prototype.validateAndReg = async function(req) {
   }
 };
 
-<<<<<<< HEAD
 
 Service.prototype.updateProfile = async function(data) {
   return repository.updateProfile(data);
 };
 
 module.exports = new Service();
-=======
-module.exports = new Service();
->>>>>>> 061e1b2271de153f0d1a9a1412cc04a7e9cd9266
+

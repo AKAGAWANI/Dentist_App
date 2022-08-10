@@ -1,25 +1,4 @@
 const {
-<<<<<<< HEAD
-    Appointment,User
-  } = require('../../commons/models/mongo/mongodb');
-  
-  function Repository() {}
-  
-  Repository.prototype.getAppointmentById = async function (appointmentId) {
-    const instance = await Appointment.findOne({ _id: appointmentId }, { apps: 1 }).exec();
-    return instance ? instance.toJSON() : null;
-  }
-  
-  Repository.prototype.getPatientById = async function (doctorId) {
-    const instance = await Appointment.find({ docterId: doctorId }, { apps: 1 }).exec();
-    return instance ? instance.toJSON() : null;
-  }
-
-  Repository.prototype.getAllAppointment = async function (query) {
-    const instance = await Appointment.find(query).exec();
-    return instance.length>0 ? instance : [];
-  },
-=======
   Appointment,
   User,
   Doctor
@@ -27,14 +6,23 @@ const {
 
 function Repository() {}
 
+Repository.prototype.getPatientById = async function (doctorId) {
+  const instance = await Appointment.find({ docterId: doctorId }, { apps: 1 }).exec();
+  return instance ? instance.toJSON() : null;
+}
+
+Repository.prototype.getAllAppointment = async function (query) {
+  const instance = await Appointment.find(query).exec();
+  return instance.length>0 ? instance : [];
+},
+
 Repository.prototype.getAppointmentById = async function(appointmentId) {
   const instance = await Appointment.findOne(
     { _id: appointmentId }
     // { apps: 1 }
   ).exec();
   return instance ? instance.toJSON() : null;
-};
->>>>>>> 061e1b2271de153f0d1a9a1412cc04a7e9cd9266
+  }
 
 Repository.prototype.getAllAppointment = async function(query) {
   const instance = await Appointment.find(query).exec();

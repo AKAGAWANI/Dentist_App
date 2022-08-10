@@ -24,15 +24,12 @@ Service.prototype.findAppointment = async function(appointmentId) {
   return repository.getAppointmentById(appointmentId);
 };
 
-<<<<<<< HEAD
+
 Service.prototype.findPatient = async function (docterId) {
   return repository.getPatientById(docterId);
 };
 
 Service.prototype.getAll = async function (query) {
-=======
-Service.prototype.getAll = async function(query) {
->>>>>>> 061e1b2271de153f0d1a9a1412cc04a7e9cd9266
   return repository.getAllAppointment(query);
 };
 

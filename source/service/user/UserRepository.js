@@ -99,7 +99,7 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
   });
 };
 
-<<<<<<< HEAD
+
 Repository.prototype.updateProfile = async function(data) {
   const isUpdated = await User.updateOne(
     { _id: data.userId },
@@ -109,6 +109,3 @@ Repository.prototype.updateProfile = async function(data) {
 };
 
 module.exports = new Repository();
-=======
-module.exports = new Repository();
->>>>>>> 061e1b2271de153f0d1a9a1412cc04a7e9cd9266
