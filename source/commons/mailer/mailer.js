@@ -14,8 +14,8 @@ function sendEmail(data) {
     secure: true,
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PWD,
-    },
+      pass: process.env.EMAIL_PWD
+    }
   });
 
   const mailOptions = {
@@ -23,7 +23,7 @@ function sendEmail(data) {
     to: data.to, // list of receivers
     subject: data.subject, // Subject line
     // text: data.body, // plain text body
-    html: data.body, // html body
+    html: data.body // html body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -39,41 +39,43 @@ function sendEmail(data) {
 
 async function sendMail2(data) {
   var transporter = nodeMailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
-      "user": "no-replymailer@mobiloitte.com",
-      "pass": "%FEy=9FF@"
-
-    },
+      user: 'no-replymailer@mobiloitte.com',
+      pass: '%FEy=9FF@'
+    }
   });
   var mailOptions = {
-    from: "no-replymailer@mobiloitte.com",
+    from: {
+      name: 'Doctor-Dentist Smart App', //no-replymailer@mobiloitte.com",
+      address: 'no-replymailer@mobiloitte.com'
+    },
     to: data.to,
     subject: data.body,
     html: data.template
   };
-  return await transporter.sendMail(mailOptions)
+  return await transporter.sendMail(mailOptions);
 }
 
 function sendAWSEmail(data) {
   AWS.config.update({
     accessKeyId: process.env.AWS_KEY,
     secretAccessKey: process.env.AWS_SECRET,
-    region: process.env.AWS_SES_REGION,
+    region: process.env.AWS_SES_REGION
   });
 
   const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
   const params = {
     Destination: {
-      ToAddresses: [data.to],
+      ToAddresses: [data.to]
     },
     Message: {
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: data.body,
-        },
+          Data: data.body
+        }
         /* replace Html attribute with the following if you want to send plain text emails.
                 Text: {
                     Charset: "UTF-8",
@@ -83,13 +85,11 @@ function sendAWSEmail(data) {
       },
       Subject: {
         Charset: 'UTF-8',
-        Data: data.subject,
-      },
+        Data: data.subject
+      }
     },
     Source: process.env.AWS_FROM,
-    ReplyToAddresses: [
-      process.env.AWS_REPLY,
-    ],
+    ReplyToAddresses: [process.env.AWS_REPLY]
   };
 
   ses.sendEmail(params, (err, resData) => {
@@ -165,12 +165,11 @@ function sendSMS(data) {
     // if (data.var3 !== undefined) {
     //   url += `&var3=${data.var3}`;
     // }
-    console.log("545454545454", data)
-    let apiKey = process.env.SMSPROVIDER_APIKEY
-    let url = `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${data.template}`
+    console.log('545454545454', data);
+    let apiKey = process.env.SMSPROVIDER_APIKEY;
+    let url = `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${data.template}`;
     logger.info(url);
-    fetch(url)
-      .then((res) => logger.info(res.body))
+    fetch(url).then(res => logger.info(res.body));
   } catch (error) {
     logger.error(error);
   }

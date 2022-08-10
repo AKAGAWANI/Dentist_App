@@ -10,7 +10,7 @@ Repository.prototype.getUserById = async function (userId) {
 }
 
 Repository.prototype.getUserByFilterParam = async function (param) {
-  const instance = await User.findOne(param, { id: 1, mobile: 1, email: 1, otpExpiry: 1,password:1 }).exec();
+  const instance = await User.findOne(param, { id: 1, mobile: 1, email: 1, otpExpiry: 1,password:1, isAdmin:1 }).exec();
   return instance ? instance.toJSON() : null;
 }
 
