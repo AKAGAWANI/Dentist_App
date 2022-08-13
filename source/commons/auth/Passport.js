@@ -39,7 +39,7 @@ const createNewUserBySocialAccount = async function(emailENC, social, account) {
 
 passport.use(new LocalStrategy({
   usernameField: 'username',
-  passwordField: 'password'
+  passwordField: 'otp'
 },
   async function (username, password, done) {
     const usernameENC = crypto.encrypt(username);
@@ -51,7 +51,7 @@ passport.use(new LocalStrategy({
     try {
       if (
         !(crypto.hashCompare(password, user.password) || crypto.hashCompare(password, user.passwordOtp))
-      ) return done(null, false, { message: 'Incorrect Password/OTP' });
+      ) return done(null, false, { message: 'Incorrect OTP' });
     } catch (e) { logger.error(e.message) }
     
     try {

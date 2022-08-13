@@ -278,8 +278,8 @@ Controller.prototype.guest = async function(req, res, next) {
 
 Controller.prototype.resetPassword = async function(req, res, next) {
   try {
-    const { username, otp, password, resource } = req.body;
-
+    let { username, otp, password, resource } = req.body;
+    resource= 'pax'
     const user = await service.simulateLogin(username, otp, resource);
 
     if (!user.userId) {
