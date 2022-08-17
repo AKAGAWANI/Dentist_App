@@ -848,6 +848,111 @@ const swagger = {
           }
         }
       }
+    },
+    '/api/user/consultation/create': {
+      post: {
+        tags: ['Consultation'],
+        summary: 'create consultation',
+        operationId: 'createConsultation',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - create consultation': {
+                  summary: '200 - ECOM-V2 - Create consultation',
+                  value: require('../sample-data/api/consultation/add/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Create consultation',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/consultation/add/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/user/consultation/list': getConfig({
+      method: 'get',
+      tags: ['Consultation'],
+      summary: 'Get users consultation by its token',
+      operationId: 'UsersConsultationInfo',
+      produces: 'application/json',
+      successDescription: "User's consultation by its token",
+      responseExamplePath: '../sample-data/api/consultation/get/success.json'
+    }),
+    '/api/user/consultation/edit': {
+      patch: {
+        tags: ['Consultation'],
+        summary: 'edit consultation',
+        operationId: 'editConsultation',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - edit consultation': {
+                  summary: '200 - ECOM-V2 - Edit consultation',
+                  value: require('../sample-data/api/consultation/edit/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Edit consultation',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/consultation/edit/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
     }
   },
   securityDefinitions: {
