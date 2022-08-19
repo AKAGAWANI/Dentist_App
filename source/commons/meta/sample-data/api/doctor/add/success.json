@@ -1,0 +1,77 @@
+{
+  "data": {
+    "firstName": "First name",
+    "lastName": "Lats name",
+    "location": {
+      "_id": "23454561d32v",
+      "flatNo": 12,
+      "city": "Indore",
+      "district": "String",
+      "state": "String"
+    },
+    "problem": [
+      {
+        "icons": ["Image Url", "Image url"],
+        "_id": "62cc02777028f3f57f6a2070",
+        "problemName": "problem 1",
+        "displayName": "displayName"
+      }
+    ],
+    "test": [
+      {
+        "icons": ["Image Url", "Image url"],
+        "_id": "22ab02899028f1f77f6a1543",
+        "testName": "Test 1",
+        "displayName": "displayName",
+        "description": "Some description"
+      }
+    ],
+    "availability": [
+      {
+        "_id": "62f8adc7c9b7c413dcc32b5f",
+        "day": "Monday",
+        "slot": [
+          {
+            "_id": "62f8adc7c9b7c413dcc32b60",
+            "time": "2:00 PM",
+            "isAvailable": true
+          },
+          {
+            "_id": "62f8adc7c9b7c413dcc32b61",
+            "time": "4:00 PM",
+            "isAvailable": true
+          },
+          {
+            "_id": "62f8adc7c9b7c413dcc32b62",
+            "time": "6:00 PM",
+            "isAvailable": true
+          }
+        ]
+      },
+      {
+        "_id": "62f8adc7c9b7c413dcc32b63",
+        "day": "Tuesday",
+        "slot": [
+          {
+            "_id": "62f8adc7c9b7c413dcc32b64",
+            "time": "12:00 PM",
+            "isAvailable": true
+          },
+          {
+            "_id": "62f8adc7c9b7c413dcc32b65",
+            "time": "3:00 PM",
+            "isAvailable": true
+          },
+          {
+            "_id": "62f8adc7c9b7c413dcc32b66",
+            "time": "4:00 PM",
+            "isAvailable": true
+          }
+        ]
+      }
+    ]
+  },
+  "status": 200,
+  "type": "success",
+  "message": "Ok"
+}
