@@ -15,7 +15,7 @@ const SurgerySchema = mongoose.Schema({
         startRange : Number,
         endRange : Number
     },
-    static : Number
+    fixed : Number
   }
 });
 
@@ -23,7 +23,7 @@ const SurgerySchema = mongoose.Schema({
 SurgerySchema.pre("save", function (next) {
     this.updatedAt = Date.now();
     next();
-  });
+});
   
   // export model user with DoctorSchema
   module.exports = mongoose.model("Surgery", SurgerySchema, "Surgery");

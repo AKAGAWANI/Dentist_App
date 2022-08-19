@@ -10,6 +10,7 @@ const Problems = require('./documents/problemModel');
 const Appointment = require('./documents/appointment');
 const Policy = require('./documents/policy');
 const Test = require('./documents/test');
+const Surgery = require('./documents/surgery');
 
 module.exports = {
   Account,
@@ -24,5 +25,6 @@ module.exports = {
   Banner,
   Insurance,
   Problems,
-  Policy
+  Policy,
+  Surgery
 };

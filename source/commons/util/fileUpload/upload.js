@@ -29,7 +29,7 @@ const fileFilter = (req, file, cb) => {
 
 const multerS3Config = multerS3({
     s3: s3Config,
-    bucket: "myawsimagesbucket",
+    bucket: process.env.AWS_BUCKET_NAME,
     metadata: function (req, file, cb) {
         cb(null, { fieldName: file.fieldname });
     },
