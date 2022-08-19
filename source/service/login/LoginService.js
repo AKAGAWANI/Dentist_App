@@ -58,7 +58,7 @@ Service.prototype.findUserByEmail = async function(email) {
 };
 
 Service.prototype.generateLoginOTP = async function() {
-  return Math.floor(1000 + Math.random() * 900000);
+  return Math.floor(100000 + Math.random() * 900000);
 };
 
 Service.prototype.prepareOTPMessage = async function(user, otp) {
@@ -66,7 +66,7 @@ Service.prototype.prepareOTPMessage = async function(user, otp) {
     mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
     email: user.email ? crypto.decrypt(user.email) : null,
     template: envproperties.FORGOT_PASSWORD_TEMPLATE,
-    subject: process.OTP_SUB,
+    subject: envproperties.OTP_SUB,
     body: envproperties.FORGOT_PASSWORD_OTP.replace('<OTP>', otp).replace(
       '{#var#}',
       'e52dwnzI4WX'
@@ -122,12 +122,12 @@ Service.prototype.isTooSoonToRetry = async function(user) {
   return diff > 0;
 };
 
-Service.prototype.simulateLogin = async function(username, password, resource) {
+Service.prototype.simulateLogin = async function(username, otp, resource) {
   const url = API.gateway.login.simulate;
   const login = (
     (await ResourceAPI.https.patch(url, null, {
       username,
-      password,
+      otp,
       resource
     })) || {}
   ).data;

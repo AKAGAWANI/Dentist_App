@@ -11,8 +11,6 @@ const DoctorSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
   qualification: String,
-
-  location: String,
   availability: [
     {
       day: {

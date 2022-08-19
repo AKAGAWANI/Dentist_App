@@ -15,9 +15,8 @@ router.get('/get/:id', ServiceManager.doctor.get);
 //to get all doctors information
 router.get('/get', ServiceManager.doctor.getAll);
 
-router.post('/create', ServiceManager.doctor.add);
 //Get Doctor
-router.get('list/:city', ServiceManager.doctor.getCityDoctors);
+router.get('/list/:city', ServiceManager.doctor.getCityDoctors);
 
 /****************** PROBLEM ROUTES *********************/
 //Add problem
