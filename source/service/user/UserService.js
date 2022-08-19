@@ -51,7 +51,7 @@ Service.prototype.regPseudoUser = async function(req) {
     otpData.to = contact;
     otpData.body = envproperties.SIGNUP_OTP.replace('<OTP>', genOTP).replace(
       '{#var#}',
-      ' DDA'
+      'e52dwnzI4WX'
     );
     otpData.body = encoder.encode(otpData.body);
     otpData.template = envproperties.SIGNUP_SMS_TEMPLATE;
