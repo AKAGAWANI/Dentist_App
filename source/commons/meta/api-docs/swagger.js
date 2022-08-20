@@ -119,8 +119,136 @@ const swagger = {
       successDescription: 'Logout',
       responseExamplePath: '../sample-data/api/logout/signoff/success.json'
     }),
-    //test
-    '/terms/createTerms': {
+    '/api/insurance/submitDetails': {
+      post: {
+        tags: ['insurance'],
+        summary: 'Creating insurance submission',
+        operationId: 'insurance',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Insurance': {
+                  summary: '200 - Insurance Submission',
+                  value: require('../sample-data/api/insuranceSubmission/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/banner/createBanner/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    '/api/getPatient/:doctorId': {
+      get: {
+        tags: ['Patient'],
+        summary: 'Get Patients',
+        operationId: 'Patient',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Patient': {
+                  summary: '200 - Patient',
+                  value: require('../sample-data/api/doctorGet/request.json')
+                }
+              }
+            }
+          }
+        },
+      }
+    },
+    '/api/banner/create': {
+      post: {
+        tags: ['Banner'],
+        summary: 'Creating Banner',
+        operationId: 'banner',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Banner': {
+                  summary: '200 - Banner',
+                  value: require('../sample-data/api/banner/createBanner/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/banner/createBanner/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    '/api/banner/list': {
+      get: {
+        tags: ['Banner'],
+        summary: 'Get Banner',
+        operationId: 'Banner',
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/banner/listBanner/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+    '/api/terms/createTerms': {
       post: {
         tags: ['Terms and Condition'],
         summary: 'Creating Terms and Condition',
@@ -168,7 +296,7 @@ const swagger = {
         }
       }
     },
-    '/terms/getTerms': {
+    '/api/terms/getTerms': {
       get: {
         tags: ['Terms and Condition'],
         summary: 'Get Terms and Condition',
@@ -190,7 +318,8 @@ const swagger = {
         }
       }
     },
-    '/terms/acceptTerms': {
+
+    '/api/terms/acceptTerms': {
       patch: {
         tags: ['Terms and Condition'],
         summary: 'Accept Terms and Condition',
