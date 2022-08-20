@@ -2,6 +2,7 @@ const Response = require('../../commons/responses/EcomResponseManager');
 const logger = require('../../commons/logger/logger');
 const service = require('./DoctorService');
 const mongoose = require('mongoose');
+const { crypto } = require('./../../commons/util/UtilManager');
 
 function Controller() {}
 
@@ -29,7 +30,7 @@ Controller.prototype.add = async function(req, res, next) {
       firstName,
       lastName,
       location,
-      qualifications,
+      qualification,
       problem,
       test,
       availability
@@ -79,13 +80,14 @@ Controller.prototype.add = async function(req, res, next) {
     test = temp;
 
     //Adding doctors information
+
     let isDoctorAdded = await service.addDetails(
       {
         _id,
         firstName,
         lastName,
         location,
-        qualifications,
+        qualification,
         problem,
         test,
         availability
@@ -96,8 +98,8 @@ Controller.prototype.add = async function(req, res, next) {
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
         data: {
-          firstName: isDoctorAdded.firstName,
-          lastName: isDoctorAdded.lastName,
+          firstName: crypto.decrypt(isDoctorAdded.firstName),
+          lastName: crypto.decrypt(isDoctorAdded.lastName),
           location: isDoctorAdded.location,
           qualifications: isDoctorAdded.qualifications,
           problem: isDoctorAdded.problem,
@@ -130,6 +132,10 @@ Controller.prototype.get = async function(req, res, next) {
       return res
         .status(Response.error.NotFound.code)
         .json(Response.error.NotFound.json("Doctor's Information not exist."));
+    //decrypt doctors name
+    isValid.firstName = crypto.decrypt(isValid.firstName);
+    isValid.lastName = crypto.decrypt(isValid.lastName);
+
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
         data: isValid
@@ -156,6 +162,12 @@ Controller.prototype.getAll = async function(req, res, next) {
       return res
         .status(Response.error.NotFound.code)
         .json(Response.error.NotFound.json('Doctors Information not exist.'));
+
+    //decrypt doctors name
+    isValid.forEach(ele => {
+      ele.firstName = crypto.decrypt(ele.firstName);
+      ele.lastName = crypto.decrypt(ele.lastName);
+    });
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
         data: isValid
@@ -171,19 +183,21 @@ Controller.prototype.getAll = async function(req, res, next) {
 };
 
 //getting doctors
-Controller.prototype.getCityDoctors=async function (req, res, next) {
+Controller.prototype.getCityDoctors = async function(req, res, next) {
   try {
     let city = req.params.city;
     let doctors = await service.getDoctorByCity(city);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: doctors,
+        data: doctors
       })
     );
   } catch (e) {
     logger.error(e.message);
     console.log(e);
-    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
   }
 };
 
