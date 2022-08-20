@@ -1,6 +1,6 @@
 require("dotenv");
 const repository = require("./termsRepository");
-
+const mongoose = require('mongoose');
 function Service() {}
 
 Service.prototype.getAllTerms = async function (query) {
@@ -8,6 +8,7 @@ Service.prototype.getAllTerms = async function (query) {
 };
 
 Service.prototype.addTermsData = async function (req) {
+  // console.log(req)
     let obj={
         _id:new mongoose.Types.ObjectId().toHexString(),
         updatedAt:new Date(),

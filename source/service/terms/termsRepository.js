@@ -3,6 +3,7 @@ const { Terms,Account } = require("../../commons/models/mongo/mongodb");
 function Repository () {}
 
 Repository.prototype.createTerms = async function (data) {
+  // console.log(data)
     const instance = await new Terms(data).save()
   return instance ? instance.toJSON() : null;
 };

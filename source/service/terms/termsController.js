@@ -2,14 +2,11 @@ const Response = require("../../commons/responses/EcomResponseManager");
 const logger = require("../../commons/logger/logger");
 const service = require("./termsService");
 
+
 function Controller() { }
 
 Controller.prototype.addTerms = async function (req, res, next) {
   try { 
-    if (!req.files.image) {
-    return res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json("Please select a image to upload"));
-  } 
-   
     let addDetails = await service.addTermsData(req.body);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
