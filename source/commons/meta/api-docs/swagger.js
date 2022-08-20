@@ -119,6 +119,77 @@ const swagger = {
       successDescription: 'Logout',
       responseExamplePath: '../sample-data/api/logout/signoff/success.json'
     }),
+//test
+'/terms/createTerms': {
+  post: {
+    tags: ['Terms and Condition'],
+    summary: 'Creating Terms and Condition',
+    operationId: 'termsandcondition',
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    requestBody: {
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object'
+          },
+          examples: {
+            'Terms and Condition': {
+              summary: '200 - Terms and Condition',
+              value: require('../sample-data/api/terms/createTerms/request.json')
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      success: {
+        description: 'Success',
+        content: {
+          'application/json': {
+            examples: [
+              {
+                summary: '200 - GATEWAY',
+                value: require('../sample-data/api/terms/createTerms/success.json')
+              }
+            ]
+          }
+        }
+      },
+      error: {
+        description: 'Error',
+        content: {
+          'application/json': {
+            examples: errors
+          }
+        }
+      }
+    }
+  }
+},
+'/terms/getTerms': {
+  get: {
+    tags: ['Terms and Condition'],
+    summary: 'Get Terms and Condition',
+    operationId: 'TermsandCondition',
+    responses: {
+      success: {
+        description: 'Success',
+        content: {
+          'application/json': {
+            examples: [
+              {
+                summary: '200 - GATEWAY',
+                value: require('../sample-data/api/terms/getTerms/success.json')
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+},
     '/login/guest': {
       get: {
         tags: ['Login'],
