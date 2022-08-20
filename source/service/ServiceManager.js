@@ -7,9 +7,12 @@ module.exports = {
   app: require('./app/AppController'),
   appointment: require('./appointment/appointmentController'),
   consultation: require('./consultation/ConsultationController'),
-  problem: require('./problems/problemController'),
-  banner: require('./banner/BannerController'),
-  admin: require('./admin/AdminController'),
-  policy: require('./policy/policyController'),
-  test: require('./test/TestController')
+
+  problem:require('./problems/problemController'),
+  banner:require('./banner/BannerController'),
+  admin:require('./admin/AdminController'),
+  policy:require('./policy/policyController'),
+  terms:require('./terms/termsController'),
+  test: require('./test/TestController'),
+
 };

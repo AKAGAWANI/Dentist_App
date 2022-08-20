@@ -467,4 +467,117 @@ Controller.prototype.getReviewComments = async function(req, res, next) {
   }
 };
 
+/*********************** MEDICINES RELATED APIS ********************************/
+Controller.prototype.addMedicine = async function(req, res) {
+  try {
+    let { doctorId, name, icon, price } = req.body;
+
+    /*
+    1. validate is all mandatory fileds exits.
+    2. Is doctor exist ?
+    3. if everything is right, add data to the database.
+    */
+    //1. validate is all mandatory fileds exits.
+    if (!doctorId) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.InvalidRequest.json('doctorId is mandatory field.')
+        );
+    }
+
+    //2. Is doctor exist ?
+    let isDoctorExist = await service.findDoctorById(doctorId);
+    if (!isDoctorExist) {
+      return res
+        .status(Response.error.NotFound.code)
+        .json(Response.error.NotFound.json('Doctor do not exist.'));
+    }
+
+    //3. if everything is right, add data to the database.
+    let isAdded = await service.addDetails(
+      {
+        _id: new mongoose.Types.ObjectId().toHexString(),
+        doctorId,
+        name,
+        icon,
+        price
+      },
+      'Medicine'
+    );
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: isAdded
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+};
+
+Controller.prototype.list = async function(req, res) {
+  try {
+    let doctorId = req.params.doctorId;
+
+    /*
+    1. validate is all mandatory fileds exits.
+    2. Is doctor exist ?
+    3. if everything is right, get data from the database.
+    */
+    //1. validate is all mandatory fileds exits.
+    if (!doctorId) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.InvalidRequest.json('doctorId is mandatory field.')
+        );
+    }
+
+    //2. Is doctor exist ?
+    let isDoctorExist = await service.findDoctorById(doctorId);
+    if (!isDoctorExist) {
+      return res
+        .status(Response.error.NotFound.code)
+        .json(Response.error.NotFound.json('Doctor do not exist.'));
+    }
+
+    //3. if everything is right, add data to the database.
+    let isDataExist = await service.getAllMedicines(doctorId);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: isDataExist
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+};
+
+Controller.prototype.searchMedicine = async function(req, res) {
+  try {
+    let name = req.body.name;
+
+    let details = await service.searchMedsByName(name);
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: details
+      })
+    );
+  } catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+};
+
 module.exports = new Controller();
