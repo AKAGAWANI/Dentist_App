@@ -10,7 +10,7 @@ Service.prototype.findDoctorById = async function(id) {
 Service.prototype.getAllDoctor = async function() {
   return repository.getAll('Doctor');
 };
-Service.prototype.getDoctorByCity=async function(city) {
+Service.prototype.getDoctorByCity = async function(city) {
   return repository.getByCity(city, 'Doctor');
 };
 
@@ -73,4 +73,12 @@ Service.prototype.addDetails = async function(data, modelName) {
   return repository.createDocument(data, modelName);
 };
 
+/************************ MEDICINES SERVICE **********************/
+Service.prototype.getAllMedicines = async function(doctorId) {
+  return repository.getMedicinesByDoctorId(doctorId);
+};
+
+Service.prototype.searchMedsByName = async function(name) {
+  return repository.searchMeds(name);
+};
 module.exports = new Service();

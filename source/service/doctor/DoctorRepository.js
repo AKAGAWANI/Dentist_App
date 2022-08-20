@@ -1,4 +1,9 @@
-const { Problem, Test, Doctor } = require('../../commons/models/mongo/mongodb');
+const {
+  Problem,
+  Test,
+  Doctor,
+  Medicines
+} = require('../../commons/models/mongo/mongodb');
 
 function Repository() {}
 
@@ -45,13 +50,25 @@ Repository.prototype.isCorrectDetails = function(availability) {
 
 /******************** TEST REPO *********************/
 
+/************** MEDICINES REPO  ***************/
+Repository.prototype.getMedicinesByDoctorId = async function(doctorId) {
+  return await Medicines.find({ doctorId });
+};
+
+Repository.prototype.searchMeds = async function(itemToSearch) {
+  return await Medicines.find({
+    name: { $regex: `${itemToSearch}`, $options: 'i' }
+  });
+};
+
 /********************** COMMON REPO ******************/
 //creating document
 Repository.prototype.createDocument = async function(data, modelName) {
-  modelName =
-    modelName === 'Problem' ? Problem : modelName === 'Test' ? Test : Doctor;
-  console.log('.modelName', modelName);
-
+  if (modelName == 'Medicine') modelName = Medicines;
+  else {
+    modelName =
+      modelName === 'Problem' ? Problem : modelName === 'Test' ? Test : Doctor;
+  }
   const instance = await modelName.create(data);
   return instance ? instance.toJSON() : null;
 };
@@ -99,9 +116,10 @@ Repository.prototype.getByIdWithFilter = async function(
 };
 
 //used to get all collection from specified city
-Repository.prototype.getByCity=async function (city, modelName) {
-  modelName = modelName === "Problem" ? Problem : modelName === "Test" ? Test : Doctor;
-  const instance = await modelName.find({"location.city":city});
+Repository.prototype.getByCity = async function(city, modelName) {
+  modelName =
+    modelName === 'Problem' ? Problem : modelName === 'Test' ? Test : Doctor;
+  const instance = await modelName.find({ 'location.city': city });
   return instance.length ? instance : null;
 };
 module.exports = new Repository();
