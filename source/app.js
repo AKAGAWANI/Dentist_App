@@ -4,7 +4,7 @@ const session = require('express-session');
 const fs      = require('fs');
 const path    = require('path');
 const appLog  = require('morgan');
-const helmet  = require('helmet');
+
 const cors    = require('cors');
 const passport= require('./commons/auth/Passport');
 const app     = express();
@@ -21,7 +21,7 @@ const swaggerDoc   = require('./commons/meta/api-docs/swagger');
 
 // api manual
 app.use('/manual', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
-
+const helmet  = require('helmet');j
 app.set("view engine", "jade");
 app.use(appLog('common', {
   stream: fs.createWriteStream(`./logs/${process.env.FILE_API_LOG}`, { flags: 'a' })
