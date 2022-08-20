@@ -694,7 +694,6 @@ const swagger = {
       successDescription: 'Test Info by Id',
       responseExamplePath: '../sample-data/api/test/get/success1.json'
     }),
-
     '/api/appointment/bookAppointment': {
       post: {
         tags: ['Appointment'],
@@ -951,102 +950,102 @@ const swagger = {
               }
             }
           }
-        }
-      },
-      '/gw/api/doctor/review/add': getConfig({
-        method: 'post',
-        tags: ['Doctor'],
-        summary: 'Add Review For A Doctor',
-        operationId: 'addReview',
-        produces: 'application/json',
-        successDescription: 'Added Review For A Doctor',
-        requestExamplePath:
-          '../sample-data/api/doctor/review/addReview/request.json',
-        responseExamplePath:
-          '../sample-data/api/doctor/review/addReview/success.json'
-      }),
-      '/gw/api/doctor/review/list/:doctorId': getConfig({
-        method: 'get',
-        tags: ['Doctor'],
-        summary: 'List Reviews For A Doctor',
-        operationId: 'listReview',
-        produces: 'application/json',
-        successDescription: 'Got All Reviews For A Doctor',
-        requestExamplePath:
-          '../sample-data/api/doctor/review/listReview/request.json',
-        responseExamplePath:
-          '../sample-data/api/doctor/review/listReview/success.json'
-      }),
-      '/gw/api/doctor/review/comment/add': getConfig({
-        method: 'post',
-        tags: ['Doctor'],
-        summary: 'Add Comment For a Review Of A Doctor',
-        operationId: 'addCommentToReview',
-        produces: 'application/json',
-        successDescription: 'Added a Review For a Doctor',
-        requestExamplePath:
-          '../sample-data/api/doctor/review/addComment/request.json',
-        responseExamplePath:
-          '../sample-data/api/doctor/review/addComment/success.json'
-      }),
-      '/gw/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
-        method: 'get',
-        tags: ['Doctor'],
-        summary: 'List Comment For a Review Of A Doctor',
-        operationId: 'listCommentsOfAReview',
-        produces: 'application/json',
-        successDescription: 'Got The Comments Of A Review For a Doctor',
-        responseExamplePath:
-          '../sample-data/api/doctor/review/listComment/success.json'
-      }),
-      '/gw/api/app/review/create': getConfig({
-        method: 'post',
-        tags: ['App'],
-        summary: 'Post a Review For The Application',
-        operationId: 'addAppReview',
-        produces: 'application/json',
-        successDescription: 'Added a App Review',
-        requestExamplePath:
-          '../sample-data/api/app/review/addReview/request.json',
-        responseExamplePath:
-          '../sample-data/api/app/review/addReview/success.json'
-      }),
-      '/gw/api/app/review/list': getConfig({
-        method: 'get',
-        tags: ['App'],
-        summary: 'List All Reviews Of The Application',
-        operationId: 'listAppReview',
-        produces: 'application/json',
-        successDescription: 'Got all App Review',
-        responseExamplePath:
-          '../sample-data/api/app/review/listReview/success.json'
-      }),
-      '/gw/api/app/review/like': getConfig({
-        method: 'post',
-        tags: ['App'],
-        summary: 'Like The Review',
-        operationId: 'likeAppReview',
-        produces: 'application/json',
-        successDescription: 'Liked The Review',
-        requestExamplePath:
-          '../sample-data/api/app/review/likeReview/request.json',
-        responseExamplePath:
-          '../sample-data/api/app/review/likeReview/success1.json'
-        // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-      }),
-      '/gw/api/app/review/dislike': getConfig({
-        method: 'post',
-        tags: ['App'],
-        summary: 'Remove Like From The Review',
-        operationId: 'dislikeAppReview',
-        produces: 'application/json',
-        successDescription: 'Removed The Like For The Review',
-        requestExamplePath:
-          '../sample-data/api/app/review/dislikeReview/request.json',
-        responseExamplePath:
-          '../sample-data/api/app/review/dislikeReview/success1.json'
-        // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-      })
+        },
+        '/gw/api/doctor/review/add': getConfig({
+          method: 'post',
+          tags: ['Doctor'],
+          summary: 'Add Review For A Doctor',
+          operationId: 'addReview',
+          produces: 'application/json',
+          successDescription: 'Added Review For A Doctor',
+          requestExamplePath:
+            '../sample-data/api/doctor/review/addReview/request.json',
+          responseExamplePath:
+            '../sample-data/api/doctor/review/addReview/success.json'
+        }),
+        '/gw/api/doctor/review/list/:doctorId': getConfig({
+          method: 'get',
+          tags: ['Doctor'],
+          summary: 'List Reviews For A Doctor',
+          operationId: 'listReview',
+          produces: 'application/json',
+          successDescription: 'Got All Reviews For A Doctor',
+          requestExamplePath:
+            '../sample-data/api/doctor/review/listReview/request.json',
+          responseExamplePath:
+            '../sample-data/api/doctor/review/listReview/success.json'
+        }),
+        '/gw/api/doctor/review/comment/add': getConfig({
+          method: 'post',
+          tags: ['Doctor'],
+          summary: 'Add Comment For a Review Of A Doctor',
+          operationId: 'addCommentToReview',
+          produces: 'application/json',
+          successDescription: 'Added a Review For a Doctor',
+          requestExamplePath:
+            '../sample-data/api/doctor/review/addComment/request.json',
+          responseExamplePath:
+            '../sample-data/api/doctor/review/addComment/success.json'
+        }),
+        '/gw/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
+          method: 'get',
+          tags: ['Doctor'],
+          summary: 'List Comment For a Review Of A Doctor',
+          operationId: 'listCommentsOfAReview',
+          produces: 'application/json',
+          successDescription: 'Got The Comments Of A Review For a Doctor',
+          responseExamplePath:
+            '../sample-data/api/doctor/review/listComment/success.json'
+        }),
+        '/gw/api/app/review/create': getConfig({
+          method: 'post',
+          tags: ['App'],
+          summary: 'Post a Review For The Application',
+          operationId: 'addAppReview',
+          produces: 'application/json',
+          successDescription: 'Added a App Review',
+          requestExamplePath:
+            '../sample-data/api/app/review/addReview/request.json',
+          responseExamplePath:
+            '../sample-data/api/app/review/addReview/success.json'
+        }),
+        '/gw/api/app/review/list': getConfig({
+          method: 'get',
+          tags: ['App'],
+          summary: 'List All Reviews Of The Application',
+          operationId: 'listAppReview',
+          produces: 'application/json',
+          successDescription: 'Got all App Review',
+          responseExamplePath:
+            '../sample-data/api/app/review/listReview/success.json'
+        }),
+        '/gw/api/app/review/like': getConfig({
+          method: 'post',
+          tags: ['App'],
+          summary: 'Like The Review',
+          operationId: 'likeAppReview',
+          produces: 'application/json',
+          successDescription: 'Liked The Review',
+          requestExamplePath:
+            '../sample-data/api/app/review/likeReview/request.json',
+          responseExamplePath:
+            '../sample-data/api/app/review/likeReview/success1.json'
+          // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
+        }),
+        '/gw/api/app/review/dislike': getConfig({
+          method: 'post',
+          tags: ['App'],
+          summary: 'Remove Like From The Review',
+          operationId: 'dislikeAppReview',
+          produces: 'application/json',
+          successDescription: 'Removed The Like For The Review',
+          requestExamplePath:
+            '../sample-data/api/app/review/dislikeReview/request.json',
+          responseExamplePath:
+            '../sample-data/api/app/review/dislikeReview/success1.json'
+          // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
+        })
+      }
     },
     '/api/doctor/medicine/create': {
       post: {
@@ -1073,7 +1072,7 @@ const swagger = {
         },
         responses: {
           success: {
-            description: 'Create Medicine',
+            description: 'create Medicine',
             content: {
               'application/json': {
                 examples: [
@@ -1096,6 +1095,100 @@ const swagger = {
         }
       }
     },
+    '/gw/api/doctor/review/add': getConfig({
+      method: 'post',
+      tags: ['Doctor'],
+      summary: 'Add Review For A Doctor',
+      operationId: 'addReview',
+      produces: 'application/json',
+      successDescription: 'Added Review For A Doctor',
+      requestExamplePath:
+        '../sample-data/api/doctor/review/addReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/addReview/success.json'
+    }),
+    '/api/doctor/review/list/:doctorId': getConfig({
+      method: 'get',
+      tags: ['Doctor'],
+      summary: 'List Reviews For A Doctor',
+      operationId: 'listReview',
+      produces: 'application/json',
+      successDescription: 'Got All Reviews For A Doctor',
+      requestExamplePath:
+        '../sample-data/api/doctor/review/listReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/listReview/success.json'
+    }),
+    '/api/doctor/review/comment/add': getConfig({
+      method: 'post',
+      tags: ['Doctor'],
+      summary: 'Add Comment For a Review Of A Doctor',
+      operationId: 'addCommentToReview',
+      produces: 'application/json',
+      successDescription: 'Added a Review For a Doctor',
+      requestExamplePath:
+        '../sample-data/api/doctor/review/addComment/request.json',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/addComment/success.json'
+    }),
+    '/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
+      method: 'get',
+      tags: ['Doctor'],
+      summary: 'List Comment For a Review Of A Doctor',
+      operationId: 'listCommentsOfAReview',
+      produces: 'application/json',
+      successDescription: 'Got The Comments Of A Review For a Doctor',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/listComment/success.json'
+    }),
+    '/api/app/review/create': getConfig({
+      method: 'post',
+      tags: ['App'],
+      summary: 'Post a Review For The Application',
+      operationId: 'addAppReview',
+      produces: 'application/json',
+      successDescription: 'Added a App Review',
+      requestExamplePath:
+        '../sample-data/api/app/review/addReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/app/review/addReview/success.json'
+    }),
+    '/api/app/review/list': getConfig({
+      method: 'get',
+      tags: ['App'],
+      summary: 'List All Reviews Of The Application',
+      operationId: 'listAppReview',
+      produces: 'application/json',
+      successDescription: 'Got all App Review',
+      responseExamplePath:
+        '../sample-data/api/app/review/listReview/success.json'
+    }),
+    '/api/app/review/like': getConfig({
+      method: 'post',
+      tags: ['App'],
+      summary: 'Like The Review',
+      operationId: 'likeAppReview',
+      produces: 'application/json',
+      successDescription: 'Liked The Review',
+      requestExamplePath:
+        '../sample-data/api/app/review/likeReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/app/review/likeReview/success1.json'
+      // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
+    }),
+    '/api/app/review/dislike': getConfig({
+      method: 'post',
+      tags: ['App'],
+      summary: 'Remove Like From The Review',
+      operationId: 'dislikeAppReview',
+      produces: 'application/json',
+      successDescription: 'Removed The Like For The Review',
+      requestExamplePath:
+        '../sample-data/api/app/review/dislikeReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/app/review/dislikeReview/success1.json'
+      // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
+    }),
     '/api/doctor/medicine/list/:doctorId': getConfig({
       method: 'get',
       tags: ['Medicine'],
