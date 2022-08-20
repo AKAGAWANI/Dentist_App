@@ -22,16 +22,16 @@ function getConfig({
       produces: [produces],
       requestBody: requestExamplePath
         ? {
-            required: true,
-            content: {
-              [consumes]: {
-                schema: {
-                  type: 'object'
-                },
-                example: require(requestExamplePath)
-              }
+          required: true,
+          content: {
+            [consumes]: {
+              schema: {
+                type: 'object'
+              },
+              example: require(requestExamplePath)
             }
           }
+        }
         : null,
       parameters: parameters ? require(parameters) : null,
       responses: {
@@ -119,77 +119,102 @@ const swagger = {
       successDescription: 'Logout',
       responseExamplePath: '../sample-data/api/logout/signoff/success.json'
     }),
-//test
-'/terms/createTerms': {
-  post: {
-    tags: ['Terms and Condition'],
-    summary: 'Creating Terms and Condition',
-    operationId: 'termsandcondition',
-    consumes: ['application/json'],
-    produces: ['application/json'],
-    requestBody: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object'
+    //test
+    '/terms/createTerms': {
+      post: {
+        tags: ['Terms and Condition'],
+        summary: 'Creating Terms and Condition',
+        operationId: 'termsandcondition',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Terms and Condition': {
+                  summary: '200 - Terms and Condition',
+                  value: require('../sample-data/api/terms/createTerms/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/terms/createTerms/success.json')
+                  }
+                ]
+              }
+            }
           },
-          examples: {
-            'Terms and Condition': {
-              summary: '200 - Terms and Condition',
-              value: require('../sample-data/api/terms/createTerms/request.json')
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
             }
           }
         }
       }
     },
-    responses: {
-      success: {
-        description: 'Success',
-        content: {
-          'application/json': {
-            examples: [
-              {
-                summary: '200 - GATEWAY',
-                value: require('../sample-data/api/terms/createTerms/success.json')
+    '/terms/getTerms': {
+      get: {
+        tags: ['Terms and Condition'],
+        summary: 'Get Terms and Condition',
+        operationId: 'TermsandCondition',
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/terms/getTerms/success.json')
+                  }
+                ]
               }
-            ]
-          }
-        }
-      },
-      error: {
-        description: 'Error',
-        content: {
-          'application/json': {
-            examples: errors
+            }
           }
         }
       }
-    }
-  }
-},
-'/terms/getTerms': {
-  get: {
-    tags: ['Terms and Condition'],
-    summary: 'Get Terms and Condition',
-    operationId: 'TermsandCondition',
-    responses: {
-      success: {
-        description: 'Success',
-        content: {
-          'application/json': {
-            examples: [
-              {
-                summary: '200 - GATEWAY',
-                value: require('../sample-data/api/terms/getTerms/success.json')
+    },
+    '/terms/acceptTerms': {
+      patch: {
+        tags: ['Terms and Condition'],
+        summary: 'Accept Terms and Condition',
+        operationId: 'termsandcondition',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Terms and Condition': {
+                  summary: '200 - Terms and Condition',
+                  value: require('../sample-data/api/terms/acceptTerms/request.json')
+                }
               }
-            ]
+            }
           }
         }
       }
-    }
-  }
-},
+    },
     '/login/guest': {
       get: {
         tags: ['Login'],
@@ -1023,72 +1048,73 @@ const swagger = {
             }
           }
         }
-    }},
-    "/gw/api/doctor/review/add": getConfig({ 
-      method: 'post', tags: ['Doctor'], 
+      }
+    },
+    "/gw/api/doctor/review/add": getConfig({
+      method: 'post', tags: ['Doctor'],
       "summary": "Add Review For A Doctor",
-      operationId: 'addReview', produces: 'application/json', 
+      operationId: 'addReview', produces: 'application/json',
       successDescription: "Added Review For A Doctor",
       requestExamplePath: '../sample-data/api/doctor/review/addReview/request.json',
       responseExamplePath: '../sample-data/api/doctor/review/addReview/success.json',
     }),
-    "/api/doctor/review/list/:doctorId": getConfig({ 
-      method: 'get', tags: ['Doctor'], 
+    "/api/doctor/review/list/:doctorId": getConfig({
+      method: 'get', tags: ['Doctor'],
       "summary": "List Reviews For A Doctor",
-      operationId: 'listReview', produces: 'application/json', 
+      operationId: 'listReview', produces: 'application/json',
       successDescription: "Got All Reviews For A Doctor",
       requestExamplePath: '../sample-data/api/doctor/review/listReview/request.json',
       responseExamplePath: '../sample-data/api/doctor/review/listReview/success.json',
     }),
-    "/api/doctor/review/comment/add": getConfig({ 
-      method: 'post', tags: ['Doctor'], 
+    "/api/doctor/review/comment/add": getConfig({
+      method: 'post', tags: ['Doctor'],
       "summary": "Add Comment For a Review Of A Doctor",
-      operationId: 'addCommentToReview', produces: 'application/json', 
+      operationId: 'addCommentToReview', produces: 'application/json',
       successDescription: "Added a Review For a Doctor",
       requestExamplePath: '../sample-data/api/doctor/review/addComment/request.json',
       responseExamplePath: '../sample-data/api/doctor/review/addComment/success.json',
     }),
-    "/api/doctor/review/comment/list/:doctorId/:reviewId": getConfig({ 
-      method: 'get', tags: ['Doctor'], 
+    "/api/doctor/review/comment/list/:doctorId/:reviewId": getConfig({
+      method: 'get', tags: ['Doctor'],
       "summary": "List Comment For a Review Of A Doctor",
-      operationId: 'listCommentsOfAReview', produces: 'application/json', 
+      operationId: 'listCommentsOfAReview', produces: 'application/json',
       successDescription: "Got The Comments Of A Review For a Doctor",
       responseExamplePath: '../sample-data/api/doctor/review/listComment/success.json',
     }),
-    "/api/app/review/create": getConfig({ 
-      method: 'post', tags: ['App'], 
+    "/api/app/review/create": getConfig({
+      method: 'post', tags: ['App'],
       "summary": "Post a Review For The Application",
-      operationId: 'addAppReview', produces: 'application/json', 
+      operationId: 'addAppReview', produces: 'application/json',
       successDescription: "Added a App Review",
       requestExamplePath: '../sample-data/api/app/review/addReview/request.json',
       responseExamplePath: '../sample-data/api/app/review/addReview/success.json',
     }),
-    "/api/app/review/list": getConfig({ 
-      method: 'get', tags: ['App'], 
+    "/api/app/review/list": getConfig({
+      method: 'get', tags: ['App'],
       "summary": "List All Reviews Of The Application",
-      operationId: 'listAppReview', produces: 'application/json', 
+      operationId: 'listAppReview', produces: 'application/json',
       successDescription: "Got all App Review",
       responseExamplePath: '../sample-data/api/app/review/listReview/success.json',
     }),
-    "/api/app/review/like": getConfig({ 
-      method: 'post', tags: ['App'], 
+    "/api/app/review/like": getConfig({
+      method: 'post', tags: ['App'],
       "summary": "Like The Review",
-      operationId: 'likeAppReview', produces: 'application/json', 
+      operationId: 'likeAppReview', produces: 'application/json',
       successDescription: "Liked The Review",
       requestExamplePath: '../sample-data/api/app/review/likeReview/request.json',
       responseExamplePath: '../sample-data/api/app/review/likeReview/success1.json',
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
     }),
-    "/api/app/review/dislike": getConfig({ 
-      method: 'post', tags: ['App'], 
+    "/api/app/review/dislike": getConfig({
+      method: 'post', tags: ['App'],
       "summary": "Remove Like From The Review",
-      operationId: 'dislikeAppReview', produces: 'application/json', 
+      operationId: 'dislikeAppReview', produces: 'application/json',
       successDescription: "Removed The Like For The Review",
       requestExamplePath: '../sample-data/api/app/review/dislikeReview/request.json',
       responseExamplePath: '../sample-data/api/app/review/dislikeReview/success1.json',
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
     })
-  },  
+  },
   "securityDefinitions": {
     "ecomv2_auth": {
       "type": "oauth2",
