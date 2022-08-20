@@ -12,6 +12,7 @@ const Appointment=require("./documents/appointment");
 const Policy = require("./documents/policy");
 const Test = require("./documents/test");
 const Terms = require("./documents/termsncond");
+const Medicines = require('./documents/medicine');
 
 module.exports = {
   Account,
@@ -27,5 +28,6 @@ module.exports = {
   Insurancesubmission,
   Problems,
   Policy,
-  Terms
+  Terms,
+  Medicines
 };

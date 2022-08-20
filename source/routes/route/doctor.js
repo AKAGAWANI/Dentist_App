@@ -47,4 +47,13 @@ router.get(
   ServiceManager.doctor.getReviewComments
 );
 
+/***************** MEDICINES ADD **********************/
+//Add medicines
+router.post('/medicine/create', ServiceManager.doctor.addMedicine);
+
+//get all medicines
+router.get('/medicine/list/:doctorId', ServiceManager.doctor.list);
+
+//search medicines
+router.post('/medicine/search', ServiceManager.doctor.searchMedicine);
 module.exports = router;
