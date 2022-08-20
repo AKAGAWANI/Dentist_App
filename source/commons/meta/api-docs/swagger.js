@@ -952,7 +952,7 @@ const swagger = {
             }
           }
         }
-      },
+    }},
     "/gw/api/doctor/review/add": getConfig({ 
       method: 'post', tags: ['Doctor'], 
       "summary": "Add Review For A Doctor",
@@ -961,7 +961,7 @@ const swagger = {
       requestExamplePath: '../sample-data/api/doctor/review/addReview/request.json',
       responseExamplePath: '../sample-data/api/doctor/review/addReview/success.json',
     }),
-    "/gw/api/doctor/review/list/:doctorId": getConfig({ 
+    "/api/doctor/review/list/:doctorId": getConfig({ 
       method: 'get', tags: ['Doctor'], 
       "summary": "List Reviews For A Doctor",
       operationId: 'listReview', produces: 'application/json', 
@@ -969,7 +969,7 @@ const swagger = {
       requestExamplePath: '../sample-data/api/doctor/review/listReview/request.json',
       responseExamplePath: '../sample-data/api/doctor/review/listReview/success.json',
     }),
-    "/gw/api/doctor/review/comment/add": getConfig({ 
+    "/api/doctor/review/comment/add": getConfig({ 
       method: 'post', tags: ['Doctor'], 
       "summary": "Add Comment For a Review Of A Doctor",
       operationId: 'addCommentToReview', produces: 'application/json', 
@@ -977,14 +977,14 @@ const swagger = {
       requestExamplePath: '../sample-data/api/doctor/review/addComment/request.json',
       responseExamplePath: '../sample-data/api/doctor/review/addComment/success.json',
     }),
-    "/gw/api/doctor/review/comment/list/:doctorId/:reviewId": getConfig({ 
+    "/api/doctor/review/comment/list/:doctorId/:reviewId": getConfig({ 
       method: 'get', tags: ['Doctor'], 
       "summary": "List Comment For a Review Of A Doctor",
       operationId: 'listCommentsOfAReview', produces: 'application/json', 
       successDescription: "Got The Comments Of A Review For a Doctor",
       responseExamplePath: '../sample-data/api/doctor/review/listComment/success.json',
     }),
-    "/gw/api/app/review/create": getConfig({ 
+    "/api/app/review/create": getConfig({ 
       method: 'post', tags: ['App'], 
       "summary": "Post a Review For The Application",
       operationId: 'addAppReview', produces: 'application/json', 
@@ -992,14 +992,14 @@ const swagger = {
       requestExamplePath: '../sample-data/api/app/review/addReview/request.json',
       responseExamplePath: '../sample-data/api/app/review/addReview/success.json',
     }),
-    "/gw/api/app/review/list": getConfig({ 
+    "/api/app/review/list": getConfig({ 
       method: 'get', tags: ['App'], 
       "summary": "List All Reviews Of The Application",
       operationId: 'listAppReview', produces: 'application/json', 
       successDescription: "Got all App Review",
       responseExamplePath: '../sample-data/api/app/review/listReview/success.json',
     }),
-    "/gw/api/app/review/like": getConfig({ 
+    "/api/app/review/like": getConfig({ 
       method: 'post', tags: ['App'], 
       "summary": "Like The Review",
       operationId: 'likeAppReview', produces: 'application/json', 
@@ -1008,7 +1008,7 @@ const swagger = {
       responseExamplePath: '../sample-data/api/app/review/likeReview/success1.json',
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
     }),
-    "/gw/api/app/review/dislike": getConfig({ 
+    "/api/app/review/dislike": getConfig({ 
       method: 'post', tags: ['App'], 
       "summary": "Remove Like From The Review",
       operationId: 'dislikeAppReview', produces: 'application/json', 
@@ -1016,9 +1016,8 @@ const swagger = {
       requestExamplePath: '../sample-data/api/app/review/dislikeReview/request.json',
       responseExamplePath: '../sample-data/api/app/review/dislikeReview/success1.json',
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-    }),
-  },
-  
+    })
+  },  
   "securityDefinitions": {
     "ecomv2_auth": {
       "type": "oauth2",
@@ -1054,6 +1053,6 @@ const swagger = {
       }
     }
   }
-}}
+}
 
 module.exports = swagger
