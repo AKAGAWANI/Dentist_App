@@ -24,6 +24,7 @@ SurgerySchema.pre("save", function (next) {
     this.updatedAt = Date.now();
     next();
 });
-  
+
+SurgerySchema.index({surgeryName:"text", surgeryDescription:"text"});  
   // export model user with DoctorSchema
-  module.exports = mongoose.model("Surgery", SurgerySchema, "Surgery");
+module.exports = mongoose.model("Surgery", SurgerySchema, "Surgery");

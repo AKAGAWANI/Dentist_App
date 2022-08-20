@@ -43,6 +43,21 @@ Controller.prototype.getAllSurgeries = async function(req, res) {
 
 }
 
+Controller.prototype.searchSurgeries = async function(req, res) {
+  try {
+    let data = await service.searchSurgeries(req);
+    return res.status(Response.success.Ok.code).json(
+        Response.success.Ok.json({
+          data: data,
+        })
+      );
+  }catch(e) {
+    logger.error(e.message);
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+
+  }
+}
 
 
 module.exports = new Controller();

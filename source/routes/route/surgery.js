@@ -7,5 +7,6 @@ router.use(express.json());
 
 router.post('/create', profileImage.single('icon'), ServiceManager.surgery.createSurgery);
 router.get('/list', ServiceManager.surgery.getAllSurgeries);
+router.get('/search/:word', ServiceManager.surgery.searchSurgeries);
 
 module.exports = router;
