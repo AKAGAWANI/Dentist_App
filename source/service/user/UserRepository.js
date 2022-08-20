@@ -99,4 +99,13 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
   });
 };
 
+
+Repository.prototype.updateProfile = async function(data) {
+  const isUpdated = await User.updateOne(
+    { _id: data.userId },
+    { ...data }
+  );
+  return isUpdated.ok ? true : false;
+};
+
 module.exports = new Repository();

@@ -1,10 +1,12 @@
 const { Banner } = require("../../commons/models/mongo/mongodb");
 
-function Repository () {}
+function Repository() {}
 
 Repository.prototype.createDocument = async function (data, modelName) {
   console.log(".modelName", modelName);
   modelName = modelName === "Banner" ? Banner : '';
+  console.log(".modelName", modelName);
+
   const instance = await modelName.create(data);
   return instance ? instance.toJSON() : null;
 };
