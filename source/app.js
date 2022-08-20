@@ -21,8 +21,8 @@ const swaggerDoc   = require('./commons/meta/api-docs/swagger');
 
 // api manual
 app.use('/manual', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
-const helmet  = require('helmet');
-app.use(helmet());
+//const helmet  = require('helmet');
+//app.use(helmet());
 app.set("view engine", "jade");
 app.use(appLog('common', {
   stream: fs.createWriteStream(`./logs/${process.env.FILE_API_LOG}`, { flags: 'a' })
