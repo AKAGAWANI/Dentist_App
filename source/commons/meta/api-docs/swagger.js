@@ -106,6 +106,10 @@ const swagger = {
     {
       name: 'Appointment',
       description: 'DDA : Appointment APIs'
+    },
+    {
+      name: 'Surgery',
+      description: 'DDA : Surgery APIs'
     }
   ],
   paths: {
@@ -694,7 +698,6 @@ const swagger = {
       successDescription: 'Test Info by Id',
       responseExamplePath: '../sample-data/api/test/get/success1.json'
     }),
-
     '/api/appointment/bookAppointment': {
       post: {
         tags: ['Appointment'],
@@ -1016,7 +1019,63 @@ const swagger = {
       requestExamplePath: '../sample-data/api/app/review/dislikeReview/request.json',
       responseExamplePath: '../sample-data/api/app/review/dislikeReview/success1.json',
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-    })
+    }),
+    '/api/surgery/create': {
+      post: {
+        tags: ['Surgery'],
+        summary: 'Add Surgery details',
+        operationId: 'surgery-add',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - Add Test': {
+                  summary: '200 - Add test',
+                  value: require('../sample-data/api/surgery/addSurgery/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Surgery added',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/surgery/addSurgery/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/surgery/list": getConfig({ 
+      method: 'get', tags: ['Surgery'], 
+      "summary": "List All Surgeries",
+      operationId: 'listAllSurgeries', produces: 'application/json', 
+      successDescription: "Got all Surgeries",
+      responseExamplePath: '../sample-data/api/surgery/listSurgery/success.json',
+    }),
+    "/api/surgery/search/:word": getConfig({ 
+      method: 'get', tags: ['Surgery'], 
+      parameters:'../sample-data/api/surgery/searchSurgery/parameter.json',
+      "summary": "Search surgeries by keyword",
+      operationId: 'searchSurgeries', produces: 'application/json', 
+      successDescription: "Got all Surgeries",
+      responseExamplePath: '../sample-data/api/surgery/searchSurgery/success.json',
+    }),
+
   },  
   "securityDefinitions": {
     "ecomv2_auth": {
