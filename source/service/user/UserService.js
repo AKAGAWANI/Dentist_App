@@ -30,6 +30,10 @@ Service.prototype.simulateLogin = async function(username, password, resource) {
   return login.data;
 };
 
+Service.prototype.removeUserAccount = async function(_id) {
+  return repository.deleteUserAccount(_id);
+};
+
 Service.prototype.removeUser = async function(_id) {
   return repository.deleteAccount(_id);
 };

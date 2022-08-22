@@ -13,6 +13,12 @@ Repository.prototype.deleteAccount = async function(_id) {
   return true;
 };
 
+Repository.prototype.deleteUserAccount = async function(_id) {
+  await User.remove({ _id });
+  await Account.remove({ _id });
+  return true;
+};
+
 Repository.prototype.findUserByMobile = async function(mobile) {
   return User.findOne({ mobile: mobile }).exec();
 };

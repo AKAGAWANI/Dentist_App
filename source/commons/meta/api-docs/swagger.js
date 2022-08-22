@@ -159,7 +159,86 @@ const swagger = {
         }
       }
     },
-
+    '/api/user/profile-edit': {
+      post: {
+        tags: ['profile-edit'],
+        summary: 'Update profile',
+        operationId: 'profile',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Profile': {
+                  summary: '200 - Profile update',
+                  value: require('../sample-data/api/user/profileUpdate/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/user/profileUpdate/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/user/deleteAccount': {
+      post: {
+        tags: ['delete'],
+        summary: 'Delete',
+        operationId: 'delete',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Delete': {
+                  summary: '200 - Delete user',
+                  value: require('../sample-data/api/user/deleteUserAccount/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/user/deleteUserAccount/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/getPatient/:doctorId': {
       get: {
         tags: ['Patient'],
