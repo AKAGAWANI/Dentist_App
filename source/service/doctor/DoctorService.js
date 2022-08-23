@@ -7,15 +7,21 @@ function Service() {}
 /****************** DOCTOR'S SERVICES ***********************/
 
 Service.prototype.addDetails = async function (req) {
-  let photo = req.file.location;
+  let photo;
+  if (req.file != null) {
+    photo = req.file.location;
+  }
   let { name, email, phone, whatsAppPhone, alternativePhone, experience } =
     req.body;
 
-  let checkDoctorByEmail = await repository.getByFilter({"personalInfo.email" : email});
-  let checkDoctorByPhone = await repository.getByFilter({"personalInfo.phone" : phone});
+  let checkDoctorByEmail = await repository.getByFilter({
+    'personalInfo.email': email,
+  });
+  let checkDoctorByPhone = await repository.getByFilter({
+    'personalInfo.phone': phone,
+  });
 
-  if(checkDoctorByEmail || checkDoctorByPhone )
-    return "Doctor Already Exists";
+  if (checkDoctorByEmail || checkDoctorByPhone) return 'Doctor Already Exists';
 
   if (name != null || email != null || phone != null) {
     let doctorObj = {
@@ -70,13 +76,11 @@ Service.prototype.getDoctorByIdAndUpdate = async function (req) {
   let doctorId = req.params.id;
   let identityProof;
   let photo;
-  for(let file of req.files) {
-    if(file.fieldname == "identityProof")
-      identityProof = file.location
-    if(file.fieldname == "photo")
-      photo = file.location
+  for (let file of req.files) {
+    if (file.fieldname == 'identityProof') identityProof = file.location;
+    if (file.fieldname == 'photo') photo = file.location;
   }
- 
+
   let {
     name,
     email,
