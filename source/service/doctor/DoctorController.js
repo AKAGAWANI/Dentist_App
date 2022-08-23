@@ -8,117 +8,132 @@ function Controller() {}
 
 /*****************************  DOCTOR'S APIS *******************************/
 //adding doctors
-Controller.prototype.add = async function(req, res, next) {
+// Controller.prototype.add = async function(req, res, next) {
+//   try {
+//     /*
+//     availability is important paramter that contains information of doctors availability.
+//     format:  [
+//       {
+//         day: 'Monday',
+//         slot: [
+//           { time: '2:00 PM', isAvailable: 1 },
+//           { time: '9:00 AM', isAvailable: 1 }
+//         ]
+//       },
+//       {},
+//       {}
+//     ];
+//     */
+//     //Validating problem and test details
+//     let {
+//       _id,
+//       firstName,
+//       lastName,
+//       location,
+//       qualification,
+//       problem,
+//       test,
+//       availability
+//     } = req.body;
+
+//     //Validating availability, if we have correct data we add them.
+//     //After filtering if we get zero data, we retun error
+//     if (!availability || !availability.length)
+//       return res
+//         .status(Response.error.InvalidRequest.code)
+//         .json(
+//           Response.error.InvalidRequest.json(
+//             'Please enter valid availabilities.'
+//           )
+//         );
+//     availability = service.validateAvailability(availability);
+
+//     if (!availability.length) {
+//       return res
+//         .status(Response.error.InvalidRequest.code)
+//         .json(
+//           Response.error.InvalidRequest.json(
+//             'Please enter valid availabilities.'
+//           )
+//         );
+//     }
+
+//     let temp = [];
+//     //checking problem array
+//     let arrayLength = problem.length;
+//     if (arrayLength) {
+//       for (let i = 0; i < arrayLength; i++) {
+//         let isProblemExist = await service.findProblemById(problem[i]._id);
+//         if (isProblemExist) temp.push(problem[i]);
+//       }
+//     }
+//     problem = temp;
+//     temp = [];
+//     //checking test array
+//     arrayLength = test.length;
+//     if (arrayLength) {
+//       for (let i = 0; i < arrayLength; i++) {
+//         let isTestExist = await service.findTestById({ _id: test[i]._id });
+//         if (isTestExist) temp.push(test[i]);
+//       }
+//     }
+//     test = temp;
+
+//     //Adding doctors information
+
+//     let isDoctorAdded = await service.addDetails(
+//       {
+//         _id,
+//         firstName,
+//         lastName,
+//         location,
+//         qualification,
+//         problem,
+//         test,
+//         availability
+//       },
+//       'Doctor'
+//     );
+
+//     return res.status(Response.success.Ok.code).json(
+//       Response.success.Ok.json({
+//         data: {
+//           firstName: crypto.decrypt(isDoctorAdded.firstName),
+//           lastName: crypto.decrypt(isDoctorAdded.lastName),
+//           location: isDoctorAdded.location,
+//           qualifications: isDoctorAdded.qualifications,
+//           problem: isDoctorAdded.problem,
+//           test: isDoctorAdded.test,
+//           availability: isDoctorAdded.availability
+//         }
+//       })
+//     );
+//   } catch (e) {
+//     console.log(e);
+//     logger.error(e.message);
+//     res
+//       .status(Response.error.InternalError.code)
+//       .json(Response.error.InternalError.json());
+//   }
+// };
+
+//adding doctors
+Controller.prototype.add = async function (req, res, next) {
   try {
-    /*
-    availability is important paramter that contains information of doctors availability.
-    format:  [
-      {
-        day: 'Monday',
-        slot: [
-          { time: '2:00 PM', isAvailable: 1 },
-          { time: '9:00 AM', isAvailable: 1 }
-        ]
-      },
-      {},
-      {}
-    ];
-    */
-    //Validating problem and test details
-    let {
-      _id,
-      firstName,
-      lastName,
-      location,
-      qualification,
-      problem,
-      test,
-      availability
-    } = req.body;
-
-    //Validating availability, if we have correct data we add them.
-    //After filtering if we get zero data, we retun error
-    if (!availability || !availability.length)
-      return res
-        .status(Response.error.InvalidRequest.code)
-        .json(
-          Response.error.InvalidRequest.json(
-            'Please enter valid availabilities.'
-          )
-        );
-    availability = service.validateAvailability(availability);
-
-    if (!availability.length) {
-      return res
-        .status(Response.error.InvalidRequest.code)
-        .json(
-          Response.error.InvalidRequest.json(
-            'Please enter valid availabilities.'
-          )
-        );
-    }
-
-    let temp = [];
-    //checking problem array
-    let arrayLength = problem.length;
-    if (arrayLength) {
-      for (let i = 0; i < arrayLength; i++) {
-        let isProblemExist = await service.findProblemById(problem[i]._id);
-        if (isProblemExist) temp.push(problem[i]);
-      }
-    }
-    problem = temp;
-    temp = [];
-    //checking test array
-    arrayLength = test.length;
-    if (arrayLength) {
-      for (let i = 0; i < arrayLength; i++) {
-        let isTestExist = await service.findTestById({ _id: test[i]._id });
-        if (isTestExist) temp.push(test[i]);
-      }
-    }
-    test = temp;
-
-    //Adding doctors information
-
-    let isDoctorAdded = await service.addDetails(
-      {
-        _id,
-        firstName,
-        lastName,
-        location,
-        qualification,
-        problem,
-        test,
-        availability
-      },
-      'Doctor'
-    );
-
-    return res.status(Response.success.Ok.code).json(
-      Response.success.Ok.json({
-        data: {
-          firstName: crypto.decrypt(isDoctorAdded.firstName),
-          lastName: crypto.decrypt(isDoctorAdded.lastName),
-          location: isDoctorAdded.location,
-          qualifications: isDoctorAdded.qualifications,
-          problem: isDoctorAdded.problem,
-          test: isDoctorAdded.test,
-          availability: isDoctorAdded.availability
-        }
-      })
-    );
+    let data = await service.addDetails(req);
+    res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+      message: 'Doctor added successfully',
+      data: data,
+    }));
   } catch (e) {
-    console.log(e);
     logger.error(e.message);
-    res
-      .status(Response.error.InternalError.code)
-      .json(Response.error.InternalError.json());
+    console.log(e);
+    res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
   }
 };
 
 //To get doctors information
-Controller.prototype.get = async function(req, res, next) {
+Controller.prototype.get = async function (req, res, next) {
   try {
     let id = req.params.id;
     /*
@@ -138,7 +153,7 @@ Controller.prototype.get = async function(req, res, next) {
 
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: isValid
+        data: isValid,
       })
     );
   } catch (error) {
@@ -150,7 +165,7 @@ Controller.prototype.get = async function(req, res, next) {
   }
 };
 
-Controller.prototype.getAll = async function(req, res, next) {
+Controller.prototype.getAll = async function (req, res, next) {
   try {
     /*
     1. return details of doctors.
@@ -164,13 +179,13 @@ Controller.prototype.getAll = async function(req, res, next) {
         .json(Response.error.NotFound.json('Doctors Information not exist.'));
 
     //decrypt doctors name
-    isValid.forEach(ele => {
+    isValid.forEach((ele) => {
       ele.firstName = crypto.decrypt(ele.firstName);
       ele.lastName = crypto.decrypt(ele.lastName);
     });
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: isValid
+        data: isValid,
       })
     );
   } catch (error) {
@@ -183,13 +198,13 @@ Controller.prototype.getAll = async function(req, res, next) {
 };
 
 //getting doctors
-Controller.prototype.getCityDoctors = async function(req, res, next) {
+Controller.prototype.getCityDoctors = async function (req, res, next) {
   try {
     let city = req.params.city;
     let doctors = await service.getDoctorByCity(city);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: doctors
+        data: doctors,
       })
     );
   } catch (e) {
@@ -201,9 +216,27 @@ Controller.prototype.getCityDoctors = async function(req, res, next) {
   }
 };
 
+//update doctor profile
+Controller.prototype.updateProfile = async function(req, res ) {
+  try {
+    let data = await service.getDoctorByIdAndUpdate(req);
+    res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+      message: 'Doctor added successfully',
+      data: data,
+    }));
+
+  }catch (e) {
+    logger.error(e.message);
+    console.log(e);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+}
+
 /******************************  PROBLEMS'S APIS *******************************/
 //Adding problems
-Controller.prototype.problemAdd = async function(req, res, next) {
+Controller.prototype.problemAdd = async function (req, res, next) {
   try {
     //Getting details from the body
     let { _id, problemName, displayName, icons } = req.body;
@@ -219,8 +252,8 @@ Controller.prototype.problemAdd = async function(req, res, next) {
             problemId: isCreated._id,
             problemName: isCreated.problemName,
             icons: isCreated.icons,
-            displayName: isCreated.displayName
-          }
+            displayName: isCreated.displayName,
+          },
         })
       );
     }
@@ -234,12 +267,12 @@ Controller.prototype.problemAdd = async function(req, res, next) {
 };
 
 //Listing all problems
-Controller.prototype.getProblems = async function(req, res, next) {
+Controller.prototype.getProblems = async function (req, res, next) {
   try {
     let allProblem = await service.getAllProblems('Problem');
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: allProblem
+        data: allProblem,
       })
     );
   } catch (e) {
@@ -252,13 +285,13 @@ Controller.prototype.getProblems = async function(req, res, next) {
 };
 
 //List one problem
-Controller.prototype.getProblem = async function(req, res, next) {
+Controller.prototype.getProblem = async function (req, res, next) {
   try {
     let id = req.params.id;
     let oneProblem = await service.findProblemById(id, 'Problem');
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: oneProblem
+        data: oneProblem,
       })
     );
   } catch (e) {
@@ -272,7 +305,7 @@ Controller.prototype.getProblem = async function(req, res, next) {
 
 /*****************  TEST'S APIS *********************/
 //Adding Tests
-Controller.prototype.testAdd = async function(req, res, next) {
+Controller.prototype.testAdd = async function (req, res, next) {
   try {
     //Getting details from the body
     let { testName, displayName, icons, description, _id } = req.body;
@@ -289,8 +322,8 @@ Controller.prototype.testAdd = async function(req, res, next) {
             testName: isCreated.problemName,
             icons: isCreated.icons,
             displayName: isCreated.displayName,
-            description: isCreated.description
-          }
+            description: isCreated.description,
+          },
         })
       );
     }
@@ -304,12 +337,12 @@ Controller.prototype.testAdd = async function(req, res, next) {
 };
 
 //Listing all tests
-Controller.prototype.getTests = async function(req, res, next) {
+Controller.prototype.getTests = async function (req, res, next) {
   try {
     let allTests = await service.getAllTests();
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: allTests
+        data: allTests,
       })
     );
   } catch (e) {
@@ -322,13 +355,13 @@ Controller.prototype.getTests = async function(req, res, next) {
 };
 
 //List one test
-Controller.prototype.getTest = async function(req, res, next) {
+Controller.prototype.getTest = async function (req, res, next) {
   try {
     let id = req.params.id;
     let oneTest = await service.findTestById(id, 'Test');
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: oneTest
+        data: oneTest,
       })
     );
   } catch (e) {
@@ -343,7 +376,7 @@ Controller.prototype.getTest = async function(req, res, next) {
 /******************************  PROBLEMS'S APIS *******************************/
 //Adding Reviews
 
-Controller.prototype.addReview = async function(req, res, next) {
+Controller.prototype.addReview = async function (req, res, next) {
   try {
     //Getting review details from body
     let {
@@ -354,7 +387,7 @@ Controller.prototype.addReview = async function(req, res, next) {
       reviewedUserName,
       reviewedUserMobile,
       reviewedUserMail,
-      reviewedDate
+      reviewedDate,
     } = req.body;
     let reviewObj = {};
     reviewObj = {
@@ -366,13 +399,13 @@ Controller.prototype.addReview = async function(req, res, next) {
       reviewedUserMail: reviewedUserMail,
       reviewedUserMobile: reviewedUserMobile,
       reviewedDate: Date.now(reviewedDate),
-      comments: []
+      comments: [],
     };
 
     let data = await service.findDoctorByIdAndAddReview(doctorId, reviewObj);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: data
+        data: data,
       })
     );
   } catch (e) {
@@ -385,14 +418,14 @@ Controller.prototype.addReview = async function(req, res, next) {
 };
 
 //Listing all the reviews for a particular doctor
-Controller.prototype.getReviews = async function(req, res, next) {
+Controller.prototype.getReviews = async function (req, res, next) {
   try {
     let id = req.params.doctorId;
     // console.log(id);
     let allReviews = await service.findAllReviews(id);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: allReviews
+        data: allReviews,
       })
     );
   } catch (e) {
@@ -406,7 +439,7 @@ Controller.prototype.getReviews = async function(req, res, next) {
 
 //Adding Comment for a review
 
-Controller.prototype.addComment = async function(req, res, next) {
+Controller.prototype.addComment = async function (req, res, next) {
   try {
     //Getting review details from body
     let {
@@ -416,7 +449,7 @@ Controller.prototype.addComment = async function(req, res, next) {
       commentedUserId,
       commentedUserName,
       commentedUserMail,
-      commentedDate
+      commentedDate,
     } = req.body;
     let commentObj = {};
     commentObj = {
@@ -425,7 +458,7 @@ Controller.prototype.addComment = async function(req, res, next) {
       commentedUserId: commentedUserId,
       commentedUserName: commentedUserName,
       commentedUserMail: commentedUserMail,
-      commentedDate: Date.now(commentedDate)
+      commentedDate: Date.now(commentedDate),
     };
 
     let data = await service.findReviewByIdAndAddComment(
@@ -435,7 +468,7 @@ Controller.prototype.addComment = async function(req, res, next) {
     );
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: data
+        data: data,
       })
     );
   } catch (e) {
@@ -447,7 +480,7 @@ Controller.prototype.addComment = async function(req, res, next) {
   }
 };
 
-Controller.prototype.getReviewComments = async function(req, res, next) {
+Controller.prototype.getReviewComments = async function (req, res, next) {
   try {
     let doctorId = req.params.doctorId;
     let reviewId = req.params.reviewId;
@@ -455,7 +488,7 @@ Controller.prototype.getReviewComments = async function(req, res, next) {
     let allReviews = await service.findAllReviewComments(doctorId, reviewId);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({
-        data: allReviews
+        data: allReviews,
       })
     );
   } catch (e) {

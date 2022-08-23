@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const ServiceManager = require('../../service/ServiceManager');
+const { profileImage }  = require('../../commons/util/fileUpload/upload'); 
+
 
 router.use(express.json());
 
 /**************  DOCTOR ROUTES ***************/
 //Add doctor
 
-router.post('/create', ServiceManager.doctor.add);
+router.post('/create', profileImage.single('photo'), ServiceManager.doctor.add);
 
 //to get doctor's information
 router.get('/get/:id', ServiceManager.doctor.get);
@@ -15,8 +17,11 @@ router.get('/get/:id', ServiceManager.doctor.get);
 //to get all doctors information
 router.get('/get', ServiceManager.doctor.getAll);
 
+//to update doctor details
+router.put('/update/:id',profileImage.any(), ServiceManager.doctor.updateProfile);
+
 //Get Doctor
-router.get('/list/:city', ServiceManager.doctor.getCityDoctors);
+router.get('/list/:city',  ServiceManager.doctor.getCityDoctors);
 
 /****************** PROBLEM ROUTES *********************/
 //Add problem

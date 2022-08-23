@@ -104,4 +104,12 @@ Repository.prototype.getByCity=async function (city, modelName) {
   const instance = await modelName.find({"location.city":city});
   return instance.length ? instance : null;
 };
+
+//used to get by filter
+Repository.prototype.getByFilter = async function(filter, modelName){
+  modelName = modelName === "Problem" ? Problem : modelName === "Test" ? Test : Doctor;
+  const instance = await modelName.find(filter);
+  return instance.length ? instance : null;
+  
+}
 module.exports = new Repository();

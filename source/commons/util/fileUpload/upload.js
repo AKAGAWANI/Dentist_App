@@ -10,22 +10,13 @@ const s3Config = new AWS.S3({
   });
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype == 'application/pdf' ) {
         cb(null, true)
     } else {
         cb(null, false)
     }
 }
 
-// this is just to test locally if multer is working fine.
-// const storage = multer.diskStorage({
-//     destination: (req, res, cb) => {
-//         cb(null, __dirname + '/uploadedFiles')
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, new Date().toISOString() + '-' + file.originalname)
-//     }
-// })
 
 const multerS3Config = multerS3({
     s3: s3Config,
@@ -34,8 +25,12 @@ const multerS3Config = multerS3({
         cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-        // console.log(file)
-        cb(null, new Date().toISOString() + '-' + file.originalname)
+        let pathNames = req.baseUrl.toString().split('/');
+        let folderName = pathNames[pathNames.length - 1].toString();
+        if(file.fieldname == "identityProof")
+            folderName += '/identityProof';
+        // console.log(folderName);
+        cb(null,folderName +'/' + new Date().toISOString() + '-' + file.originalname)
     }
 });
 
