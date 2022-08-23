@@ -524,7 +524,7 @@ const swagger = {
               examples: {
                 '200 - Add Doctor': {
                   summary: '200 - Add doctor',
-                  value: require('../sample-data/api/doctor/add/request.json')
+                  value: require('../sample-data/api/doctor/add/request1.json')
                 }
               }
             }
@@ -573,6 +573,55 @@ const swagger = {
       successDescription: 'Doctor Info',
       responseExamplePath: '../sample-data/api/doctor/get/success1.json'
     }),
+    '/api/doctor/update/:id': {
+      post: {
+        tags: ['Doctor'],
+        summary: "Update doctor's details",
+        parameters: require('../sample-data/api/doctor/edit/parameters.json'),
+        operationId: 'doctor-edit',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - Add Doctor': {
+                  summary: '200 - Add doctor',
+                  value: require('../sample-data/api/doctor/edit/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Doctor details added',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/doctor/edit/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/doctor/list/:city': getConfig({
       method: 'get',
       tags: ['Doctor'],

@@ -1,77 +1,46 @@
 {
   "data": {
-    "firstName": "First name",
-    "lastName": "Lats name",
-    "location": {
-      "_id": "23454561d32v",
-      "flatNo": 12,
-      "city": "Indore",
-      "district": "String",
-      "state": "String"
-    },
-    "problem": [
-      {
-        "icons": ["Image Url", "Image url"],
-        "_id": "62cc02777028f3f57f6a2070",
-        "problemName": "problem 1",
-        "displayName": "displayName"
-      }
-    ],
-    "test": [
-      {
-        "icons": ["Image Url", "Image url"],
-        "_id": "22ab02899028f1f77f6a1543",
-        "testName": "Test 1",
-        "displayName": "displayName",
-        "description": "Some description"
-      }
-    ],
-    "availability": [
-      {
-        "_id": "62f8adc7c9b7c413dcc32b5f",
-        "day": "Monday",
-        "slot": [
-          {
-            "_id": "62f8adc7c9b7c413dcc32b60",
-            "time": "2:00 PM",
-            "isAvailable": true
-          },
-          {
-            "_id": "62f8adc7c9b7c413dcc32b61",
-            "time": "4:00 PM",
-            "isAvailable": true
-          },
-          {
-            "_id": "62f8adc7c9b7c413dcc32b62",
-            "time": "6:00 PM",
-            "isAvailable": true
-          }
-        ]
+      "createdAt": "2022-08-23T15:05:17.624Z",
+      "_id": "6304ef7a434e7f0c0a036c11",
+      "personalInfo": {
+          "name": "Doctor1",
+          "email": "doc@gmail.com",
+          "phone": "+919090909091",
+          "whatsAppPhone": "+919090909090",
+          "alternativePhone": "+919090909091",
+          "experience": 3,
+          "photo": "https://myawsimagesbucket.s3.ap-south-1.amazonaws.com/doctor/2022-08-23T15%3A17%3A13.722Z-DIP-2.png"
       },
-      {
-        "_id": "62f8adc7c9b7c413dcc32b63",
-        "day": "Tuesday",
-        "slot": [
-          {
-            "_id": "62f8adc7c9b7c413dcc32b64",
-            "time": "12:00 PM",
-            "isAvailable": true
-          },
-          {
-            "_id": "62f8adc7c9b7c413dcc32b65",
-            "time": "3:00 PM",
-            "isAvailable": true
-          },
-          {
-            "_id": "62f8adc7c9b7c413dcc32b66",
-            "time": "4:00 PM",
-            "isAvailable": true
-          }
-        ]
-      }
-    ]
+      "expertiseField": {
+          "degree": "",
+          "specialization": "",
+          "bio": "",
+          "educationBrief": "",
+          "specializationBrief": "",
+          "experienceBrief": "",
+          "achievementBrief": "",
+          "membershipBrief": ""
+      },
+      "address": {
+          "addressLine1": "",
+          "addressLine2": "",
+          "addressLine3": "",
+          "city": "",
+          "state": "",
+          "country": "",
+          "zipCode": null,
+          "identityProof": ""
+      },
+      "availability": [],
+      "problem": [],
+      "test": [],
+      "review": [],
+      "updatedAt": "2022-08-23T15:17:14.176Z",
+      "firstName": "",
+      "lastName": "",
+      "__v": 0
   },
   "status": 200,
   "type": "success",
-  "message": "Ok"
+  "message": "Doctor added successfully"
 }

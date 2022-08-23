@@ -221,7 +221,7 @@ Controller.prototype.updateProfile = async function(req, res ) {
   try {
     let data = await service.getDoctorByIdAndUpdate(req);
     res.status(Response.success.Ok.code).json(Response.success.Ok.json({
-      message: 'Doctor added successfully',
+      message: 'Doctor profile modified successfully',
       data: data,
     }));
 
