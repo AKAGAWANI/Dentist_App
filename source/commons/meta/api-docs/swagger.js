@@ -262,6 +262,68 @@ const swagger = {
         },
       }
     },
+    '/api/admin/createAdmin': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Creating Admin',
+        operationId: 'admin',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Admin': {
+                  summary: '200 - Admin',
+                  value: require('../sample-data/api/admin/createAdmin/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/admin/createAdmin/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/admin/getAppLink': {
+      post: {
+        tags: ['Applink'],
+        summary: 'Get Applink',
+        operationId: 'Applink',
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/admin/getApplink/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/banner/create': {
       post: {
         tags: ['Banner'],
