@@ -12,5 +12,6 @@ module.exports = {
   admin: require('./admin/AdminController'),
   policy: require('./policy/policyController'),
   test: require('./test/TestController'),
-  surgery: require('./surgery/SurgeryController')
+  surgery: require('./surgery/SurgeryController'),
+  career: require('./career/CareerController')
 };

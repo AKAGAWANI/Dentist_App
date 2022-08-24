@@ -20,7 +20,18 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(null, false);
     }
-  } else {
+  } else if (file.fieldname == 'resume'){
+    if (
+      file.mimetype === 'application/msword' ||
+      file.mimetype == 'application/pdf' ||
+      file.mimetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+
+  }else {
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
       cb(null, true);
     } else {
