@@ -18,8 +18,10 @@ Controller.prototype.requestOtp = async function (req, res) {
     } else {
       res.status(Response.success.Ok.code).json(
         Response.success.Ok.json({
-          data: pseudoUserId,
-          message: 'OTP generated for verification',
+          data : {
+            pseudoUserId: pseudoUserId,
+            message: 'OTP generated for verification ',
+          }
         })
       );
     }

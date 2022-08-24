@@ -1124,6 +1124,62 @@ const swagger = {
       successDescription: "Got all Surgeries",
       responseExamplePath: '../sample-data/api/surgery/searchSurgery/success.json',
     }),
+    "/api/career/login/otp": getConfig({ 
+      method: 'post', tags: ['Career'], 
+      "summary": "Generate OTP for Login to career",
+      operationId: 'login', produces: 'application/json', 
+      successDescription: "OTP Generated Successfully",
+      requestExamplePath: '../sample-data/api/career/login/otpRequest/request.json',
+      responseExamplePath: '../sample-data/api/career/login/otpRequest/success.json',
+    }),
+    "/api/career/login/validate": getConfig({ 
+      method: 'post', tags: ['Career'], 
+      "summary": "Validate Login OTP",
+      operationId: 'login', produces: 'application/json', 
+      successDescription: "OTP Validated Successfully",
+      requestExamplePath: '../sample-data/api/career/login/validate/request.json',
+      responseExamplePath: '../sample-data/api/career/login/validate/success.json',
+    }),
+    '/api/career/apply': {
+      post: {
+        tags: ['Career'],
+        summary: 'Add Job Application details',
+        operationId: 'application-add',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - Add Test': {
+                  summary: '200 - Add test',
+                  value: require('../sample-data/api/career/apply/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'application details added',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/career/apply/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
 
   },  
   "securityDefinitions": {
