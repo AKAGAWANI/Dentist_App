@@ -1,5 +1,8 @@
 require('dotenv');
 const repository = require('./DoctorRepository');
+const envproperties = require('../../properties.json');
+const smsObj = require('../../commons/mailer/mailer.js');
+const UserRepository = require('../user/UserRepository');
 
 function Service() {}
 
@@ -80,5 +83,66 @@ Service.prototype.getAllMedicines = async function(doctorId) {
 
 Service.prototype.searchMedsByName = async function(name) {
   return repository.searchMeds(name);
+};
+
+/*********************  DATA VALIDATING *************************/
+Service.prototype.validateDetails = async function(data) {
+  return repository.validateInformationForOTP(data);
+};
+
+Service.prototype.generateLoginOTP = async function() {
+  return Math.floor(100000 + Math.random() * 900000);
+};
+
+Service.prototype.prepareOTPMessage = async function(user, otp) {
+  return {
+    mobile: user.mobile ? user.mobile : null,
+    email: user.email ? user.email : null,
+    template: envproperties.SIGNUP_SMS_TEMPLATE,
+    subject: envproperties.OTP_SUB,
+    body: envproperties.SIGNUP_OTP.replace('<OTP>', otp).replace(
+      '{#var#}',
+      'e52dwnzI4WX'
+    ),
+    var1: otp,
+    var2: process.env.LOCAL_OTP_VALIDITY
+  };
+};
+
+Service.prototype.sendOTP = async function(msg) {
+  let smsFeed, emailFeed;
+  if (msg.mobile)
+    try {
+      msg.to = msg.mobile;
+      msg.body = encoder.encode(msg.body);
+      msg.template = envproperties.SIGNUP_SMS_TEMPLATE;
+      smsFeed = await smsObj.sendSMS(msg);
+    } catch (e) {
+      logger.error(e);
+    }
+  if (msg.email)
+    try {
+      msg.templateName = 'InvitationOtp';
+      emailFeed = await UserRepository.sendOTPThroughEmail(
+        msg.email, //email
+        msg.var1, //otp
+        msg.templateName //to select template
+      );
+    } catch (e) {
+      logger.error(e);
+    }
+
+  const sentSMS = smsFeed == undefined ? false : true;
+  const sentEMAIL = !!((emailFeed || {}).ResponseMetadata || {}).RequestId;
+  return { sentSMS, sentEMAIL };
+};
+
+Service.prototype.updateOtp = async function(otp, id) {
+  return repository.addOtp(otp, id);
+};
+
+Service.prototype.validateOtp = async function(id, otp) {
+  console.log(id, otp);
+  return repository.validateData(id, otp);
 };
 module.exports = new Service();

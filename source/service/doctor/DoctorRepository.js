@@ -2,12 +2,22 @@ const {
   Problem,
   Test,
   Doctor,
+  Invitations,
   Medicines
 } = require('../../commons/models/mongo/mongodb');
 
 function Repository() {}
 
 /********************* DOCTOR'S REPO ***********************/
+
+Repository.prototype.validateInformationForOTP = async function(data) {
+  let searchData = {
+    email: data.email,
+    onBoardingCode: data.code
+  };
+  if (data.mobileNumber) searchData.phone = data.mobileNumber;
+  return await Invitations.findOne(searchData);
+};
 
 Repository.prototype.isCorrectDetails = function(availability) {
   /*[
@@ -121,5 +131,18 @@ Repository.prototype.getByCity = async function(city, modelName) {
     modelName === 'Problem' ? Problem : modelName === 'Test' ? Test : Doctor;
   const instance = await modelName.find({ 'location.city': city });
   return instance.length ? instance : null;
+};
+
+Repository.prototype.addOtp = async function(otp, id) {
+  return await Invitations.updateOne({ _id: id }, { otp });
+};
+
+Repository.prototype.validateData = async function(id, otp) {
+  let isCorrect = await Invitations.findOne({ _id: id, otp });
+  if (isCorrect) {
+    await Invitations.updateOne({ _id: id }, { isVerified: true });
+    return true;
+  }
+  return false;
 };
 module.exports = new Repository();

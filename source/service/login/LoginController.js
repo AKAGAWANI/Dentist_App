@@ -131,8 +131,8 @@ Controller.prototype.otp = async function(req, res, next) {
         let fdbck = null;
 
         try {
+          msg.templateName = 'ForgetPassword';
           fdbck = await service.sendOTP(msg);
-          await service.sendOTPEmail(msg.email, otp, 'ForgetPassword');
         } catch (e) {
           logger.error(e);
         }
@@ -560,12 +560,12 @@ Controller.prototype.generateOtp = async function(req, res, next) {
               'e52dwnzI4WX'
             ),
             var1: otp,
-            var2: process.env.LOCAL_OTP_VALIDITY
+            var2: process.env.LOCAL_OTP_VALIDITY,
+            templateName: 'Login'
           };
           let fdbck = null;
           try {
             fdbck = await service.sendOTP(msg);
-            await service.sendOTPEmail(msg.email, otp, 'Login');
           } catch (e) {
             logger.error(e);
           }

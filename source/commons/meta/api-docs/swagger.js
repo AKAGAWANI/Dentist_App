@@ -1246,6 +1246,150 @@ const swagger = {
         }
       }
     },
+    '/api/admin/invitation/send': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Invitation send',
+        operationId: 'invitationSend',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - Invitation send': {
+                  summary: '200 - ECOM-V2 - Invitation send',
+                  value: require('../sample-data/api/admin/invitation/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Invitation send',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/admin/invitation/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/auth/otp/generate': {
+      post: {
+        tags: ['Doctor'],
+        summary: 'generate otp',
+        operationId: 'generateOtp',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - generate otp': {
+                  summary: '200 - ECOM-V2 - generate otp',
+                  value: require('../sample-data/api/doctor/generateOtp/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'generate otp',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/doctor/generateOtp/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/auth/otp/validate': {
+      post: {
+        tags: ['Doctor'],
+        summary: 'Validate otp',
+        operationId: 'invitationSend',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - Validate otp': {
+                  summary: '200 - ECOM-V2 - Validate otp',
+                  value: require('../sample-data/api/doctor/validateotp/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Validate otp',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/doctor/validateotp/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
 
     securityDefinitions: {
       ecomv2_auth: {

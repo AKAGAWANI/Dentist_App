@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const smsObj = require('../../commons/mailer/mailer.js');
 const ejs = require('ejs');
+const mailer = require('../../commons/externals/mailer/mailer');
 
 function Repository() {}
 
@@ -85,14 +86,45 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
     subject = 'Here comes the Doctor-Dentist App link for you';
   }
 
-  await fs.readFile(file, 'utf8', async function(error, data) {
-    data = ejs.render(data, { USEROTP: otp });
+  //invitation template
+  if (name == 'Invitation') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/invitationEmailTemplate.html'
+    );
+    subject = 'Here comes the Doctor-Dentist onboarding code';
+  }
 
-    smsObj.sendMail2({
-      to: email,
-      body: subject,
-      template: data
-    });
+  //inivtation otp template
+  if (name == 'InvitationOtp') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/invitationOtpEmailTemplate.html'
+    );
+    subject = 'Here comes the Doctor-Dentist validation Otp';
+  }
+
+  await fs.readFile(file, 'utf8', async function(error, template) {
+    template = ejs.render(template, { USEROTP: otp });
+
+    /*
+    Sending data through aws
+    data = {
+      body:HTML template,
+      email: Receiver's email
+      subject: subject of email
+    }
+    */
+    let data = {};
+    data.subject = subject;
+    data.body = template;
+    data.email = email;
+    mailer.email.send(data, true);
+    // smsObj.sendMail2({
+    //   to: email,
+    //   body: subject,
+    //   template: data
+    // });
     if (error) {
       throw error;
     }
