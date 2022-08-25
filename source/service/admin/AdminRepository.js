@@ -15,7 +15,13 @@ Repository.prototype.createUser = async function(userObj) {
   let account=await new Account(userObj).save()
 
   return user._id
+}
 
+Repository.prototype.getUser = async function(query) {
+  const model = User;
+  let user = model.find(query);
+
+  return user ? user : null;
 }
 
 module.exports = new Repository();

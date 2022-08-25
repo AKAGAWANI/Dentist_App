@@ -69,4 +69,20 @@ Service.prototype.sendEmail = async function(email, name) {
   UserRepository.sendOTPThroughEmail(email, name);
 };
 
+Service.prototype.loginAdmin = async function(req) {
+  let { userName, password } = req.body;
+  let encryptUserName = CryptoUtil.encrypt(userName,true);
+
+  let isUserExists = await repository.getUser({email : encryptUserName});
+  isUserExists = isUserExists ? isUserExists : await repository.getUser({mobile : encryptUserName});
+
+  if(!isUserExists)
+    return "No User Found";
+
+  let user = isUserExists;
+  if(!user.isAdmin)
+    return "User is not a admin"
+  
+}
+
 module.exports = new Service();

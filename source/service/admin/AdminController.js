@@ -151,4 +151,18 @@ Controller.prototype.getAppLink = async function(req, res, next) {
   }
 };
 
+Controller.prototype.login = async function ( req,res) {
+  try {
+    let data = await service.loginAdmin(req);
+
+  }catch(e) {
+    logger.error(e.message);
+    console.log(error);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+
+  }
+}
+
 module.exports = new Controller();
