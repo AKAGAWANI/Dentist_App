@@ -11,6 +11,8 @@ const {
   crypto
 } = require('../../commons/util/UtilManager');
 const service = require('./UserService');
+const { User } = require('../../commons/models/mongo/mongodb');
+const { Account } = require('../../commons/models/mongo/mongodb');
 const { profile } = require('winston');
 const { S3 } = require('../../commons/util/UtilManager');
 
@@ -368,5 +370,32 @@ Controller.prototype.edit = async (req, res) => {
   }
 };
 
+
+Controller.prototype.deleteUserAccount = async function (req, res, _next) {
+  const accountId = req.user._id;
+const userData = await User.find({'_id': accountId}).exec();
+const accountData = await Account.find({'email': userData[0].email}).exec();
+  const user = userData;
+  // await service.simulateLogin(username, otp, resource);
+
+  if (!(user && user.userId)) {
+    return res.status(Response.error.NotFound.code).json(Response.error.NotFound.json('No user exists or Invalid OTP'));
+  }
+
+  if (accountId !== user.userId) {
+    return res.status(Response.error.NotFound.code).json(Response.error.NotFound.json(`User reference mismatch, are you trying to delete someone else's account ? Bad Manners!`));
+  }
+
+  await service.removeUserAccount(accountId);
+
+  try {
+    const { ResponseUnlinkedAnalysis } = require('../../middleware/statistics');
+    ResponseUnlinkedAnalysis(url.getReducedRequest(req), { ...req.body, accountId, user: req.user });
+  } catch (e) { logger.error(e.message) }
+
+  return res.status(Response.success.Ok.code).json(Response.success.Ok.json({
+    message: 'User record deleted!',
+  }));
+}
 
 module.exports = new Controller();

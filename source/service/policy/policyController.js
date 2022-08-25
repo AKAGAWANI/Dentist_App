@@ -10,7 +10,7 @@ Controller.prototype.addPolicy = async function (req, res, next) {
     if (!req.files.image) {
     return res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json("Please select a image to upload"));
   } 
-    req.body.image = await S3.doUpload(req.files.image, 'policy');
+    req.body.image = await S3.doUpload(req.files && req.files.image, 'policy');
     let addDetails = await service.addPolicyData(req.body);
     return res.status(Response.success.Ok.code).json(
       Response.success.Ok.json({

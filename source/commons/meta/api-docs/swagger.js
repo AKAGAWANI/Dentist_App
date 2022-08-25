@@ -121,9 +121,9 @@ const swagger = {
     }),
     '/api/insurance/submitDetails': {
       post: {
-        tags: ['insurance'],
+        tags: ['Insurance'],
         summary: 'Creating insurance submission',
-        operationId: 'insurance',
+        operationId: 'Insurance',
         consumes: ['application/json'],
         produces: ['application/json'],
         requestBody: {
@@ -159,7 +159,86 @@ const swagger = {
         }
       }
     },
-
+    '/api/user/profile-edit': {
+      post: {
+        tags: ['profile-edit'],
+        summary: 'Update profile',
+        operationId: 'profile',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Profile': {
+                  summary: '200 - Profile update',
+                  value: require('../sample-data/api/user/profileUpdate/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/user/profileUpdate/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/user/deleteAccount': {
+      post: {
+        tags: ['delete'],
+        summary: 'Delete',
+        operationId: 'delete',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Delete': {
+                  summary: '200 - Delete user',
+                  value: require('../sample-data/api/user/deleteUserAccount/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/user/deleteUserAccount/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/getPatient/:doctorId': {
       get: {
         tags: ['Patient'],
@@ -181,6 +260,112 @@ const swagger = {
             }
           }
         },
+      }
+    },
+    '/api/admin/createAdmin': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Creating Admin',
+        operationId: 'admin',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Admin': {
+                  summary: '200 - Admin',
+                  value: require('../sample-data/api/admin/createAdmin/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/admin/createAdmin/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/admin/getAppLink': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Get Applink',
+        operationId: 'admin',
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/admin/getApplink/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/policy/list': {
+      get: {
+        tags: ['Policy'],
+        summary: 'Get policy',
+        operationId: 'Policy',
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/policy/list/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/insurance/list': {
+      get: {
+        tags: ['Insurance'],
+        summary: 'Get Insurance',
+        operationId: 'Insurance',
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/insurance/list/success.json')
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     '/api/banner/create': {
@@ -476,6 +661,54 @@ const swagger = {
         }
       }
     },
+    '/login/generateOtp': {
+      put: {
+        tags: ['Login'],
+        summary: 'Generate otp',
+        operationId: 'generate-otp',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - GATEWAY - Generate OTP': {
+                  summary: '200 - GATEWAY - Generate OTP',
+                  value: require('../sample-data/api/login/localLogin/request5.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'OTP Generated',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/login/localLogin/success5.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
     '/login/reset/password': {
       put: {
         tags: ['Login'],
@@ -548,6 +781,54 @@ const swagger = {
             description:
               'Login Params embedded in URL { userId, accessToken, refreshToken, expiresAt }',
             content: {}
+          }
+        }
+      }
+    },
+    '/api/user/register': {
+      post: {
+        tags: ['User'],
+        summary: 'Registration',
+        operationId: 'User',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                'Register': {
+                  summary: '200 - Register',
+                  value: require('../sample-data/api/user/register/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Success',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/user/register/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
           }
         }
       }

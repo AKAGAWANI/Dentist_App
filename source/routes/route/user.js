@@ -14,6 +14,8 @@ router.get('/permissions/v2/:appType', ServiceManager.user.accessPermissionsV2);
 router.post('/consultation/create', ServiceManager.consultation.add);
 router.get('/consultation/list', ServiceManager.consultation.list);
 router.patch('/consultation/edit', ServiceManager.consultation.edit);
-router.patch('/user/profile-edit', ServiceManager.user.edit);
+router.patch('/profile-edit', ServiceManager.user.edit);
+
+router.delete('/deleteAccount', ServiceManager.user.deleteUserAccount);
 
 module.exports = router;
