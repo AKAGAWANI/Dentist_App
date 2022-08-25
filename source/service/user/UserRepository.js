@@ -13,6 +13,12 @@ Repository.prototype.deleteAccount = async function(_id) {
   return true;
 };
 
+Repository.prototype.deleteUserAccount = async function(_id) {
+  await User.remove({ _id });
+  await Account.remove({ _id });
+  return true;
+};
+
 Repository.prototype.findUserByMobile = async function(mobile) {
   return User.findOne({ mobile: mobile }).exec();
 };
@@ -97,6 +103,15 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
       throw error;
     }
   });
+};
+
+
+Repository.prototype.updateProfile = async function(data) {
+  const isUpdated = await User.updateOne(
+    { _id: data.userId },
+    { ...data }
+  );
+  return isUpdated.ok ? true : false;
 };
 
 module.exports = new Repository();
