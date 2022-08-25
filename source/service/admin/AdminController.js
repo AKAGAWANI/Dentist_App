@@ -154,10 +154,14 @@ Controller.prototype.getAppLink = async function(req, res, next) {
 Controller.prototype.login = async function ( req,res) {
   try {
     let data = await service.loginAdmin(req);
-
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: data,
+      })
+    );
   }catch(e) {
     logger.error(e.message);
-    console.log(error);
+    console.log(e);
     res
       .status(Response.error.InternalError.code)
       .json(Response.error.InternalError.json());

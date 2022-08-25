@@ -14,7 +14,6 @@ module.exports = {
   policy:require('./policy/policyController'),
   terms:require('./terms/termsController'),
   test: require('./test/TestController'),
-,
   surgery: require('./surgery/SurgeryController'),
   career: require('./career/CareerController')
 };
