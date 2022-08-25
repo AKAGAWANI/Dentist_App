@@ -5,8 +5,13 @@ const ServiceManager = require('../../service/ServiceManager');
 router.use(express.json());
 
 /**************  DOCTOR ROUTES ***************/
-//Add doctor
+//generate otp
+router.post('/auth/otp/generate', ServiceManager.doctor.generateOtp);
 
+//validate otp
+router.post('/auth/otp/validate', ServiceManager.doctor.validateOtp);
+
+//Add doctor
 router.post('/create', ServiceManager.doctor.add);
 
 //to get doctor's information

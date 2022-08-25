@@ -82,13 +82,18 @@ Service.prototype.sendOTP = async function(msg) {
     try {
       msg.to = msg.mobile;
       msg.body = encoder.encode(msg.body);
-      smsFeed = await Mailer.sms.send(msg);
+      msg.template = envproperties.FORGOT_PASSWORD_TEMPLATE;
+      smsFeed = await smsObj.sendSMS(msg);
     } catch (e) {
       logger.error(e);
     }
   if (msg.email)
     try {
-      emailFeed = await Mailer.email.send(msg);
+      emailFeed = await UserRepository.sendOTPThroughEmail(
+        msg.email, //email
+        msg.var1, //otp
+        msg.templateName //to select template
+      );
     } catch (e) {
       logger.error(e);
     }

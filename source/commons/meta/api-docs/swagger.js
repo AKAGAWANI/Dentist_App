@@ -22,16 +22,16 @@ function getConfig({
       produces: [produces],
       requestBody: requestExamplePath
         ? {
-          required: true,
-          content: {
-            [consumes]: {
-              schema: {
-                type: 'object'
-              },
-              example: require(requestExamplePath)
+            required: true,
+            content: {
+              [consumes]: {
+                schema: {
+                  type: 'object'
+                },
+                example: require(requestExamplePath)
+              }
             }
           }
-        }
         : null,
       parameters: parameters ? require(parameters) : null,
       responses: {
@@ -134,7 +134,7 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Insurance': {
+                Insurance: {
                   summary: '200 - Insurance Submission',
                   value: require('../sample-data/api/insuranceSubmission/request.json')
                 }
@@ -174,7 +174,7 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Profile': {
+                Profile: {
                   summary: '200 - Profile update',
                   value: require('../sample-data/api/user/profileUpdate/request.json')
                 }
@@ -214,7 +214,7 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Delete': {
+                Delete: {
                   summary: '200 - Delete user',
                   value: require('../sample-data/api/user/deleteUserAccount/request.json')
                 }
@@ -252,14 +252,14 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Patient': {
+                Patient: {
                   summary: '200 - Patient',
                   value: require('../sample-data/api/doctorGet/request.json')
                 }
               }
             }
           }
-        },
+        }
       }
     },
     '/api/admin/createAdmin': {
@@ -277,7 +277,7 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Admin': {
+                Admin: {
                   summary: '200 - Admin',
                   value: require('../sample-data/api/admin/createAdmin/request.json')
                 }
@@ -383,7 +383,7 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Banner': {
+                Banner: {
                   summary: '200 - Banner',
                   value: require('../sample-data/api/banner/createBanner/request.json')
                 }
@@ -431,7 +431,6 @@ const swagger = {
         }
       }
     },
-
 
     '/api/terms/createTerms': {
       post: {
@@ -800,7 +799,7 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                'Register': {
+                Register: {
                   summary: '200 - Register',
                   value: require('../sample-data/api/user/register/request.json')
                 }
@@ -1601,68 +1600,98 @@ const swagger = {
         }
       }
     },
-    "/gw/api/doctor/review/add": getConfig({
-      method: 'post', tags: ['Doctor'],
-      "summary": "Add Review For A Doctor",
-      operationId: 'addReview', produces: 'application/json',
-      successDescription: "Added Review For A Doctor",
-      requestExamplePath: '../sample-data/api/doctor/review/addReview/request.json',
-      responseExamplePath: '../sample-data/api/doctor/review/addReview/success.json',
+    '/gw/api/doctor/review/add': getConfig({
+      method: 'post',
+      tags: ['Doctor'],
+      summary: 'Add Review For A Doctor',
+      operationId: 'addReview',
+      produces: 'application/json',
+      successDescription: 'Added Review For A Doctor',
+      requestExamplePath:
+        '../sample-data/api/doctor/review/addReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/addReview/success.json'
     }),
-    "/api/doctor/review/list/:doctorId": getConfig({
-      method: 'get', tags: ['Doctor'],
-      "summary": "List Reviews For A Doctor",
-      operationId: 'listReview', produces: 'application/json',
-      successDescription: "Got All Reviews For A Doctor",
-      requestExamplePath: '../sample-data/api/doctor/review/listReview/request.json',
-      responseExamplePath: '../sample-data/api/doctor/review/listReview/success.json',
+    '/api/doctor/review/list/:doctorId': getConfig({
+      method: 'get',
+      tags: ['Doctor'],
+      summary: 'List Reviews For A Doctor',
+      operationId: 'listReview',
+      produces: 'application/json',
+      successDescription: 'Got All Reviews For A Doctor',
+      requestExamplePath:
+        '../sample-data/api/doctor/review/listReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/listReview/success.json'
     }),
-    "/api/doctor/review/comment/add": getConfig({
-      method: 'post', tags: ['Doctor'],
-      "summary": "Add Comment For a Review Of A Doctor",
-      operationId: 'addCommentToReview', produces: 'application/json',
-      successDescription: "Added a Review For a Doctor",
-      requestExamplePath: '../sample-data/api/doctor/review/addComment/request.json',
-      responseExamplePath: '../sample-data/api/doctor/review/addComment/success.json',
+    '/api/doctor/review/comment/add': getConfig({
+      method: 'post',
+      tags: ['Doctor'],
+      summary: 'Add Comment For a Review Of A Doctor',
+      operationId: 'addCommentToReview',
+      produces: 'application/json',
+      successDescription: 'Added a Review For a Doctor',
+      requestExamplePath:
+        '../sample-data/api/doctor/review/addComment/request.json',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/addComment/success.json'
     }),
-    "/api/doctor/review/comment/list/:doctorId/:reviewId": getConfig({
-      method: 'get', tags: ['Doctor'],
-      "summary": "List Comment For a Review Of A Doctor",
-      operationId: 'listCommentsOfAReview', produces: 'application/json',
-      successDescription: "Got The Comments Of A Review For a Doctor",
-      responseExamplePath: '../sample-data/api/doctor/review/listComment/success.json',
+    '/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
+      method: 'get',
+      tags: ['Doctor'],
+      summary: 'List Comment For a Review Of A Doctor',
+      operationId: 'listCommentsOfAReview',
+      produces: 'application/json',
+      successDescription: 'Got The Comments Of A Review For a Doctor',
+      responseExamplePath:
+        '../sample-data/api/doctor/review/listComment/success.json'
     }),
-    "/api/app/review/create": getConfig({
-      method: 'post', tags: ['App'],
-      "summary": "Post a Review For The Application",
-      operationId: 'addAppReview', produces: 'application/json',
-      successDescription: "Added a App Review",
-      requestExamplePath: '../sample-data/api/app/review/addReview/request.json',
-      responseExamplePath: '../sample-data/api/app/review/addReview/success.json',
+    '/api/app/review/create': getConfig({
+      method: 'post',
+      tags: ['App'],
+      summary: 'Post a Review For The Application',
+      operationId: 'addAppReview',
+      produces: 'application/json',
+      successDescription: 'Added a App Review',
+      requestExamplePath:
+        '../sample-data/api/app/review/addReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/app/review/addReview/success.json'
     }),
-    "/api/app/review/list": getConfig({
-      method: 'get', tags: ['App'],
-      "summary": "List All Reviews Of The Application",
-      operationId: 'listAppReview', produces: 'application/json',
-      successDescription: "Got all App Review",
-      responseExamplePath: '../sample-data/api/app/review/listReview/success.json',
+    '/api/app/review/list': getConfig({
+      method: 'get',
+      tags: ['App'],
+      summary: 'List All Reviews Of The Application',
+      operationId: 'listAppReview',
+      produces: 'application/json',
+      successDescription: 'Got all App Review',
+      responseExamplePath:
+        '../sample-data/api/app/review/listReview/success.json'
     }),
-    "/api/app/review/like": getConfig({
-      method: 'post', tags: ['App'],
-      "summary": "Like The Review",
-      operationId: 'likeAppReview', produces: 'application/json',
-      successDescription: "Liked The Review",
-      requestExamplePath: '../sample-data/api/app/review/likeReview/request.json',
-      responseExamplePath: '../sample-data/api/app/review/likeReview/success1.json',
+    '/api/app/review/like': getConfig({
+      method: 'post',
+      tags: ['App'],
+      summary: 'Like The Review',
+      operationId: 'likeAppReview',
+      produces: 'application/json',
+      successDescription: 'Liked The Review',
+      requestExamplePath:
+        '../sample-data/api/app/review/likeReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/app/review/likeReview/success1.json'
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
     }),
-    "/api/app/review/dislike": getConfig({
-      method: 'post', tags: ['App'],
-      "summary": "Remove Like From The Review",
-      operationId: 'dislikeAppReview', produces: 'application/json',
-      successDescription: "Removed The Like For The Review",
-      requestExamplePath: '../sample-data/api/app/review/dislikeReview/request.json',
-      responseExamplePath: '../sample-data/api/app/review/dislikeReview/success1.json',
+    '/api/app/review/dislike': getConfig({
+      method: 'post',
+      tags: ['App'],
+      summary: 'Remove Like From The Review',
+      operationId: 'dislikeAppReview',
+      produces: 'application/json',
+      successDescription: 'Removed The Like For The Review',
+      requestExamplePath:
+        '../sample-data/api/app/review/dislikeReview/request.json',
+      responseExamplePath:
+        '../sample-data/api/app/review/dislikeReview/success1.json'
       // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
     }),
     '/gw/api/doctor/review/add': getConfig({
@@ -1816,6 +1845,150 @@ const swagger = {
         }
       }
     },
+    '/api/admin/invitation/send': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Invitation send',
+        operationId: 'invitationSend',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - Invitation send': {
+                  summary: '200 - ECOM-V2 - Invitation send',
+                  value: require('../sample-data/api/admin/invitation/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Invitation send',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/admin/invitation/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/auth/otp/generate': {
+      post: {
+        tags: ['Doctor'],
+        summary: 'generate otp',
+        operationId: 'generateOtp',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - generate otp': {
+                  summary: '200 - ECOM-V2 - generate otp',
+                  value: require('../sample-data/api/doctor/generateOtp/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'generate otp',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/doctor/generateOtp/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/auth/otp/validate': {
+      post: {
+        tags: ['Doctor'],
+        summary: 'Validate otp',
+        operationId: 'invitationSend',
+        produces: 'application/json',
+        consumes: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - ECOM-V2 - Validate otp': {
+                  summary: '200 - ECOM-V2 - Validate otp',
+                  value: require('../sample-data/api/doctor/validateotp/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Validate otp',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/doctor/validateotp/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    }
   },
 
   securityDefinitions: {
