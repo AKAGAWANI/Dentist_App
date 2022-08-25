@@ -4,7 +4,7 @@ const repository = require("./BannerRepository");
 function Service() {}
 
 Service.prototype.getAllBanners = async function () {
-  return repository.getAll("Banners");
+  return repository.getAll("Banner");
 };
 
 Service.prototype.addDetails = async function (data, modelName) {

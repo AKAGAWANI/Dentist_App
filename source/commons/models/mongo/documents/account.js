@@ -43,7 +43,8 @@ const AccountSchema = mongoose.Schema({
     active: String,
   }],
   occupation: Array,
-  incomeBand: String
+  incomeBand: String,
+  acceptedTnC: Boolean
 });
 
 // export model user with AccountSchema
