@@ -654,7 +654,7 @@ function Time(mobileNumber) {
     obj3 = {
       to: mobileNumber,
       body: encoder.encode(envproperties.DOWNLOAD_IOS),
-      template: '1007165533623754098'
+      template: '1007166155868510470'
     };
     data = await send(obj2);
     data = await send(obj3);
