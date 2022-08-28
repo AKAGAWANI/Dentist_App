@@ -102,7 +102,7 @@ function sendAWSEmail(data) {
   });
 }
 
-function sendSMS(data) {
+async function sendSMS(data) {
   // const baseURL = process.env.SMS_URL;
   // const apiKey = process.env.SMS_ACCESS_KEY;
   // const sender = process.env.SMS_SENDER;
@@ -169,7 +169,9 @@ function sendSMS(data) {
     let apiKey = process.env.SMSPROVIDER_APIKEY;
     let url = `https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=${apiKey}&MobileNo=${data.to}&SenderID=DRTETH&Message=${data.body}&ServiceName=TEMPLATE_BASED&DLTTemplateID=${data.template}`;
     logger.info(url);
-    fetch(url).then(res => logger.info(res.body));
+    let isSent = await fetch(url);
+    logger.info(isSent.body);
+    return isSent;
   } catch (error) {
     logger.error(error);
   }
