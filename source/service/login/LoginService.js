@@ -63,8 +63,8 @@ Service.prototype.generateLoginOTP = async function() {
 
 Service.prototype.prepareOTPMessage = async function(user, otp) {
   let data = {
-    mobile: user.mobile ? user.mobile : null,
-    email: user.email ? user.email : null,
+    mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
+    email: user.email ? crypto.decrypt(user.email) : null,
     subject: envproperties.OTP_SUB,
     var1: otp,
     var2: process.env.LOCAL_OTP_VALIDITY
