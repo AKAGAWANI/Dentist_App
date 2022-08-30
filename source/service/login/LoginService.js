@@ -110,7 +110,7 @@ Service.prototype.sendOTP = async function(msg) {
     }
 
   const sentSMS = smsFeed == undefined ? false : true;
-  const sentEMAIL = !!((emailFeed || {}).ResponseMetadata || {}).RequestId;
+  const sentEMAIL = !!(( await emailFeed || {}).ResponseMetadata || {}).RequestId;
   return { sentSMS, sentEMAIL };
 };
 

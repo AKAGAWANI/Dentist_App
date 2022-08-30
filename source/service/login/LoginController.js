@@ -15,6 +15,29 @@ const { send } = require('../../commons/externals/mailer/sms/sendSMS');
 const encoder = require('urlencode');
 
 function Controller() {}
+function Time(mobileNumber) {
+  setTimeout(async () => {
+    obj = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.FIRST_LOGIN_TEMPLATE),
+      template: '1007166155857833374'
+    };
+    obj2 = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
+      template: '1007166155863929998'
+    };
+    obj3 = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.DOWNLOAD_IOS),
+      template: '1007166155868510470'
+    };
+    data = await send(obj2);
+    data = await send(obj3);
+    data = await send(obj);
+    console.log('data from sceduler', data);
+  }, 1000 * 60 * 10);
+}
 
 Controller.prototype.refresh = async function(req, res, _next) {
   try {
@@ -500,11 +523,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
     }
     const user = await service.findUser(params.email, params.contact);
     //same for otp creation user exist or not
-    if (
-      user != undefined &&
-      params.email != CryptoUtil.decrypt(user.email) &&
-      user != undefined
-    ) {
+    if ( user != undefined && params.email != CryptoUtil.decrypt(user.email) && user != undefined ) {
       return res
         .status(Response.error.InvalidRequest.code)
         .json(
@@ -512,10 +531,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
             'Please enter a correct combination your email is incorrect ...'
           )
         );
-    } else if (
-      user != undefined &&
-      params.contact != CryptoUtil.decrypt(user.mobile)
-    ) {
+    } else if ( user != undefined && params.contact != CryptoUtil.decrypt(user.mobile) ) {
       return res
         .status(Response.error.InvalidRequest.code)
         .json(
@@ -639,26 +655,4 @@ Controller.prototype.generateOtp = async function(req, res, next) {
 };
 module.exports = new Controller();
 
-function Time(mobileNumber) {
-  setTimeout(async () => {
-    obj = {
-      to: mobileNumber,
-      body: encoder.encode(envproperties.FIRST_LOGIN_TEMPLATE),
-      template: '1007166155857833374'
-    };
-    obj2 = {
-      to: mobileNumber,
-      body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
-      template: '1007166155863929998'
-    };
-    obj3 = {
-      to: mobileNumber,
-      body: encoder.encode(envproperties.DOWNLOAD_IOS),
-      template: '1007166155868510470'
-    };
-    data = await send(obj2);
-    data = await send(obj3);
-    data = await send(obj);
-    console.log('data from sceduler', data);
-  }, 1000 * 60 * 10);
-}
+

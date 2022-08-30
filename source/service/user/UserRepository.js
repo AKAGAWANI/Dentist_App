@@ -6,28 +6,28 @@ const smsObj = require('../../commons/mailer/mailer.js');
 const ejs = require('ejs');
 const mailer = require('../../commons/externals/mailer/mailer');
 
-function Repository() {}
+function Repository() { }
 
-Repository.prototype.deleteAccount = async function(_id) {
+Repository.prototype.deleteAccount = async function (_id) {
   await User.remove({ _id });
   await Account.remove({ _id });
   return true;
 };
 
-Repository.prototype.deleteUserAccount = async function(_id) {
+Repository.prototype.deleteUserAccount = async function (_id) {
   await User.remove({ _id });
   await Account.remove({ _id });
   return true;
 };
 
-Repository.prototype.findUserByMobile = async function(mobile) {
+Repository.prototype.findUserByMobile = async function (mobile) {
   return User.findOne({ mobile: mobile }).exec();
 };
 
-Repository.prototype.findUserByEmail = async function(email) {
+Repository.prototype.findUserByEmail = async function (email) {
   return User.findOne({ email }).exec();
 };
-Repository.prototype.createUserWithMobile = async function(userObj) {
+Repository.prototype.createUserWithMobile = async function (userObj) {
   const user = new User();
   const account = new Account();
 
@@ -51,7 +51,7 @@ Repository.prototype.createUserWithMobile = async function(userObj) {
 
   return accountId;
 };
-Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
+Repository.prototype.sendOTPThroughEmail = async function (email, otp, name) {
   /*********** SENDING OTP TO THE USER'S EMAIL *********/
   let file = ``,
     subject = ``;
@@ -110,35 +110,17 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
     subject = 'Here comes the Doctor-Dentist validation Otp';
   }
 
-  await fs.readFile(file, 'utf8', async function(error, template) {
-    template = ejs.render(template, { USEROTP: otp });
-
-    /*
-    Sending data through aws
-    data = {
-      body:HTML template,
-      email: Receiver's email
-      subject: subject of email
-    }
-    */
-    let data = {};
-    data.subject = subject;
-    data.body = template;
-    data.email = email;
-    mailer.email.send(data, true);
-    // smsObj.sendMail2({
-    //   to: email,
-    //   body: subject,
-    //   template: data
-    // });
-    if (error) {
-      throw error;
-    }
-  });
+  let template = fs.readFileSync(file, 'utf8')
+  template = ejs.render(template, { USEROTP: otp });
+  let data = {};
+  data.subject = subject;
+  data.body = template;
+  data.email = email;
+  return await mailer.email.send(data, true);
 };
 
 
-Repository.prototype.updateProfile = async function(data) {
+Repository.prototype.updateProfile = async function (data) {
   const isUpdated = await User.updateOne(
     { _id: data.userId },
     { ...data }
