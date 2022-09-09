@@ -20,10 +20,10 @@ function sendEmail(data) {
 
   const mailOptions = {
     from: process.env.ZOHO_FROM_ADDRESS, // sender address
-    to: "sahooamit1418@gmail.com", // list of receivers
-    subject: "Testing Automated Email", // Subject line
+    to: data.to, // list of receivers
+    subject: data.subject, // Subject line
     // text: data.body, // plain text body
-    html: "<h3>Hi This is a Test Email </h3> " // html body
+    html: data.template// html body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
