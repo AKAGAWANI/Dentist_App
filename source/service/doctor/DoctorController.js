@@ -2,7 +2,7 @@ const Response = require('../../commons/responses/EcomResponseManager');
 const logger = require('../../commons/logger/logger');
 const service = require('./DoctorService');
 const mongoose = require('mongoose');
-const { crypto } = require('./../../commons/util/UtilManager');
+const { crypto, utility } = require('./../../commons/util/UtilManager');
 
 function Controller() {}
 
@@ -129,6 +129,121 @@ Controller.prototype.add = async function (req, res, next) {
     logger.error(e.message);
     console.log(e);
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());
+  }
+};
+
+//Generate otp for verification
+Controller.prototype.generateOtp = async function(req, res, next) {
+  try {
+    /*
+    1. Validate email, phone and code exist or not ?
+    2. Valaidate email and phone exist or not?
+    3. If exist check for code, is code valid?
+    4. If correct send otp to both email and phone.
+    */
+
+    //1. Validate email, phone and code exist or not ?
+    let { email, code, mobileNumber } = req.body;
+
+    //validate email and phone
+    if (!email || !code) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.InvalidRequest.json(
+            'email and code are mandatory fields.'
+          )
+        );
+    }
+
+    if (
+      utility.isValidEmail(email) == false &&
+      (email === undefined) == false
+    ) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(Response.error.Forbidden.json('Please enter a valid email ...'));
+    }
+
+    if (
+      utility.isValidMobileNumber(mobileNumber) == false &&
+      (mobileNumber === undefined) == false
+    ) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.Forbidden.json(
+            'Please enter a valid mobile number ...'
+          )
+        );
+    }
+
+    //2. Validate email and phone exist or not?
+    isValid = await service.validateDetails({ email, mobileNumber, code });
+    if (!isValid) {
+      res
+        .status(Response.error.NotFound.code)
+        .json(Response.error.NotFound.json());
+    }
+
+    //4. If correct send otp to both email and phone.
+    const otp = await service.generateLoginOTP();
+
+    const msg = await service.prepareOTPMessage(
+      { mobile: mobileNumber, email },
+      otp
+    );
+
+    // send email and sms
+    await service.sendOTP(msg);
+
+    //5. Update otp in the database.
+    service.updateOtp(otp, isValid.id);
+
+    //6. send info to the user.
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: isValid._id,
+        message: 'OTP generated for verification'
+      })
+    );
+  } catch (e) {
+    console.log(e);
+    logger.error(e.message);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+};
+
+Controller.prototype.validateOtp = async function(req, res, next) {
+  try {
+    let { id, otp } = req.body;
+    if (!id || !otp) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.InvalidRequest.json('id and otp are mandatory fields.')
+        );
+    }
+    console.log(id, otp);
+    let isCorrect = await service.validateOtp(id, otp);
+    if (!isCorrect) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(Response.error.InvalidRequest.json('Incorrect otp.'));
+    }
+    res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        message: 'OTP verified'
+      })
+    );
+  } catch (e) {
+    console.log(e);
+    logger.error(e.message);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
   }
 };
 

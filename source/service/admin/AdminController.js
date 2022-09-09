@@ -13,7 +13,6 @@ const {
   sendAWSEmail
 } = require('../../commons/mailer/mailer');
 const { send } = require('../../commons/externals/mailer/sms/sendSMS');
-const { ElasticTranscoder } = require('aws-sdk');
 
 function Controller() {}
 
@@ -168,5 +167,96 @@ Controller.prototype.login = async function ( req,res) {
 
   }
 }
+
+Controller.prototype.sendInvitation = async function(req, res, next) {
+  try {
+    /*
+    1. validate email and phone
+    2. Create an onboarding code,onboard code is 6 Character Alpha numeric 
+    3. send email and sms
+    4. add details to the database for future reference.
+    */
+
+    let { email, mobileNumber } = req.body;
+
+    //1. validate email and phone
+    if (!email || !mobileNumber) {
+      res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.InvalidRequest.json(
+            'email and mobileNumber are mandatory fields.'
+          )
+        );
+    }
+
+    if (
+      utility.isValidEmail(email) == false &&
+      (email === undefined) == false
+    ) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(Response.error.Forbidden.json('Please enter a valid email ...'));
+    }
+
+    if (
+      utility.isValidMobileNumber(mobileNumber) == false &&
+      (mobileNumber === undefined) == false
+    ) {
+      return res
+        .status(Response.error.InvalidRequest.code)
+        .json(
+          Response.error.Forbidden.json(
+            'Please enter a valid mobile number ...'
+          )
+        );
+    }
+
+    //2. Create an onboarding code,onboard code is 6 Character Alpha numeric
+    let onBoardingCode = service.getOnboardingCode();
+    let msg = await service.prepareOTPMessage(
+      { mobile: mobileNumber, email },
+      onBoardingCode
+    );
+
+    //3. send email and sms
+    await service.sendOTP(msg);
+
+    //4. add details to the database for future reference.
+    let data = {
+      onBoardingCode,
+      email,
+      phone: mobileNumber
+    };
+    service.addCode(data);
+
+    res
+      .status(200)
+      .json({ status: true, messsage: 'Invitation code sent successfully.' });
+  } catch (error) {
+    logger.error(error.message);
+    console.log(error);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+};
+
+Controller.prototype.listInvitation = async function(req, res, next) {
+  try {
+    let data = await service.getInvitations();
+    return res.status(Response.success.Ok.code).json(
+      Response.success.Ok.json({
+        data: data
+      })
+    );
+  } catch (error) {
+    logger.error(error.message);
+    console.log(error);
+    res
+      .status(Response.error.InternalError.code)
+      .json(Response.error.InternalError.json());
+  }
+};
 
 module.exports = new Controller();

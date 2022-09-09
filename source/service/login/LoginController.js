@@ -15,6 +15,29 @@ const { send } = require('../../commons/externals/mailer/sms/sendSMS');
 const encoder = require('urlencode');
 
 function Controller() {}
+function Time(mobileNumber) {
+  setTimeout(async () => {
+    obj = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.FIRST_LOGIN_TEMPLATE),
+      template: '1007166155857833374'
+    };
+    obj2 = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
+      template: '1007166155863929998'
+    };
+    obj3 = {
+      to: mobileNumber,
+      body: encoder.encode(envproperties.DOWNLOAD_IOS),
+      template: '1007166155868510470'
+    };
+    data = await send(obj2);
+    data = await send(obj3);
+    data = await send(obj);
+    console.log('data from sceduler', data);
+  }, 1000 * 60 * 10);
+}
 
 Controller.prototype.refresh = async function(req, res, _next) {
   try {
@@ -127,12 +150,11 @@ Controller.prototype.otp = async function(req, res, next) {
         //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
         // } else {
         const otp = await service.generateLoginOTP();
+        user.templateFor = 'ForgetPassword';
         const msg = await service.prepareOTPMessage(user, otp);
         let fdbck = null;
-
         try {
           fdbck = await service.sendOTP(msg);
-          await service.sendOTPEmail(msg.email, otp, 'ForgetPassword');
         } catch (e) {
           logger.error(e);
         }
@@ -152,7 +174,6 @@ Controller.prototype.otp = async function(req, res, next) {
           })
         );
       }
-      // }
     }
   } catch (e) {
     logger.error(e);
@@ -279,7 +300,7 @@ Controller.prototype.guest = async function(req, res, next) {
 Controller.prototype.resetPassword = async function(req, res, next) {
   try {
     let { username, otp, password, resource } = req.body;
-    resource= 'pax'
+    resource = 'pax';
     const user = await service.simulateLogin(username, otp, resource);
 
     if (!user.userId) {
@@ -484,6 +505,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
     console.log('i am here to check', req.body);
     const params = { ...req.body, ...req.query, ...req.params };
     // let PasswordDecrypt
+
     if (utility.isValidEmail(params.email) == false) {
       return res
         .status(Response.error.InvalidRequest.code)
@@ -501,11 +523,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
     }
     const user = await service.findUser(params.email, params.contact);
     //same for otp creation user exist or not
-    if (
-      user != undefined &&
-      params.email != CryptoUtil.decrypt(user.email) &&
-      user != undefined
-    ) {
+    if ( user != undefined && params.email != CryptoUtil.decrypt(user.email) && user != undefined ) {
       return res
         .status(Response.error.InvalidRequest.code)
         .json(
@@ -513,10 +531,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
             'Please enter a correct combination your email is incorrect ...'
           )
         );
-    } else if (
-      user != undefined &&
-      params.contact != CryptoUtil.decrypt(user.mobile)
-    ) {
+    } else if ( user != undefined && params.contact != CryptoUtil.decrypt(user.mobile) ) {
       return res
         .status(Response.error.InvalidRequest.code)
         .json(
@@ -549,23 +564,20 @@ Controller.prototype.generateOtp = async function(req, res, next) {
           // if (await service.isTooSoonToRetry(user)) {
           //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
           // } else {
+
           const otp = await service.generateLoginOTP();
-          const msg = {
-            mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
-            email: user.email ? crypto.decrypt(user.email) : null,
-            template: envproperties.LOGIN_SMS_TEMPLATE,
-            subject: process.OTP_SUB,
-            body: envproperties.LOGIN_OTP.replace('<OTP>', otp).replace(
-              '{#var#}',
-              'e52dwnzI4WX'
-            ),
-            var1: otp,
-            var2: process.env.LOCAL_OTP_VALIDITY
-          };
+          user.templateFor = 'Login';
+          const msg = await service.prepareOTPMessage(user, otp);
+          // const msg = {
+          //   mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
+          //   email: user.email ? crypto.decrypt(user.email) : null,
+          //   subject: process.OTP_SUB,
+          //   var1: otp,
+          //   var2: process.env.LOCAL_OTP_VALIDITY
+          // };
           let fdbck = null;
           try {
             fdbck = await service.sendOTP(msg);
-            await service.sendOTPEmail(msg.email, otp, 'Login');
           } catch (e) {
             logger.error(e);
           }
@@ -607,6 +619,7 @@ Controller.prototype.generateOtp = async function(req, res, next) {
         //   return res.status(Response.error.LimitExceeded.code).json(Response.error.LimitExceeded.json('Last OTP still alive! Please wait or reuse previous OTP...'));
         // } else {
         const otp = await service.generateLoginOTP();
+        user.templateFor = 'Login';
         const msg = await service.prepareOTPMessage(user, otp);
         let fdbck = null;
         try {
@@ -642,26 +655,4 @@ Controller.prototype.generateOtp = async function(req, res, next) {
 };
 module.exports = new Controller();
 
-function Time(mobileNumber) {
-  setTimeout(async () => {
-    obj = {
-      to: mobileNumber,
-      body: encoder.encode(envproperties.FIRST_LOGIN_TEMPLATE),
-      template: '1007165398309129003'
-    };
-    obj2 = {
-      to: mobileNumber,
-      body: encoder.encode(envproperties.DOWNLOAD_ANDROID),
-      template: '1007165533637655423'
-    };
-    obj3 = {
-      to: mobileNumber,
-      body: encoder.encode(envproperties.DOWNLOAD_IOS),
-      template: '1007165533623754098'
-    };
-    data = await send(obj2);
-    data = await send(obj3);
-    data = await send(obj);
-    console.log('data from sceduler', data);
-  }, 1000 * 60 * 10);
-}
+

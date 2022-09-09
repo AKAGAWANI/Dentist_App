@@ -4,29 +4,30 @@ const fs = require('fs');
 const path = require('path');
 const smsObj = require('../../commons/mailer/mailer.js');
 const ejs = require('ejs');
+const mailer = require('../../commons/externals/mailer/mailer');
 
-function Repository() {}
+function Repository() { }
 
-Repository.prototype.deleteAccount = async function(_id) {
+Repository.prototype.deleteAccount = async function (_id) {
   await User.remove({ _id });
   await Account.remove({ _id });
   return true;
 };
 
-Repository.prototype.deleteUserAccount = async function(_id) {
+Repository.prototype.deleteUserAccount = async function (_id) {
   await User.remove({ _id });
   await Account.remove({ _id });
   return true;
 };
 
-Repository.prototype.findUserByMobile = async function(mobile) {
+Repository.prototype.findUserByMobile = async function (mobile) {
   return User.findOne({ mobile: mobile }).exec();
 };
 
-Repository.prototype.findUserByEmail = async function(email) {
+Repository.prototype.findUserByEmail = async function (email) {
   return User.findOne({ email }).exec();
 };
-Repository.prototype.createUserWithMobile = async function(userObj) {
+Repository.prototype.createUserWithMobile = async function (userObj) {
   const user = new User();
   const account = new Account();
 
@@ -50,7 +51,7 @@ Repository.prototype.createUserWithMobile = async function(userObj) {
 
   return accountId;
 };
-Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
+Repository.prototype.sendOTPThroughEmail = async function (email, otp, name) {
   /*********** SENDING OTP TO THE USER'S EMAIL *********/
   let file = ``,
     subject = ``;
@@ -91,22 +92,35 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
     subject = 'Here comes the Doctor-Dentist App link for you';
   }
 
-  await fs.readFile(file, 'utf8', async function(error, data) {
-    data = ejs.render(data, { USEROTP: otp });
+  //invitation template
+  if (name == 'Invitation') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/invitationEmailTemplate.html'
+    );
+    subject = 'Here comes the Doctor-Dentist onboarding code';
+  }
 
-    smsObj.sendMail2({
-      to: email,
-      body: subject,
-      template: data
-    });
-    if (error) {
-      throw error;
-    }
-  });
+  //inivtation otp template
+  if (name == 'InvitationOtp') {
+    file = path.join(
+      __dirname,
+      '../../views/templates/invitationOtpEmailTemplate.html'
+    );
+    subject = 'Here comes the Doctor-Dentist validation Otp';
+  }
+
+  let template = fs.readFileSync(file, 'utf8')
+  template = ejs.render(template, { USEROTP: otp });
+  let data = {};
+  data.subject = subject;
+  data.body = template;
+  data.email = email;
+  return await mailer.email.send(data, true);
 };
 
 
-Repository.prototype.updateProfile = async function(data) {
+Repository.prototype.updateProfile = async function (data) {
   const isUpdated = await User.updateOne(
     { _id: data.userId },
     { ...data }

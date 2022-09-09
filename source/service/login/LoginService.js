@@ -62,18 +62,30 @@ Service.prototype.generateLoginOTP = async function() {
 };
 
 Service.prototype.prepareOTPMessage = async function(user, otp) {
-  return {
+  let data = {
     mobile: user.mobile ? crypto.decrypt(user.mobile) : null,
     email: user.email ? crypto.decrypt(user.email) : null,
-    template: envproperties.FORGOT_PASSWORD_TEMPLATE,
     subject: envproperties.OTP_SUB,
-    body: envproperties.FORGOT_PASSWORD_OTP.replace('<OTP>', otp).replace(
-      '{#var#}',
-      'e52dwnzI4WX'
-    ),
     var1: otp,
     var2: process.env.LOCAL_OTP_VALIDITY
   };
+  if (user.templateFor == 'ForgetPassword') {
+    data.templateName = 'ForgetPassword';
+    data.template = envproperties.FORGOT_PASSWORD_TEMPLATE;
+    data.body = envproperties.FORGOT_PASSWORD_OTP.replace('<OTP>', otp).replace(
+      '{#var#}',
+      'e52dwnzI4WX'
+    );
+  }
+  if (user.templateFor == 'Login') {
+    data.templateName = 'Login';
+    data.template = envproperties.LOGIN_SMS_TEMPLATE;
+    data.body = envproperties.LOGIN_OTP.replace('<OTP>', otp).replace(
+      '{#var#}',
+      'e52dwnzI4WX'
+    );
+  }
+  return data;
 };
 
 Service.prototype.sendOTP = async function(msg) {
@@ -82,19 +94,23 @@ Service.prototype.sendOTP = async function(msg) {
     try {
       msg.to = msg.mobile;
       msg.body = encoder.encode(msg.body);
-      smsFeed = await Mailer.sms.send(msg);
+      smsFeed = await smsObj.sendSMS(msg);
     } catch (e) {
       logger.error(e);
     }
   if (msg.email)
     try {
-      emailFeed = await Mailer.email.send(msg);
+      emailFeed = await UserRepository.sendOTPThroughEmail(
+        msg.email, //email
+        msg.var1, //otp
+        msg.templateName //to select template
+      );
     } catch (e) {
       logger.error(e);
     }
 
   const sentSMS = smsFeed == undefined ? false : true;
-  const sentEMAIL = !!((emailFeed || {}).ResponseMetadata || {}).RequestId;
+  const sentEMAIL = !!(( await emailFeed || {}).ResponseMetadata || {}).RequestId;
   return { sentSMS, sentEMAIL };
 };
 

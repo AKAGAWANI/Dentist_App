@@ -6,18 +6,17 @@ const UserRepository = require('../user/UserRepository');
 const { API } = require('../../commons/config/ConfigManager');
 const {
   Scheduler,
-  Context,
+  Context
 } = require('../../commons/context/pseudoUserContext');
 const repository = require('./AdminRepository');
 const {
   crypto: CryptoUtil,
-  utility: GeneralUtil,
+  utility: GeneralUtil
 } = require('../../commons/util/UtilManager');
 const { utility: utils } = require('../../commons/util/UtilManager');
 const envproperties = require('../../properties.json');
 const smsObj = require('../../commons/mailer/mailer.js');
 const OAuth2 = require('../../commons/auth/OAuth2');
-
 function Service() {}
 
 Service.prototype.simulateLogin = async function (
@@ -71,6 +70,62 @@ Service.prototype.adminCreate = async function (data) {
 
 Service.prototype.sendEmail = async function (email, name) {
   UserRepository.sendOTPThroughEmail(email, name);
+};
+
+//craete an onboarding code, also check if exist, create new one
+Service.prototype.getOnboardingCode = function() {
+  return repository.getUniqueCode();
+};
+
+Service.prototype.prepareOTPMessage = async function(user, otp) {
+  return {
+    mobile: user.mobile ? user.mobile : null,
+    email: user.email ? user.email : null,
+    template: envproperties.FORGOT_PASSWORD_TEMPLATE,
+    subject: envproperties.OTP_SUB,
+    body: envproperties.FORGOT_PASSWORD_OTP.replace('<OTP>', otp).replace(
+      '{#var#}',
+      'e52dwnzI4WX'
+    ),
+    var1: otp,
+    var2: process.env.LOCAL_OTP_VALIDITY
+  };
+};
+
+Service.prototype.sendOTP = async function(msg) {
+  let smsFeed, emailFeed;
+  if (msg.mobile)
+    try {
+      msg.to = msg.mobile;
+      msg.body = encoder.encode(msg.body);
+      msg.template = envproperties.FORGOT_PASSWORD_TEMPLATE;
+      smsFeed = await smsObj.sendSMS(msg);
+    } catch (e) {
+      logger.error(e);
+    }
+  if (msg.email)
+    try {
+      msg.templateName = 'Invitation';
+      emailFeed = await UserRepository.sendOTPThroughEmail(
+        msg.email, //email
+        msg.var1, //otp
+        msg.templateName //to select template
+      );
+    } catch (e) {
+      logger.error(e);
+    }
+
+  const sentSMS = smsFeed == undefined ? false : true;
+  const sentEMAIL = !!((emailFeed || {}).ResponseMetadata || {}).RequestId;
+  return { sentSMS, sentEMAIL };
+};
+
+Service.prototype.addCode = async function(data) {
+  return repository.addDetails(data);
+};
+
+Service.prototype.getInvitations = async function() {
+  return repository.invitationsList();
 };
 
 Service.prototype.loginAdmin = async function (req) {
