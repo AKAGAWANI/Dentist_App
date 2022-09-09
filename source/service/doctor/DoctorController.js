@@ -118,9 +118,9 @@ function Controller() {}
 // };
 
 //adding doctors
-Controller.prototype.add = async function (req, res, next) {
+Controller.prototype.add = async function (req, res) {
   try {
-    let data = await service.addDetails(req);
+    let data = await service.addDoctorDetails(req);
     res.status(Response.success.Ok.code).json(Response.success.Ok.json({
       message: 'Doctor added successfully',
       data: data,

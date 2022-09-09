@@ -9,7 +9,7 @@ function Service() {}
 
 /****************** DOCTOR'S SERVICES ***********************/
 
-Service.prototype.addDetails = async function (req) {
+Service.prototype.addDoctorDetails = async function (req) {
   let photo;
   if (req.file != null) {
     photo = req.file.location;
@@ -60,6 +60,7 @@ Service.prototype.addDetails = async function (req) {
       },
     };
     return repository.createDocument(doctorObj, 'Doctor');
+
   } else {
     return false;
   }
