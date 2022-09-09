@@ -90,9 +90,10 @@ Repository.prototype.sendOTPThroughEmail = async function(email, otp, name) {
   await fs.readFile(file, 'utf8', async function(error, data) {
     data = ejs.render(data, { USEROTP: otp });
 
-    smsObj.sendMail2({
+      // smsObj.sendTransactionalEmail(data);
+    smsObj.sendTransactionalEmail({
       to: email,
-      body: subject,
+      subject: subject,
       template: data
     });
     if (error) {

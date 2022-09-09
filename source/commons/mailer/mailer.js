@@ -9,27 +9,61 @@ require('dotenv').config();
 function sendEmail(data) {
   logger.info('Email instance initated.........');
   const transporter = nodeMailer.createTransport({
-    host: process.env.HOST_NAME,
-    port: process.env.PORT,
+    host: process.env.ZOHO_SMTP_SERVER,
+    port: process.env.ZOHO_SMTP_PORT,
     secure: true,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PWD
+      user: process.env.ZOHO_USERNAME,
+      pass: process.env.ZOHO_PASSWORD
     }
   });
 
   const mailOptions = {
-    from: process.env.EMAIL_USER, // sender address
-    to: data.to, // list of receivers
-    subject: data.subject, // Subject line
+    from: process.env.ZOHO_FROM_ADDRESS, // sender address
+    to: "sahooamit1418@gmail.com", // list of receivers
+    subject: "Testing Automated Email", // Subject line
     // text: data.body, // plain text body
-    html: data.body // html body
+    html: "<h3>Hi This is a Test Email </h3> " // html body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     logger.info(`Sending an Email to.........${data.to}`);
     if (error) {
       logger.error('Error while sending an email........');
+      console.log(error);
+      return error;
+    }
+    logger.info('Message %s sent: %s', info.messageId, info.response);
+    return 'Email Sent';
+  });
+}
+
+function sendTransactionalEmail(data) {
+  // logger.info('Transactional Email instance initated.........');
+  const transporter = nodeMailer.createTransport({
+    host: process.env.ZEPTO_SMTP_SERVER,
+    port: process.env.ZEPTO_SMTP_PORT,
+    secure: true,
+    auth: {
+      user: process.env.ZEPTO_USERNAME,
+      pass: process.env.ZEPTO_PASSWORD1
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.ZEPTO_FROM_ADDRESS, // sender address
+    to: data.to, // list of receivers
+    subject: data.subject, // Subject line
+    // text: data.body, // plain text body
+    html: data.template // html body
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    console.log(info.messageId, info.response);
+    logger.info(`Sending an Email to.........${data.to}`);
+    if (error) {
+      logger.error('Error while sending an email........');
+      console.log(error);
       return error;
     }
     logger.info('Message %s sent: %s', info.messageId, info.response);
@@ -179,5 +213,6 @@ module.exports = {
   sendEmail,
   sendAWSEmail,
   sendSMS,
+  sendTransactionalEmail,
   sendMail2
 };
