@@ -1,66 +1,5 @@
 require('dotenv');
 const errors = require('./error');
-
-function getConfig({
-  method,
-  tags,
-  summary,
-  operationId,
-  consumes,
-  produces,
-  successDescription,
-  parameters,
-  requestExamplePath,
-  responseExamplePath
-}) {
-  return {
-    [method]: {
-      tags,
-      summary,
-      operationId,
-      consumes: [consumes],
-      produces: [produces],
-      requestBody: requestExamplePath
-        ? {
-            required: true,
-            content: {
-              [consumes]: {
-                schema: {
-                  type: 'object'
-                },
-                example: require(requestExamplePath)
-              }
-            }
-          }
-        : null,
-      parameters: parameters ? require(parameters) : null,
-      responses: {
-        success: {
-          successDescription,
-          content: {
-            [produces]: {
-              examples: [
-                {
-                  summary: '200 - DDA APP',
-                  value: require(responseExamplePath)
-                }
-              ]
-            }
-          }
-        },
-        error: {
-          description: 'Error',
-          content: {
-            'application/json': {
-              examples: errors
-            }
-          }
-        }
-      }
-    }
-  };
-}
-
 const swagger = {
   openapi: '3.0.3',
   info: {
@@ -68,14 +7,14 @@ const swagger = {
     description:
       'Updated: [20220629] | All req must have Authorization[:accessToken] in headers { exceptions: [/login/*] }',
     contact: {
-      email: 'pranav.sinha@graymatter.co.in'
+      email: 'avakash.cse@gmail.com'
     },
     version: '3.0.0'
   },
   servers: [
     {
       name: 'DDA AWS',
-      url: `http://13.232.208.184:9091`
+      url: `http://http://65.1.216.213:9091`
     }
   ],
   tags: [
@@ -86,6 +25,10 @@ const swagger = {
     {
       name: 'Login',
       description: 'DDA : login APIs'
+    },
+    {
+      name: 'Password',
+      description: 'DDA : Password APIs'
     },
     {
       name: 'User',
@@ -109,16 +52,86 @@ const swagger = {
     }
   ],
   paths: {
-    '/logout': getConfig({
-      method: 'put',
-      tags: ['Logout'],
-      summary:
-        'Initiates logout process; revokes access and refresh token; pass both Authorization[:accessToken] and RefreshToken[:refreshToken] in headers',
-      operationId: 'logout',
-      produces: 'application/json',
-      successDescription: 'Logout',
-      responseExamplePath: '../sample-data/api/logout/signoff/success.json'
-    }),
+    '/logout': {
+      put: {
+        tags: [ 'Logout' ],
+        summary: 'Initiates logout process; revokes access and refresh token; pass both Authorization[:accessToken] and RefreshToken[:refreshToken] in headers',
+        operationId: 'logout',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Logout',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      status: 200,
+                      type: 'success',
+                      message: 'Success! Access token revoked...'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
     '/api/insurance/submitDetails': {
       post: {
         tags: ['Insurance'],
@@ -408,7 +421,6 @@ const swagger = {
         }
       }
     },
-
     '/api/banner/list': {
       get: {
         tags: ['Banner'],
@@ -431,7 +443,6 @@ const swagger = {
         }
       }
     },
-
     '/api/terms/createTerms': {
       post: {
         tags: ['Terms and Condition'],
@@ -502,7 +513,6 @@ const swagger = {
         }
       }
     },
-
     '/api/terms/acceptTerms': {
       patch: {
         tags: ['Terms and Condition'],
@@ -522,38 +532,6 @@ const swagger = {
                   summary: '200 - Terms and Condition',
                   value: require('../sample-data/api/terms/acceptTerms/request.json')
                 }
-              }
-            }
-          }
-        }
-      }
-    },
-    '/login/guest': {
-      get: {
-        tags: ['Login'],
-        summary: 'Initiates login process for guest user',
-        operationId: 'guest-login',
-        consumes: ['application/json'],
-        produces: ['application/json'],
-        responses: {
-          success: {
-            description: 'Login Success',
-            content: {
-              'application/json': {
-                examples: [
-                  {
-                    summary: '200 - GATEWAY',
-                    value: require('../sample-data/api/login/localLogin/success.json')
-                  }
-                ]
-              }
-            }
-          },
-          error: {
-            description: 'Error',
-            content: {
-              'application/json': {
-                examples: errors
               }
             }
           }
@@ -614,7 +592,7 @@ const swagger = {
     },
     '/login/otp': {
       patch: {
-        tags: ['Login'],
+        tags: ['Password'],
         summary: 'Generates OTP against mobile/email provided',
         operationId: 'otp-login',
         consumes: ['application/json'],
@@ -710,7 +688,7 @@ const swagger = {
     },
     '/login/reset/password': {
       put: {
-        tags: ['Login'],
+        tags: ['Password'],
         summary: 'Resets password. Works in tandem with /login/otp',
         operationId: 'reset-password',
         consumes: ['application/json'],
@@ -756,258 +734,6 @@ const swagger = {
         }
       }
     },
-    '/login/google': {
-      get: {
-        tags: ['Login'],
-        summary: 'Initiates login process using Google auth',
-        operationId: 'google-login',
-        responses: {
-          success: {
-            description:
-              'Login Params embedded in URL { userId, accessToken, refreshToken, expiresAt }',
-            content: {}
-          }
-        }
-      }
-    },
-    '/login/facebook': {
-      get: {
-        tags: ['Login'],
-        summary: 'Initiates login process using Facebook auth',
-        operationId: 'facebook-login',
-        responses: {
-          success: {
-            description:
-              'Login Params embedded in URL { userId, accessToken, refreshToken, expiresAt }',
-            content: {}
-          }
-        }
-      }
-    },
-    '/api/user/register': {
-      post: {
-        tags: ['User'],
-        summary: 'Registration',
-        operationId: 'User',
-        consumes: ['application/json'],
-        produces: ['application/json'],
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object'
-              },
-              examples: {
-                Register: {
-                  summary: '200 - Register',
-                  value: require('../sample-data/api/user/register/request.json')
-                }
-              }
-            }
-          }
-        },
-        responses: {
-          success: {
-            description: 'Success',
-            content: {
-              'application/json': {
-                examples: [
-                  {
-                    summary: '200 - GATEWAY',
-                    value: require('../sample-data/api/user/register/success.json')
-                  }
-                ]
-              }
-            }
-          },
-          error: {
-            description: 'Error',
-            content: {
-              'application/json': {
-                examples: errors
-              }
-            }
-          }
-        }
-      }
-    },
-    '/login/twitter': {
-      get: {
-        tags: ['Login'],
-        summary: 'Initiates login process using Twitter auth',
-        operationId: 'twitter-login',
-        responses: {
-          success: {
-            description:
-              'Login Params embedded in URL { userId, accessToken, refreshToken, expiresAt }',
-            content: {}
-          }
-        }
-      }
-    },
-    '/login/refresh': {
-      put: {
-        tags: ['Login'],
-        summary:
-          'Generates fresh access-token by passing refresh-token [:RefreshToken] in headers',
-        operationId: 'refresh-login',
-        responses: {
-          success: {
-            description: 'Access Token Refresh',
-            content: {
-              'application/json': {
-                examples: [
-                  {
-                    summary: '200 - GATEWAY',
-                    value: require('../sample-data/api/login/localLogin/success.json')
-                  }
-                ]
-              }
-            }
-          },
-          error: {
-            description: 'Error',
-            content: {
-              'application/json': {
-                examples: errors
-              }
-            }
-          }
-        }
-      }
-    },
-    '/gw/api/user/permissions/:appType': {
-      get: {
-        tags: ['Login'],
-        summary:
-          '@DEPRECATED : Returns hierarchical component wise configuration of front-end UAC',
-        parameters: [
-          {
-            in: 'path',
-            name: 'appType',
-            schema: {
-              type: 'string'
-            },
-            required: true,
-            description:
-              'AppType -> [pax, storeportal, serviceportal, airportportal, commandcenter, helpdesk]'
-          }
-        ],
-        operationId: 'user-permission-config',
-        responses: {
-          success: {
-            description: 'UAC config for front-end applications',
-            content: {
-              'application/json': {
-                examples: [
-                  {
-                    summary: '200 - ECOM-V2',
-                    value: require('../sample-data/api/login/permissions/success.json')
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    '/gw/api/user/permissions/v2/:appType': {
-      get: {
-        tags: ['Login'],
-        summary:
-          'Returns flat permissions config for UAC; overrides already taken care of',
-        parameters: [
-          {
-            in: 'path',
-            name: 'appType',
-            schema: {
-              type: 'string'
-            },
-            required: true,
-            description:
-              'Suggestions for parameter : AppType -> [pax, storeportal, serviceportal, airportportal, commandcenter, helpdesk]'
-          }
-        ],
-        operationId: 'user-permissionv2-config',
-        responses: {
-          success: {
-            description: 'UAC config for front-end applications',
-            content: {
-              'application/json': {
-                examples: [
-                  {
-                    summary: '200 - ECOM-V2',
-                    value: require('../sample-data/api/login/permissionsV2/success.json')
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    '/gw/api/user/info': getConfig({
-      method: 'get',
-      tags: ['User'],
-      summary: 'Basic user information',
-      operationId: 'basicUserInfo',
-      produces: 'application/json',
-      successDescription: 'User Info',
-      responseExamplePath: '../sample-data/api/user/info/success.json'
-    }),
-    '/gw/api/user/request/update/email/:email': getConfig({
-      method: 'get',
-      tags: ['User'],
-      summary:
-        'Initiates email change process. Will send OTP to registered mobile number and new Email ID (which is expected to be set)',
-      operationId: 'requestEmailUpdate',
-      produces: 'application/json',
-      successDescription: 'Request Email Update',
-      parameters: '../sample-data/api/user/emailUpdate/request1.json',
-      responseExamplePath: '../sample-data/api/user/emailUpdate/success1.json'
-    }),
-    '/gw/api/user/update/email': getConfig({
-      method: 'put',
-      tags: ['User'],
-      summary: 'Updates Email iff OTP from mobile and new Email ID match',
-      operationId: 'updateUserEmail',
-      produces: 'application/json',
-      successDescription: 'Update Email',
-      requestExamplePath: '../sample-data/api/user/emailUpdate/request2.json',
-      responseExamplePath: '../sample-data/api/user/emailUpdate/success2.json'
-    }),
-    '/gw/api/user/request/update/mobile/:mobile': getConfig({
-      method: 'get',
-      tags: ['User'],
-      summary:
-        'Initiates Mobile change process. Will send OTP to registered Email ID and new Mobile number (which is expected to be set)',
-      operationId: 'requestMobileUpdate',
-      produces: 'application/json',
-      successDescription: 'Request Mobile Update',
-      parameters: '../sample-data/api/user/mobileUpdate/request1.json',
-      responseExamplePath: '../sample-data/api/user/mobileUpdate/success1.json'
-    }),
-    '/gw/api/user/update/mobile': getConfig({
-      method: 'put',
-      tags: ['User'],
-      summary: 'Updates Mobile iff OTP from Email ID and new Mobile match',
-      operationId: 'updateUserMobile',
-      produces: 'application/json',
-      successDescription: 'Update Email',
-      requestExamplePath: '../sample-data/api/user/mobileUpdate/request2.json',
-      responseExamplePath: '../sample-data/api/user/mobileUpdate/success2.json'
-    }),
-    '/gw/api/user/delete': getConfig({
-      method: 'post',
-      tags: ['User'],
-      summary: 'Delete Accound Permanently',
-      operationId: 'deleteAccount',
-      produces: 'application/json',
-      successDescription: 'Delete Account - Not Reversible',
-      requestExamplePath: '../sample-data/api/user/delete/request.json',
-      responseExamplePath: '../sample-data/api/user/delete/success.json'
-    }),
     '/api/doctor/create': {
       post: {
         tags: ['Doctor'],
@@ -1056,33 +782,964 @@ const swagger = {
         }
       }
     },
-    '/api/doctor/get': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: "Get all doctor's information",
-      operationId: 'allDoctorInfo',
-      produces: 'application/json',
-      successDescription: 'Doctors Info',
-      responseExamplePath: '../sample-data/api/doctor/get/success.json'
-    }),
-    '/api/doctor/get/:id': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: "Get doctor's information by Id",
-      operationId: 'BasicDoctorInfo',
-      produces: 'application/json',
-      successDescription: 'Doctor Info',
-      responseExamplePath: '../sample-data/api/doctor/get/success1.json'
-    }),
-    '/api/doctor/list/:city': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: "Get doctor's information by city",
-      operationId: 'BasicDoctorInfo',
-      produces: 'application/json',
-      successDescription: 'Doctor Info',
-      responseExamplePath: '../sample-data/api/doctor/get/success2.json'
-    }),
+    '/api/doctor/get': {
+      get: {
+        tags: [ 'Doctor' ],
+        summary: "Get all doctor's information",
+        operationId: 'allDoctorInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Doctors Info',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:13:53.693Z',
+                          _id: '378468172436234',
+                          firstName: 'Name1',
+                          lastName: 'lastname1',
+                          problem: [],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '62cc02777028f3f57f6a2070',
+                              displayName: 'short name1'
+                            }
+                          ],
+                          updatedAt: '2022-07-26T17:13:59.944Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:14:55.818Z',
+                          _id: '378468172sdf436234',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '62cc02777028f3f57f6a2070',
+                              displayName: 'short name1'
+                            }
+                          ],
+                          updatedAt: '2022-07-26T17:15:08.239Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:15:52.185Z',
+                          _id: '378468172aadf436234',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '62cc02777028f3f57f6a2070',
+                              displayName: 'short name1'
+                            }
+                          ],
+                          updatedAt: '2022-07-26T17:16:28.879Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:17:21.257Z',
+                          _id: '378468172a436234',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '62cc02777028f3f57f6a2070',
+                              displayName: 'short name1'
+                            }
+                          ],
+                          updatedAt: '2022-07-26T17:17:26.223Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:20:32.507Z',
+                          _id: '458468172a436234',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          updatedAt: '2022-07-26T17:20:36.600Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:36:34.505Z',
+                          _id: '458468172a234034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          updatedAt: '2022-07-26T17:36:41.081Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-07-26T17:58:44.393Z',
+                          _id: '458468172a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          updatedAt: '2022-07-26T18:02:52.008Z',
+                          __v: 0,
+                          availability: [],
+                          review: []
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:03:03.581Z',
+                          _id: '458468173452a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [ { _id: '62eab88bfefb180d90e2e62e', slot: [] } ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:03:55.558Z',
+                          __v: 0
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:15:58.868Z',
+                          _id: '458468173234452a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62eabb6a090053143cc5b150',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabb6a090053143cc5b151',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:16:10.126Z',
+                          __v: 0
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:15:58.868Z',
+                          _id: '4584681452a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62eabc5a090053143cc5b155',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabc5a090053143cc5b156',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabc5a090053143cc5b157',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62eabc5a090053143cc5b158',
+                                  time: '12:00 PM',
+                                  isAvailable: false
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabc5a090053143cc5b159',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabc5a090053143cc5b15a',
+                                  time: '3:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:20:10.029Z',
+                          __v: 0
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:20:51.866Z',
+                          _id: '458681452a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62eabc9878b298159482c5b0',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabc9878b298159482c5b1',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabc9878b298159482c5b2',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62eabc9878b298159482c5b3',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabc9878b298159482c5b4',
+                              day: 'Friday',
+                              slot: [
+                                {
+                                  _id: '62eabc9878b298159482c5b5',
+                                  time: '6:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:21:12.378Z',
+                          __v: 0
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:20:51.866Z',
+                          _id: '458681sfd452a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62eabcb578b298159482c5b8',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabcb578b298159482c5b9',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabcb578b298159482c5ba',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62eabcb578b298159482c5bb',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabcb578b298159482c5bc',
+                                  time: '5:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabcb578b298159482c5bd',
+                                  time: '7:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabcb578b298159482c5be',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62eabcb578b298159482c5bf',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabcb578b298159482c5c0',
+                                  time: '5:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabcb578b298159482c5c1',
+                                  time: '7:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabcb578b298159482c5c2',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62eabcb578b298159482c5c3',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabcb578b298159482c5c4',
+                                  time: '5:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabcb578b298159482c5c5',
+                                  time: '7:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabcb578b298159482c5c6',
+                              day: 'Friday',
+                              slot: [
+                                {
+                                  _id: '62eabcb578b298159482c5c7',
+                                  time: '6:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:21:41.738Z',
+                          __v: 0
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:25:01.761Z',
+                          _id: '458681sfd4a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62eabd8156b9190ddcdf4ab6',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabd8156b9190ddcdf4ab7',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabd8156b9190ddcdf4ab8',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62eabd8156b9190ddcdf4ab9',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabd8156b9190ddcdf4aba',
+                                  time: '5:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62eabd8156b9190ddcdf4abb',
+                                  time: '7:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabd8156b9190ddcdf4abc',
+                              day: 'Friday',
+                              slot: [
+                                {
+                                  _id: '62eabd8156b9190ddcdf4abd',
+                                  time: '6:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:25:05.596Z',
+                          __v: 0
+                        },
+                        {
+                          location: 'Some address',
+                          createdAt: '2022-08-03T18:25:01.761Z',
+                          _id: '45868fd4a234534034',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62eabdc656b9190ddcdf4ac0',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62eabdc656b9190ddcdf4ac1',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62eabdc656b9190ddcdf4ac2',
+                              day: 'Friday',
+                              slot: [
+                                {
+                                  _id: '62eabdc656b9190ddcdf4ac3',
+                                  time: '6:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-03T18:26:14.937Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-13T06:58:07.458Z',
+                          _id: '2342342342342342342345',
+                          firstName: 'Name2',
+                          lastName: 'lastname2',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62f74ceddacd961bf0a4108f',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62f74ceddacd961bf0a41090',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-13T07:04:13.639Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-14T07:07:46.224Z',
+                          _id: '23412343245345',
+                          firstName: 'First name',
+                          lastName: 'Lats name',
+                          problem: [],
+                          test: [],
+                          availability: [
+                            {
+                              _id: '62f89fc113503b17f0ed488f',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62f89fc113503b17f0ed4890',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f89fc113503b17f0ed4891',
+                                  time: '3:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f89fc113503b17f0ed4892',
+                                  time: '4:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-14T07:09:53.112Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-14T07:07:46.224Z',
+                          _id: '212345232342345345',
+                          firstName: 'First name',
+                          lastName: 'Lats name',
+                          problem: [
+                            {
+                              icons: [ 'Image Url', 'Image url' ],
+                              _id: '62cc02777028f3f57f6a2070',
+                              problemName: 'problem 1',
+                              displayName: 'displayName'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'Image Url', 'Image url' ],
+                              _id: '22ab02899028f1f77f6a1543',
+                              testName: 'Test 1',
+                              displayName: 'displayName',
+                              description: 'Some description'
+                            }
+                          ],
+                          availability: [
+                            {
+                              _id: '62f8a08613503b17f0ed4899',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62f8a08613503b17f0ed489a',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8a08613503b17f0ed489b',
+                                  time: '4:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8a08613503b17f0ed489c',
+                                  time: '6:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62f8a08613503b17f0ed489d',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62f8a08613503b17f0ed489e',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8a08613503b17f0ed489f',
+                                  time: '3:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8a08613503b17f0ed48a0',
+                                  time: '4:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-14T07:13:10.210Z',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
+    '/api/doctor/get/:id': {
+      get: {
+        tags: [ 'Doctor' ],
+        summary: "Get doctor's information by Id",
+        operationId: 'BasicDoctorInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Doctor Info',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        createdAt: '2022-08-14T07:07:46.224Z',
+                        _id: '212345232342345345',
+                        firstName: 'First name',
+                        lastName: 'Lats name',
+                        problem: [
+                          {
+                            icons: [ 'Image Url', 'Image url' ],
+                            _id: '62cc02777028f3f57f6a2070',
+                            problemName: 'problem 1',
+                            displayName: 'displayName'
+                          }
+                        ],
+                        test: [
+                          {
+                            icons: [ 'Image Url', 'Image url' ],
+                            _id: '22ab02899028f1f77f6a1543',
+                            testName: 'Test 1',
+                            displayName: 'displayName',
+                            description: 'Some description'
+                          }
+                        ],
+                        availability: [
+                          {
+                            _id: '62f8a08613503b17f0ed4899',
+                            day: 'Monday',
+                            slot: [
+                              {
+                                _id: '62f8a08613503b17f0ed489a',
+                                time: '2:00 PM',
+                                isAvailable: true
+                              },
+                              {
+                                _id: '62f8a08613503b17f0ed489b',
+                                time: '4:00 PM',
+                                isAvailable: true
+                              },
+                              {
+                                _id: '62f8a08613503b17f0ed489c',
+                                time: '6:00 PM',
+                                isAvailable: true
+                              }
+                            ]
+                          },
+                          {
+                            _id: '62f8a08613503b17f0ed489d',
+                            day: 'Tuesday',
+                            slot: [
+                              {
+                                _id: '62f8a08613503b17f0ed489e',
+                                time: '12:00 PM',
+                                isAvailable: true
+                              },
+                              {
+                                _id: '62f8a08613503b17f0ed489f',
+                                time: '3:00 PM',
+                                isAvailable: true
+                              },
+                              {
+                                _id: '62f8a08613503b17f0ed48a0',
+                                time: '4:00 PM',
+                                isAvailable: true
+                              }
+                            ]
+                          }
+                        ],
+                        review: [],
+                        updatedAt: '2022-08-14T07:13:10.210Z',
+                        __v: 0
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
+    '/api/doctor/list/:city': {
+      get: {
+        tags: [ 'Doctor' ],
+        summary: "Get doctor's information by city",
+        operationId: 'BasicDoctorInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Doctor Info',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          location: {
+                            _id: '23454561d32v',
+                            flatNo: 12,
+                            city: 'Indore',
+                            district: 'String',
+                            state: 'String'
+                          },
+                          createdAt: '2022-08-14T07:54:46.236Z',
+                          _id: '21234523234234345',
+                          firstName: '31653135313163353965363437396130:142b7df51575959cb955988cb1b04445',
+                          lastName: '31653135313163353965363437396130:35dad2f343401d0e5cbc4878219de61f',
+                          qualification: 'Qualifications',
+                          problem: [
+                            {
+                              icons: [ 'Image Url', 'Image url' ],
+                              _id: '62cc02777028f3f57f6a2070',
+                              problemName: 'problem 1',
+                              displayName: 'displayName'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'Image Url', 'Image url' ],
+                              _id: '22ab02899028f1f77f6a1543',
+                              testName: 'Test 1',
+                              displayName: 'displayName',
+                              description: 'Some description'
+                            }
+                          ],
+                          availability: [
+                            {
+                              _id: '62f8ac226c3ff81b0c59a887',
+                              day: 'Monday',
+                              slot: [
+                                {
+                                  _id: '62f8ac226c3ff81b0c59a888',
+                                  time: '2:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8ac226c3ff81b0c59a889',
+                                  time: '4:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8ac226c3ff81b0c59a88a',
+                                  time: '6:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62f8ac226c3ff81b0c59a88b',
+                              day: 'Tuesday',
+                              slot: [
+                                {
+                                  _id: '62f8ac226c3ff81b0c59a88c',
+                                  time: '12:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8ac226c3ff81b0c59a88d',
+                                  time: '3:00 PM',
+                                  isAvailable: true
+                                },
+                                {
+                                  _id: '62f8ac226c3ff81b0c59a88e',
+                                  time: '4:00 PM',
+                                  isAvailable: true
+                                }
+                              ]
+                            }
+                          ],
+                          review: [],
+                          updatedAt: '2022-08-14T08:02:42.235Z',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/doctor/problem/add': {
       post: {
         tags: ['Problem'],
@@ -1123,24 +1780,232 @@ const swagger = {
         }
       }
     },
-    '/api/doctor/problem/list': getConfig({
-      method: 'get',
-      tags: ['Problem'],
-      summary: 'Get all problems information',
-      operationId: 'allProblemInfo',
-      produces: 'application/json',
-      successDescription: 'Problems Info',
-      responseExamplePath: '../sample-data/api/problem/get/success.json'
-    }),
-    '/api/doctor/problem/list/:id': getConfig({
-      method: 'get',
-      tags: ['Problem'],
-      summary: 'Get problem by id',
-      operationId: 'ProblemInfo',
-      produces: 'application/json',
-      successDescription: 'Problem Info by Id',
-      responseExamplePath: '../sample-data/api/problem/get/success1.json'
-    }),
+    '/api/doctor/problem/list': {
+      get: {
+        tags: [ 'Problem' ],
+        summary: 'Get all problems information',
+        operationId: 'allProblemInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Problems Info',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          createdAt: '2022-07-26T10:40:44.295Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '62cc02777028f3f57f6a2070',
+                          problemName: 'problem 1',
+                          displayName: 'short name1',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-07-26T11:19:38.793Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '62aa02777028f3f77f6a1090',
+                          problemName: 'problem 2',
+                          displayName: 'short name2',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-07-26T11:20:16.536Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '62aa02999028f3f77f6a1299',
+                          problemName: 'problem 3',
+                          displayName: 'short name2',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-07-26T16:40:52.224Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '145b02878928f1a97f6a1543',
+                          problemName: 'Problem 5 ',
+                          displayName: 'short name5',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-07-26T17:06:14.603Z',
+                          icons: [],
+                          _id: '378468172436234',
+                          updatedAt: '2022-07-26T17:07:46.838Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-07-26T17:58:44.387Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '145b028781a97f6a1543',
+                          problemName: 'Problem 5 ',
+                          displayName: 'short name5',
+                          updatedAt: '2022-07-26T18:01:59.562Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-14T08:09:36.206Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '45b028781a97f6a1543',
+                          problemName: 'Some Problem',
+                          displayName: 'Its short name',
+                          updatedAt: '2022-08-14T08:13:25.425Z',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/problem/list/:id': {
+      get: {
+        tags: [ 'Problem' ],
+        summary: 'Get problem by id',
+        operationId: 'ProblemInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Problem Info by Id',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        createdAt: '2022-07-26T10:40:44.295Z',
+                        icons: [ 'url1', 'url2' ],
+                        _id: '62cc02777028f3f57f6a2070',
+                        problemName: 'problem 1',
+                        displayName: 'short name1',
+                        __v: 0
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
     '/api/doctor/test/add': {
       post: {
         tags: ['Test'],
@@ -1181,24 +2046,221 @@ const swagger = {
         }
       }
     },
-    '/api/doctor/test/list': getConfig({
-      method: 'get',
-      tags: ['Test'],
-      summary: 'Get all tests',
-      operationId: 'allTestInfo',
-      produces: 'application/json',
-      successDescription: 'Tests Info',
-      responseExamplePath: '../sample-data/api/test/get/success.json'
-    }),
-    '/api/doctor/test/list/:id': getConfig({
-      method: 'get',
-      tags: ['Test'],
-      summary: 'Get test by id',
-      operationId: 'TestInfo',
-      produces: 'application/json',
-      successDescription: 'Test Info by Id',
-      responseExamplePath: '../sample-data/api/test/get/success1.json'
-    }),
+    '/api/doctor/test/list': {
+      get: {
+        tags: [ 'Test' ],
+        summary: 'Get all tests',
+        operationId: 'allTestInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Tests Info',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          createdAt: '2022-07-26T16:40:52.226Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '22ab02899028f1f77f6a1543',
+                          displayName: 'short name1',
+                          description: 'Some teset description1',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-07-26T17:58:44.390Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '145b02878928f1a97f6a1543',
+                          displayName: 'short name5',
+                          description: 'Some teset description1',
+                          updatedAt: '2022-07-26T18:02:25.281Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-13T07:05:50.204Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '145b0287833928f1a97f6a1543',
+                          displayName: 'short name5',
+                          description: 'Some teset description1',
+                          updatedAt: '2022-08-13T07:24:50.121Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-13T07:05:50.204Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '145b0233928f1a97f6a1543',
+                          testName: 'test 5 ',
+                          displayName: 'short name5',
+                          description: 'Some teset description1',
+                          updatedAt: '2022-08-13T07:25:59.365Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-14T08:09:36.258Z',
+                          icons: [ 'url1', 'url2' ],
+                          _id: '145b023928f1a97f6a1543',
+                          testName: 'Teset name',
+                          displayName: 'Its short name',
+                          description: 'Some test description1',
+                          updatedAt: '2022-08-14T08:14:54.506Z',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/test/list/:id': {
+      get: {
+        tags: [ 'Test' ],
+        summary: 'Get test by id',
+        operationId: 'TestInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Test Info by Id',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        createdAt: '2022-07-26T16:40:52.226Z',
+                        icons: [ 'url1', 'url2' ],
+                        _id: '22ab02899028f1f77f6a1543',
+                        displayName: 'short name1',
+                        description: 'Some teset description1',
+                        __v: 0
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
     '/api/appointment/bookAppointment': {
       post: {
         tags: ['Appointment'],
@@ -1239,24 +2301,797 @@ const swagger = {
         }
       }
     },
-    '/api/appointment/listAppointments': getConfig({
-      method: 'get',
-      tags: ['Appointment'],
-      summary: 'Get all appointment',
-      operationId: 'allAppointmentInfo',
-      produces: 'application/json',
-      successDescription: 'Appointment Info',
-      responseExamplePath: '../sample-data/api/appointment/get/success.json'
-    }),
-    '/api/appointment/list': getConfig({
-      method: 'get',
-      tags: ['Appointment'],
-      summary: 'Get users appointment by its token',
-      operationId: 'UsersAppointmentInfo',
-      produces: 'application/json',
-      successDescription: "User's Appointment by its token",
-      responseExamplePath: '../sample-data/api/appointment/get/success1.json'
-    }),
+    '/api/appointment/listAppointments': {
+      get: {
+        tags: [ 'Appointment' ],
+        summary: 'Get all appointment',
+        operationId: 'allAppointmentInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Appointment Info',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b155',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b156'
+                          },
+                          createdAt: '2022-08-04T09:38:55.015Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62eb93afe6dc2309c0af7c38',
+                          updatedAt: '2022-08-04T09:38:55.026Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b155',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b156'
+                          },
+                          createdAt: '2022-08-04T09:39:42.319Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62eb93de00fe7611046257ef',
+                          updatedAt: '2022-08-04T09:39:42.329Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b155',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b156'
+                          },
+                          createdAt: '2022-08-04T09:42:25.806Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62eb9481c294e7091077ff0f',
+                          updatedAt: '2022-08-04T09:42:25.817Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-04T09:43:01.920Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62eb94a5fcf0ff175cc5bc7f',
+                          updatedAt: '2022-08-04T09:43:01.928Z',
+                          patientName: '',
+                          patientAge: '',
+                          problem: [],
+                          test: [],
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b155',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b156'
+                          },
+                          createdAt: '2022-08-04T09:46:19.803Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62eb956bf4df551318629233',
+                          updatedAt: '2022-08-04T09:46:19.816Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b157',
+                            day: 'Tuesday',
+                            time: '12:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b158'
+                          },
+                          createdAt: '2022-08-04T09:47:02.301Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: false,
+                          _id: '62eb9596e32a14179c4da363',
+                          updatedAt: '2022-08-04T09:47:02.322Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0,
+                          doctorId: '4584681452a234534034'
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T08:53:24.171Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b8042f0cfa1bb42e829d',
+                          updatedAt: '2022-08-14T08:53:24.186Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T08:54:58.523Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b86217caf51870513085',
+                          updatedAt: '2022-08-14T08:54:58.540Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T08:58:30.539Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b936cb78a41ba037078d',
+                          updatedAt: '2022-08-14T08:58:30.558Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T08:59:10.893Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b95e9a5d610098a28c48',
+                          updatedAt: '2022-08-14T08:59:10.908Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:00:29.050Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b9ad9a5d610098a28c4d',
+                          updatedAt: '2022-08-14T09:00:29.054Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:00:41.331Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b9b99a5d610098a28c51',
+                          updatedAt: '2022-08-14T09:00:41.334Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:03:15.206Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8ba53711bbb172ce7c9bb',
+                          updatedAt: '2022-08-14T09:03:15.217Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:03:26.525Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8ba5e711bbb172ce7c9c1',
+                          updatedAt: '2022-08-14T09:03:26.531Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'All apointment list fetched successfully .'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/appointment/list': {
+      get: {
+        tags: [ 'Appointment' ],
+        summary: 'Get users appointment by its token',
+        operationId: 'UsersAppointmentInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: "User's Appointment by its token",
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b155',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b156'
+                          },
+                          createdAt: '2022-08-04T09:39:42.319Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62eb93de00fe7611046257ef',
+                          updatedAt: '2022-08-04T09:39:42.329Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62eabc5a090053143cc5b157',
+                            day: 'Tuesday',
+                            time: '12:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62eabc5a090053143cc5b158'
+                          },
+                          createdAt: '2022-08-04T09:47:02.301Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: false,
+                          _id: '62eb9596e32a14179c4da363',
+                          updatedAt: '2022-08-04T09:47:02.322Z',
+                          patientName: '31653135313163353965363437396130:3d14431b5bc3477197fdd85a7299e89d',
+                          patientAge: '31653135313163353965363437396130:8c1f808b4c4e34275e60af4254339d3b',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0,
+                          doctorId: '4584681452a234534034'
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T08:54:58.523Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b86217caf51870513085',
+                          updatedAt: '2022-08-14T08:54:58.540Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T08:59:10.893Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b95e9a5d610098a28c48',
+                          updatedAt: '2022-08-14T08:59:10.908Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:00:29.050Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b9ad9a5d610098a28c4d',
+                          updatedAt: '2022-08-14T09:00:29.054Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:00:41.331Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8b9b99a5d610098a28c51',
+                          updatedAt: '2022-08-14T09:00:41.334Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:03:15.206Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8ba53711bbb172ce7c9bb',
+                          updatedAt: '2022-08-14T09:03:15.217Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [],
+                          test: [],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        },
+                        {
+                          scheduleDate: {
+                            availabilityId: '62f8aa616c3ff81b0c59a871',
+                            day: 'Monday',
+                            time: '2:00 PM',
+                            date: '2022-08-03T18:30:00.000Z',
+                            slotId: '62f8aa616c3ff81b0c59a872'
+                          },
+                          createdAt: '2022-08-14T09:03:26.525Z',
+                          status: 'ACTIVE',
+                          isCancelled: false,
+                          isCompleted: false,
+                          isUpcoming: true,
+                          _id: '62f8ba5e711bbb172ce7c9c1',
+                          updatedAt: '2022-08-14T09:03:26.531Z',
+                          patientName: 'Patient Name',
+                          patientAge: '23',
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '45b028781a97f6a1543',
+                              problemName: 'Some Problem',
+                              displayName: 'Its short name'
+                            }
+                          ],
+                          test: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b023928f1a97f6a1543',
+                              testName: 'Test name',
+                              displayName: 'Its short name',
+                              description: 'Some test description1'
+                            }
+                          ],
+                          userId: '1234',
+                          appointmentType: 'VIDEO_CALL',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'List of your appointments fetched successfully .'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
     '/api/appointment/cancel': {
       patch: {
         tags: ['Appointment'],
@@ -1401,15 +3236,167 @@ const swagger = {
         }
       }
     },
-    '/api/user/consultation/list': getConfig({
-      method: 'get',
-      tags: ['Consultation'],
-      summary: 'Get users consultation by its token',
-      operationId: 'UsersConsultationInfo',
-      produces: 'application/json',
-      successDescription: "User's consultation by its token",
-      responseExamplePath: '../sample-data/api/consultation/get/success.json'
-    }),
+    '/api/user/consultation/list': {
+      get: {
+        tags: [ 'Consultation' ],
+        summary: 'Get users consultation by its token',
+        operationId: 'UsersConsultationInfo',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: "User's consultation by its token",
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          _id: '3ww498573422349834d579',
+                          createdAt: '2022-07-30T12:39:07.947Z',
+                          updatedAt: '2022-07-30T12:39:07.947Z',
+                          name: 'somename',
+                          doctorId: {
+                            _id: '378468172436234',
+                            firstName: 'Name1',
+                            lastName: 'lastname1'
+                          },
+                          userId: 'Here all user details in an object',
+                          appointmentId: '123234234',
+                          summary: 'SOme summary',
+                          dateTime: '2022-07-30T12:48:54.870Z',
+                          meds: [
+                            {
+                              name: [ 'eds1,meds2,meds3' ],
+                              _id: '62e528b6a4e5921168b9f94f',
+                              sNumber: 3,
+                              isLatest: true
+                            },
+                            {
+                              name: [ 'eds1,meds2,meds3' ],
+                              _id: '62e527b16bf65618f8aa456b',
+                              sNumber: 2,
+                              isLatest: false
+                            },
+                            {
+                              name: [ 'dolo', 'paracteol' ],
+                              _id: '62e52686a5783f09d09322da',
+                              sNumber: 1,
+                              isLatest: false
+                            }
+                          ],
+                          problem: [
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b028781a97f6a1543',
+                              problemName: 'Problem5 ',
+                              displayName: 'short name5',
+                              sNumber: 5,
+                              isLatest: true
+                            },
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b028781a97f6a1543',
+                              problemName: 'Problem4 ',
+                              displayName: 'short name4',
+                              sNumber: 3,
+                              isLatest: false
+                            },
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b028781a97f6a1543',
+                              problemName: 'Problem5 ',
+                              displayName: 'short name5',
+                              sNumber: 4,
+                              isLatest: false
+                            },
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '145b028781a97f6a1543',
+                              problemName: 'Problem 1 ',
+                              displayName: 'short name1',
+                              sNumber: 1,
+                              isLatest: false
+                            },
+                            {
+                              icons: [ 'url1', 'url2' ],
+                              _id: '62aa02777028f3f77f6a1090',
+                              problemName: 'Problem 2 ',
+                              displayName: 'short name2',
+                              sNumber: 2,
+                              isLatest: false
+                            }
+                          ],
+                          test: null,
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
     '/api/user/consultation/edit': {
       patch: {
         tags: ['Consultation'],
@@ -1456,101 +3443,9 @@ const swagger = {
             }
           }
         },
-        '/gw/api/doctor/review/add': getConfig({
-          method: 'post',
-          tags: ['Doctor'],
-          summary: 'Add Review For A Doctor',
-          operationId: 'addReview',
-          produces: 'application/json',
-          successDescription: 'Added Review For A Doctor',
-          requestExamplePath:
-            '../sample-data/api/doctor/review/addReview/request.json',
-          responseExamplePath:
-            '../sample-data/api/doctor/review/addReview/success.json'
-        }),
-        '/gw/api/doctor/review/list/:doctorId': getConfig({
-          method: 'get',
-          tags: ['Doctor'],
-          summary: 'List Reviews For A Doctor',
-          operationId: 'listReview',
-          produces: 'application/json',
-          successDescription: 'Got All Reviews For A Doctor',
-          requestExamplePath:
-            '../sample-data/api/doctor/review/listReview/request.json',
-          responseExamplePath:
-            '../sample-data/api/doctor/review/listReview/success.json'
-        }),
-        '/gw/api/doctor/review/comment/add': getConfig({
-          method: 'post',
-          tags: ['Doctor'],
-          summary: 'Add Comment For a Review Of A Doctor',
-          operationId: 'addCommentToReview',
-          produces: 'application/json',
-          successDescription: 'Added a Review For a Doctor',
-          requestExamplePath:
-            '../sample-data/api/doctor/review/addComment/request.json',
-          responseExamplePath:
-            '../sample-data/api/doctor/review/addComment/success.json'
-        }),
-        '/gw/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
-          method: 'get',
-          tags: ['Doctor'],
-          summary: 'List Comment For a Review Of A Doctor',
-          operationId: 'listCommentsOfAReview',
-          produces: 'application/json',
-          successDescription: 'Got The Comments Of A Review For a Doctor',
-          responseExamplePath:
-            '../sample-data/api/doctor/review/listComment/success.json'
-        }),
-        '/gw/api/app/review/create': getConfig({
-          method: 'post',
-          tags: ['App'],
-          summary: 'Post a Review For The Application',
-          operationId: 'addAppReview',
-          produces: 'application/json',
-          successDescription: 'Added a App Review',
-          requestExamplePath:
-            '../sample-data/api/app/review/addReview/request.json',
-          responseExamplePath:
-            '../sample-data/api/app/review/addReview/success.json'
-        }),
-        '/gw/api/app/review/list': getConfig({
-          method: 'get',
-          tags: ['App'],
-          summary: 'List All Reviews Of The Application',
-          operationId: 'listAppReview',
-          produces: 'application/json',
-          successDescription: 'Got all App Review',
-          responseExamplePath:
-            '../sample-data/api/app/review/listReview/success.json'
-        }),
-        '/gw/api/app/review/like': getConfig({
-          method: 'post',
-          tags: ['App'],
-          summary: 'Like The Review',
-          operationId: 'likeAppReview',
-          produces: 'application/json',
-          successDescription: 'Liked The Review',
-          requestExamplePath:
-            '../sample-data/api/app/review/likeReview/request.json',
-          responseExamplePath:
-            '../sample-data/api/app/review/likeReview/success1.json'
-          // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-        }),
-        '/gw/api/app/review/dislike': getConfig({
-          method: 'post',
-          tags: ['App'],
-          summary: 'Remove Like From The Review',
-          operationId: 'dislikeAppReview',
-          produces: 'application/json',
-          successDescription: 'Removed The Like For The Review',
-          requestExamplePath:
-            '../sample-data/api/app/review/dislikeReview/request.json',
-          responseExamplePath:
-            '../sample-data/api/app/review/dislikeReview/success1.json'
-          // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-        })
-      }
+      },
+      
+    
     },
     '/api/doctor/medicine/create': {
       post: {
@@ -1600,203 +3495,1155 @@ const swagger = {
         }
       }
     },
-    '/gw/api/doctor/review/add': getConfig({
-      method: 'post',
-      tags: ['Doctor'],
-      summary: 'Add Review For A Doctor',
-      operationId: 'addReview',
-      produces: 'application/json',
-      successDescription: 'Added Review For A Doctor',
-      requestExamplePath:
-        '../sample-data/api/doctor/review/addReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/addReview/success.json'
-    }),
-    '/api/doctor/review/list/:doctorId': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: 'List Reviews For A Doctor',
-      operationId: 'listReview',
-      produces: 'application/json',
-      successDescription: 'Got All Reviews For A Doctor',
-      requestExamplePath:
-        '../sample-data/api/doctor/review/listReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/listReview/success.json'
-    }),
-    '/api/doctor/review/comment/add': getConfig({
-      method: 'post',
-      tags: ['Doctor'],
-      summary: 'Add Comment For a Review Of A Doctor',
-      operationId: 'addCommentToReview',
-      produces: 'application/json',
-      successDescription: 'Added a Review For a Doctor',
-      requestExamplePath:
-        '../sample-data/api/doctor/review/addComment/request.json',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/addComment/success.json'
-    }),
-    '/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: 'List Comment For a Review Of A Doctor',
-      operationId: 'listCommentsOfAReview',
-      produces: 'application/json',
-      successDescription: 'Got The Comments Of A Review For a Doctor',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/listComment/success.json'
-    }),
-    '/api/app/review/create': getConfig({
-      method: 'post',
-      tags: ['App'],
-      summary: 'Post a Review For The Application',
-      operationId: 'addAppReview',
-      produces: 'application/json',
-      successDescription: 'Added a App Review',
-      requestExamplePath:
-        '../sample-data/api/app/review/addReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/app/review/addReview/success.json'
-    }),
-    '/api/app/review/list': getConfig({
-      method: 'get',
-      tags: ['App'],
-      summary: 'List All Reviews Of The Application',
-      operationId: 'listAppReview',
-      produces: 'application/json',
-      successDescription: 'Got all App Review',
-      responseExamplePath:
-        '../sample-data/api/app/review/listReview/success.json'
-    }),
-    '/api/app/review/like': getConfig({
-      method: 'post',
-      tags: ['App'],
-      summary: 'Like The Review',
-      operationId: 'likeAppReview',
-      produces: 'application/json',
-      successDescription: 'Liked The Review',
-      requestExamplePath:
-        '../sample-data/api/app/review/likeReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/app/review/likeReview/success1.json'
-      // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-    }),
-    '/api/app/review/dislike': getConfig({
-      method: 'post',
-      tags: ['App'],
-      summary: 'Remove Like From The Review',
-      operationId: 'dislikeAppReview',
-      produces: 'application/json',
-      successDescription: 'Removed The Like For The Review',
-      requestExamplePath:
-        '../sample-data/api/app/review/dislikeReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/app/review/dislikeReview/success1.json'
-      // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-    }),
-    '/gw/api/doctor/review/add': getConfig({
-      method: 'post',
-      tags: ['Doctor'],
-      summary: 'Add Review For A Doctor',
-      operationId: 'addReview',
-      produces: 'application/json',
-      successDescription: 'Added Review For A Doctor',
-      requestExamplePath:
-        '../sample-data/api/doctor/review/addReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/addReview/success.json'
-    }),
-    '/api/doctor/review/list/:doctorId': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: 'List Reviews For A Doctor',
-      operationId: 'listReview',
-      produces: 'application/json',
-      successDescription: 'Got All Reviews For A Doctor',
-      requestExamplePath:
-        '../sample-data/api/doctor/review/listReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/listReview/success.json'
-    }),
-    '/api/doctor/review/comment/add': getConfig({
-      method: 'post',
-      tags: ['Doctor'],
-      summary: 'Add Comment For a Review Of A Doctor',
-      operationId: 'addCommentToReview',
-      produces: 'application/json',
-      successDescription: 'Added a Review For a Doctor',
-      requestExamplePath:
-        '../sample-data/api/doctor/review/addComment/request.json',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/addComment/success.json'
-    }),
-    '/api/doctor/review/comment/list/:doctorId/:reviewId': getConfig({
-      method: 'get',
-      tags: ['Doctor'],
-      summary: 'List Comment For a Review Of A Doctor',
-      operationId: 'listCommentsOfAReview',
-      produces: 'application/json',
-      successDescription: 'Got The Comments Of A Review For a Doctor',
-      responseExamplePath:
-        '../sample-data/api/doctor/review/listComment/success.json'
-    }),
-    '/api/app/review/create': getConfig({
-      method: 'post',
-      tags: ['App'],
-      summary: 'Post a Review For The Application',
-      operationId: 'addAppReview',
-      produces: 'application/json',
-      successDescription: 'Added a App Review',
-      requestExamplePath:
-        '../sample-data/api/app/review/addReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/app/review/addReview/success.json'
-    }),
-    '/api/app/review/list': getConfig({
-      method: 'get',
-      tags: ['App'],
-      summary: 'List All Reviews Of The Application',
-      operationId: 'listAppReview',
-      produces: 'application/json',
-      successDescription: 'Got all App Review',
-      responseExamplePath:
-        '../sample-data/api/app/review/listReview/success.json'
-    }),
-    '/api/app/review/like': getConfig({
-      method: 'post',
-      tags: ['App'],
-      summary: 'Like The Review',
-      operationId: 'likeAppReview',
-      produces: 'application/json',
-      successDescription: 'Liked The Review',
-      requestExamplePath:
-        '../sample-data/api/app/review/likeReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/app/review/likeReview/success1.json'
-      // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-    }),
-    '/api/app/review/dislike': getConfig({
-      method: 'post',
-      tags: ['App'],
-      summary: 'Remove Like From The Review',
-      operationId: 'dislikeAppReview',
-      produces: 'application/json',
-      successDescription: 'Removed The Like For The Review',
-      requestExamplePath:
-        '../sample-data/api/app/review/dislikeReview/request.json',
-      responseExamplePath:
-        '../sample-data/api/app/review/dislikeReview/success1.json'
-      // responseExamplePath: '../sample-data/api/app/review/likeReview/success2.json',
-    }),
-    '/api/doctor/medicine/list/:doctorId': getConfig({
-      method: 'get',
-      tags: ['Medicine'],
-      summary: 'Get all medicines by doctorId',
-      operationId: 'allMedicinesInfo',
-      produces: 'application/json',
-      successDescription: 'All medicines selected by doctor',
-      responseExamplePath: '../sample-data/api/medicine/get/success.json'
-    }),
+    '/api/doctor/review/add': {
+      post: {
+        tags: [ 'Doctor' ],
+        summary: 'Add Review For A Doctor',
+        operationId: 'addReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: {
+          required: true,
+          content: {
+            undefined: {
+              schema: { type: 'object' },
+              example: {
+                doctorId: 'doc1',
+                reviewDescription: '3rd Review',
+                reviewRating: 2,
+                reviewedUsedId: 'user123',
+                reviewedUserMail: 'manu01@gmail.com',
+                reviewedUserName: 'Manoj H R',
+                reviewedDate: '29/07/2022'
+              }
+            }
+          }
+        },
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Added Review For A Doctor',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        location: 'Hassan',
+                        createdAt: '2022-07-29T04:25:39.351Z',
+                        _id: 'doc1',
+                        firstName: '31653135313163353965363437396130:5cc8e394cdcef021dde878d2529e2bcf',
+                        lastName: '31653135313163353965363437396130:3893fffc2904b5750a72ae9732de6bc8',
+                        problem: [],
+                        test: [],
+                        updatedAt: '2022-07-29T04:25:51.037Z',
+                        __v: 0,
+                        review: [
+                          {
+                            _id: '62e411d31baf9c0f5df83857',
+                            reviewDescription: "Lorem Ipsum isafkghshgodjgsjdglsdjgdsjgsjgspgjsgjs;pgjs;gjspgjgojgodsjgsjdgjg simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                            reviewRating: 2,
+                            reviewedUserName: 'Manoj H R',
+                            reviewedUserMail: 'manu.hr1701@gmail.com',
+                            reviewedDate: '2022-07-29T16:58:59.946Z',
+                            comments: [
+                              {
+                                _id: '62e412916cdd6410491f725d',
+                                commentDescription: 'commentDescription',
+                                commentedUserId: 'user231',
+                                commentedUserName: 'manu',
+                                commentedUserMail: 'manu@gmail.com',
+                                commentedDate: '2022-07-29T17:02:09.304Z'
+                              },
+                              {
+                                _id: '62e412c16cdd6410491f7260',
+                                commentDescription: '2nd Comment',
+                                commentedUserId: 'user231',
+                                commentedUserName: 'manoj Kumar',
+                                commentedUserMail: 'manu1234@gmail.com',
+                                commentedDate: '2022-07-29T17:02:57.506Z'
+                              }
+                            ]
+                          }
+                        ],
+                        availability: []
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
+    
+    '/api/doctor/review/comment/add': {
+      post: {
+        tags: [ 'Doctor' ],
+        summary: 'Add Comment For a Review Of A Doctor',
+        operationId: 'addCommentToReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: {
+          required: true,
+          content: {
+            undefined: {
+              schema: { type: 'object' },
+              example: {
+                doctorId: 'doc1',
+                reviewId: '62e413096cdd6410491f7263',
+                commentDescription: '1st Comment',
+                commentedUserId: 'user231',
+                commentedUserName: 'manoj Kumar',
+                commentedUserMail: 'manu1234@gmail.com',
+                commentedDate: '29/07/2022'
+              }
+            }
+          }
+        },
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Added a Review For a Doctor',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        location: 'Hassan',
+                        createdAt: '2022-07-29T04:25:39.351Z',
+                        _id: 'doc1',
+                        firstName: '31653135313163353965363437396130:5cc8e394cdcef021dde878d2529e2bcf',
+                        lastName: '31653135313163353965363437396130:3893fffc2904b5750a72ae9732de6bc8',
+                        problem: [],
+                        test: [],
+                        updatedAt: '2022-07-29T04:25:51.037Z',
+                        __v: 0,
+                        review: [
+                          {
+                            _id: '62e411d31baf9c0f5df83857',
+                            reviewDescription: "Lorem Ipsum isafkghshgodjgsjdglsdjgdsjgsjgspgjsgjs;pgjs;gjspgjgojgodsjgsjdgjg simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                            reviewRating: 2,
+                            reviewedUserName: 'Manoj Kumar H R',
+                            reviewedUserMail: 'manu.hr1701@gmail.com',
+                            reviewedDate: '2022-07-29T16:58:59.946Z',
+                            comments: [
+                              {
+                                _id: '62e412916cdd6410491f725d',
+                                commentDescription: 'commentDescription',
+                                commentedUserId: 'user231',
+                                commentedUserName: 'manu',
+                                commentedUserMail: 'manu@gmail.com',
+                                commentedDate: '2022-07-29T17:02:09.304Z'
+                              },
+                              {
+                                _id: '62e412c16cdd6410491f7260',
+                                commentDescription: '2nd Comment',
+                                commentedUserId: 'user231',
+                                commentedUserName: 'manoj Kumar',
+                                commentedUserMail: 'manu1234@gmail.com',
+                                commentedDate: '2022-07-29T17:02:57.506Z'
+                              }
+                            ]
+                          },
+                          {
+                            _id: '62e413096cdd6410491f7263',
+                            reviewDescription: '@nd Review',
+                            reviewRating: 2,
+                            reviewedUserName: 'Manoj H R',
+                            reviewedUserMail: 'manu01@gmail.com',
+                            reviewedDate: '2022-07-29T17:04:09.444Z',
+                            comments: [
+                              {
+                                _id: '62e413446cdd6410491f7265',
+                                commentDescription: '1st Comment',
+                                commentedUserId: 'user231',
+                                commentedUserName: 'manoj Kumar',
+                                commentedUserMail: 'manu1234@gmail.com',
+                                commentedDate: '2022-07-29T17:05:08.745Z'
+                              },
+                              {
+                                _id: '62f7180f25cc980ab2f2888c',
+                                commentDescription: '1st Comment',
+                                commentedUserId: 'user231',
+                                commentedUserName: 'manoj Kumar',
+                                commentedUserMail: 'manu1234@gmail.com',
+                                commentedDate: '2022-08-13T03:18:39.997Z'
+                              }
+                            ]
+                          },
+                          {
+                            _id: '62f712c072d0fc0808934abc',
+                            reviewDescription: '3rd Review',
+                            reviewRating: 5,
+                            reviewedUserName: 'Manoj H R',
+                            reviewedUserMail: 'manu01@gmail.com',
+                            reviewedDate: '2022-08-13T02:56:00.122Z',
+                            comments: []
+                          }
+                        ],
+                        availability: []
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
+    
+    '/api/app/review/create': {
+      post: {
+        tags: [ 'App' ],
+        summary: 'Post a Review For The Application',
+        operationId: 'addAppReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: {
+          required: true,
+          content: {
+            undefined: {
+              schema: { type: 'object' },
+              example: {
+                reviewTitle: 'Third Review ',
+                reviewDescripption: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+                reviewDate: '02/07/2022',
+                reviewedUserId: 'user123',
+                reviewedUserName: 'Manoj H R',
+                reviewedUserMail: 'manu.1701@gmail.com',
+                reviewedUserMobile: '8277603447'
+              }
+            }
+          }
+        },
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Added a App Review',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        createdAt: '2022-08-13T03:21:49.279Z',
+                        likes: [],
+                        _id: '62f71a4926f1e10bc392246b',
+                        reviewTitle: 'Third Review ',
+                        reviewDate: '2022-08-13T03:28:09.000Z',
+                        reviewedUserId: 'user123',
+                        reviewedUserName: 'Manoj H R',
+                        reviewedUserMail: 'manu.1701@gmail.com',
+                        reviewedUserMobile: '8277603447',
+                        reviewNoOfLikes: 0,
+                        __v: 0
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
+    '/api/app/review/list': {
+      get: {
+        tags: [ 'App' ],
+        summary: 'List All Reviews Of The Application',
+        operationId: 'listAppReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Got all App Review',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          createdAt: '2022-08-02T06:10:53.336Z',
+                          likes: [ 'user225' ],
+                          _id: '62e8c029c306601f360705c4',
+                          reviewTitle: 'Second Review ',
+                          reviewDate: '2022-08-02T06:11:53.000Z',
+                          reviewedUserId: 'user1',
+                          reviewedUserName: 'Manoj',
+                          reviewedUserMail: 'manu.hr1701@gmail.com',
+                          reviewedUserMobile: '8277603447',
+                          reviewNoOfLikes: 0,
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-02T06:32:24.069Z',
+                          likes: [
+                            'user225', 'user213',
+                            'user212', 'user214',
+                            'user215', 'user216',
+                            'user217', 'user218',
+                            'user219', 'user220',
+                            'user221', 'user222',
+                            'user223', 'user224'
+                          ],
+                          _id: '62e8c5c6db197e219e7d84b4',
+                          reviewTitle: 'First Review ',
+                          reviewDate: '2022-08-02T06:35:50.000Z',
+                          reviewedUserId: 'user123',
+                          reviewedUserName: 'Manoj H R',
+                          reviewedUserMail: 'manu.1701@gmail.com',
+                          reviewedUserMobile: '8277603447',
+                          reviewNoOfLikes: 13,
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-02T06:32:24.069Z',
+                          likes: [],
+                          _id: '62e8c5cddb197e219e7d84b6',
+                          reviewTitle: 'First Review ',
+                          reviewDate: '2022-08-02T06:35:57.000Z',
+                          reviewedUserId: 'user123',
+                          reviewedUserName: 'Manoj H R',
+                          reviewedUserMail: 'manu.1701@gmail.com',
+                          reviewedUserMobile: '8277603447',
+                          reviewNoOfLikes: 0,
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-02T07:37:12.245Z',
+                          likes: [
+                            'user301',
+                            'user302',
+                            'user303',
+                            'user304',
+                            'user305'
+                          ],
+                          _id: '62e8d468b0259428410d11c7',
+                          reviewTitle: 'Third Review ',
+                          reviewDate: '2022-08-02T07:38:16.000Z',
+                          reviewedUserId: 'user123',
+                          reviewedUserName: 'Manoj H R',
+                          reviewedUserMail: 'manu.1701@gmail.com',
+                          reviewedUserMobile: '8277603447',
+                          reviewNoOfLikes: 5,
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-13T03:21:49.279Z',
+                          likes: [],
+                          _id: '62f71a4926f1e10bc392246b',
+                          reviewTitle: 'Third Review ',
+                          reviewDate: '2022-08-13T03:28:09.000Z',
+                          reviewedUserId: 'user123',
+                          reviewedUserName: 'Manoj H R',
+                          reviewedUserMail: 'manu.1701@gmail.com',
+                          reviewedUserMobile: '8277603447',
+                          reviewNoOfLikes: 0,
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    '/api/app/review/dislike': {
+      post: {
+        tags: ['App'],
+        summary: 'Remove Like From The Review',
+        operationId: 'dislikeAppReview',
+        consumes: [undefined],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            undefined: {
+              schema: { type: 'object' },
+              example: { reviewId: '62e8d468b0259428410d11c7', userId: 'user306' }
+            }
+          }
+        },
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Removed The Like For The Review',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        createdAt: '2022-08-02T07:37:12.245Z',
+                        likes: [
+                          'user301',
+                          'user302',
+                          'user303',
+                          'user304',
+                          'user305'
+                        ],
+                        _id: '62e8d468b0259428410d11c7',
+                        reviewTitle: 'Third Review ',
+                        reviewDate: '2022-08-02T07:38:16.000Z',
+                        reviewedUserId: 'user123',
+                        reviewedUserName: 'Manoj H R',
+                        reviewedUserMail: 'manu.1701@gmail.com',
+                        reviewedUserMobile: '8277603447',
+                        reviewNoOfLikes: 5,
+                        __v: 0
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    '/api/doctor/review/list/:doctorId': {
+      get: {
+        tags: [ 'Doctor' ],
+        summary: 'List Reviews For A Doctor',
+        operationId: 'listReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: {
+          required: true,
+          content: { undefined: { schema: { type: 'object' }, example: {} } }
+        },
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Got All Reviews For A Doctor',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          _id: 'doc1',
+                          review: [
+                            {
+                              _id: '62e411d31baf9c0f5df83857',
+                              reviewDescription: "Lorem Ipsum isafkghshgodjgsjdglsdjgdsjgsjgspgjsgjs;pgjs;gjspgjgojgodsjgsjdgjg simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                              reviewRating: 2,
+                              reviewedUserName: 'Manoj Kumar H R',
+                              reviewedUserMail: 'manu.hr1701@gmail.com',
+                              reviewedDate: '2022-07-29T16:58:59.946Z',
+                              comments: [
+                                {
+                                  _id: '62e412916cdd6410491f725d',
+                                  commentDescription: 'commentDescription',
+                                  commentedUserId: 'user231',
+                                  commentedUserName: 'manu',
+                                  commentedUserMail: 'manu@gmail.com',
+                                  commentedDate: '2022-07-29T17:02:09.304Z'
+                                },
+                                {
+                                  _id: '62e412c16cdd6410491f7260',
+                                  commentDescription: '2nd Comment',
+                                  commentedUserId: 'user231',
+                                  commentedUserName: 'manoj Kumar',
+                                  commentedUserMail: 'manu1234@gmail.com',
+                                  commentedDate: '2022-07-29T17:02:57.506Z'
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62e413096cdd6410491f7263',
+                              reviewDescription: '@nd Review',
+                              reviewRating: 2,
+                              reviewedUserName: 'Manoj H R',
+                              reviewedUserMail: 'manu01@gmail.com',
+                              reviewedDate: '2022-07-29T17:04:09.444Z',
+                              comments: [
+                                {
+                                  _id: '62e413446cdd6410491f7265',
+                                  commentDescription: '1st Comment',
+                                  commentedUserId: 'user231',
+                                  commentedUserName: 'manoj Kumar',
+                                  commentedUserMail: 'manu1234@gmail.com',
+                                  commentedDate: '2022-07-29T17:05:08.745Z'
+                                }
+                              ]
+                            },
+                            {
+                              _id: '62f712c072d0fc0808934abc',
+                              reviewDescription: '3rd Review',
+                              reviewRating: 5,
+                              reviewedUserName: 'Manoj H R',
+                              reviewedUserMail: 'manu01@gmail.com',
+                              reviewedDate: '2022-08-13T02:56:00.122Z',
+                              comments: []
+                            }
+                          ]
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    '/api/doctor/review/comment/list/:doctorId/:reviewId': {
+      get: {
+        tags: [ 'Doctor' ],
+        summary: 'List Comment For a Review Of A Doctor',
+        operationId: 'listCommentsOfAReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Got The Comments Of A Review For a Doctor',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          _id: 'doc1',
+                          review: [
+                            {
+                              comments: [
+                                {
+                                  _id: '62e413446cdd6410491f7265',
+                                  commentDescription: '1st Comment',
+                                  commentedUserId: 'user231',
+                                  commentedUserName: 'manoj Kumar',
+                                  commentedUserMail: 'manu1234@gmail.com',
+                                  commentedDate: '2022-07-29T17:05:08.745Z'
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    ,
+    
+    
+    '/api/app/review/like': {
+      post: {
+        tags: [ 'App' ],
+        summary: 'Like The Review',
+        operationId: 'likeAppReview',
+        consumes: [ undefined ],
+        produces: [ 'application/json' ],
+        requestBody: {
+          required: true,
+          content: {
+            undefined: {
+              schema: { type: 'object' },
+              example: { reviewId: '62e8d468b0259428410d11c7', userId: 'user306' }
+            }
+          }
+        },
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'Liked The Review',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: {
+                        createdAt: '2022-08-02T07:37:12.245Z',
+                        likes: [
+                          'user301',
+                          'user302',
+                          'user303',
+                          'user304',
+                          'user305',
+                          'user306'
+                        ],
+                        _id: '62e8d468b0259428410d11c7',
+                        reviewTitle: 'Third Review ',
+                        reviewDate: '2022-08-02T07:38:16.000Z',
+                        reviewedUserId: 'user123',
+                        reviewedUserName: 'Manoj H R',
+                        reviewedUserMail: 'manu.1701@gmail.com',
+                        reviewedUserMobile: '8277603447',
+                        reviewNoOfLikes: 6,
+                        __v: 0
+                      },
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    '/api/doctor/medicine/list/:doctorId': {
+      get: {
+        tags: ['Medicine'],
+        summary: 'Get all medicines by doctorId',
+        operationId: 'allMedicinesInfo',
+        consumes: [undefined],
+        produces: ['application/json'],
+        requestBody: null,
+        parameters: null,
+        responses: {
+          success: {
+            successDescription: 'All medicines selected by doctor',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - DDA APP',
+                    value: {
+                      data: [
+                        {
+                          createdAt: '2022-08-19T13:22:57.038Z',
+                          _id: '62ff8ec3d02b231cc430c54b',
+                          doctorId: '378468172436234',
+                          name: 'Somemedsname',
+                          icon: 'Some uirl for icon',
+                          price: 1234,
+                          updatedAt: '2022-08-19T13:23:15.651Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-19T16:27:17.611Z',
+                          _id: '62ffba607ffe5f0d4092826f',
+                          doctorId: '378468172436234',
+                          name: 'Somemedsname',
+                          icon: 'Some uirl for icon',
+                          price: 1234,
+                          updatedAt: '2022-08-19T16:29:20.234Z',
+                          __v: 0
+                        },
+                        {
+                          createdAt: '2022-08-19T16:27:17.611Z',
+                          _id: '62ffba6e7ffe5f0d40928272',
+                          doctorId: '378468172436234',
+                          name: 'Some meds name',
+                          icon: 'Some url for icon',
+                          price: 1234,
+                          updatedAt: '2022-08-19T16:29:34.110Z',
+                          __v: 0
+                        }
+                      ],
+                      status: 200,
+                      type: 'success',
+                      message: 'Ok'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: 'Bad Request',
+                    value: {
+                      status: 400,
+                      type: 'failure',
+                      message: "Ain't you forgetting something in request ?"
+                    }
+                  },
+                  {
+                    summary: 'Unauthorized',
+                    value: {
+                      status: 401,
+                      type: 'failure',
+                      message: "Hold on smarty pants, I'm calling 911 :P"
+                    }
+                  },
+                  {
+                    summary: 'Forbidden',
+                    value: {
+                      status: 403,
+                      type: 'failure',
+                      message: "Hold up! You can't go in there..."
+                    }
+                  },
+                  {
+                    summary: 'Internal Server Error',
+                    value: {
+                      status: 500,
+                      type: 'failure',
+                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
+                    }
+                  },
+                  {
+                    summary: 'Expired',
+                    value: {
+                      status: 498,
+                      type: 'failure',
+                      message: 'Your ticket to resource is expired!'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     '/api/doctor/medicine/search': {
       post: {
         tags: ['Medicine'],
