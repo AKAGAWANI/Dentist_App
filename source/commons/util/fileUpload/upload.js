@@ -4,8 +4,8 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 
 const s3Config = new AWS.S3({
-  accessKeyId: process.env.AWS_IAM_USER_KEY,
-  secretAccessKey: process.env.AWS_IAM_USER_SECRET,
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_SECRET,
   Bucket: process.env.AWS_BUCKET_NAME,
 });
 
