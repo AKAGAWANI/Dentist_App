@@ -14,6 +14,8 @@ const Test = require('./documents/test');
 const Terms = require('./documents/termsncond');
 const Medicines = require('./documents/medicine');
 const Invitations = require('./documents/invitation');
+const Surgery = require('./documents/surgery');
+const JobApplicant = require('./documents/jobApplicant')
 
 module.exports = {
   Account,
@@ -32,5 +34,7 @@ module.exports = {
   Medicines,
   Invitations,
   Terms,
-  Medicines
+
+  Surgery,
+  JobApplicant
 };

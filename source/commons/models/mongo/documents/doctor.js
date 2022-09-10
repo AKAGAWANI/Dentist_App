@@ -8,6 +8,44 @@ const DoctorSchema = mongoose.Schema({
     default: Date.now()
   },
   updatedAt: Date,
+  personalInfo : {
+    name : {
+      type: String,
+      required: true
+    },
+    email : {
+      type: String,
+      required:true
+    },
+    phone : {
+      type:String,
+      required:true
+    },
+    whatsAppPhone: String,
+    alternativePhone: String,
+    experience: Number,
+    photo : String,
+  },
+  expertiseField : {
+    degree : String,
+    specialization : String,
+    bio : String,
+    educationBrief : String,
+    specializationBrief : String,
+    experienceBrief : String,
+    achievementBrief : String,
+    membershipBrief : String
+  },
+  address : {
+    addressLine1 : String,
+    addressLine2 : String,
+    addressLine3 : String,
+    city : String,
+    state : String,
+    country : String,
+    zipCode : Number,
+    identityProof : String,
+  },
   firstName: String,
   lastName: String,
   qualification: String,
@@ -31,7 +69,6 @@ const DoctorSchema = mongoose.Schema({
       slot: [{ time: String, isAvailable: Boolean }] //This will contains time like {time:"2:00 PM",isAvailable:1} or {time:"9:30 AM",isAvailable:1}.
     }
   ],
-
   location: {
     _id: String,
     flatNo: Number,
@@ -39,7 +76,6 @@ const DoctorSchema = mongoose.Schema({
     district: String,
     state: String
   },
-
   problem: [
     {
       _id: String,

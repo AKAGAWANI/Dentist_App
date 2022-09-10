@@ -4,29 +4,38 @@ const encoder = require('urlencode');
 const { ResourceAPI } = require('../../commons/externals/externalsManager');
 const UserRepository = require('../user/UserRepository');
 const { API } = require('../../commons/config/ConfigManager');
+const {
+  Scheduler,
+  Context
+} = require('../../commons/context/pseudoUserContext');
 const repository = require('./AdminRepository');
 const {
-  utility: GeneralUtil,
-  crypto
+  crypto: CryptoUtil,
+  utility: GeneralUtil
 } = require('../../commons/util/UtilManager');
 const { utility: utils } = require('../../commons/util/UtilManager');
 const envproperties = require('../../properties.json');
 const smsObj = require('../../commons/mailer/mailer.js');
+const OAuth2 = require('../../commons/auth/OAuth2');
 function Service() {}
 
-Service.prototype.simulateLogin = async function(username, password, resource) {
+Service.prototype.simulateLogin = async function (
+  username,
+  password,
+  resource
+) {
   const url = API.gateway.login.simulate;
   const login = (
     (await ResourceAPI.https.patch(url, null, {
       username,
       password,
-      resource
+      resource,
     })) || {}
   ).data;
 
   return login.data;
 };
-Service.prototype.adminCreate = async function(data) {
+Service.prototype.adminCreate = async function (data) {
   const genOTP = GeneralUtil.generateNumericOTP();
 
   let user = {
@@ -54,12 +63,12 @@ Service.prototype.adminCreate = async function(data) {
         : data.firstName,
       true
     ),
-    isAdmin: true
+    isAdmin: true,
   };
   return await repository.createUser(user);
 };
 
-Service.prototype.sendEmail = async function(email, name) {
+Service.prototype.sendEmail = async function (email, name) {
   UserRepository.sendOTPThroughEmail(email, name);
 };
 
@@ -117,6 +126,36 @@ Service.prototype.addCode = async function(data) {
 
 Service.prototype.getInvitations = async function() {
   return repository.invitationsList();
+};
+
+Service.prototype.loginAdmin = async function (req) {
+  let { userName, password } = req.body;
+  let encryptUserName = CryptoUtil.encrypt(userName, true);
+
+  let isUserExists = await repository.getUser({ email: encryptUserName });
+  isUserExists = (isUserExists.length != 0)
+    ? isUserExists
+    : await repository.getUser({ mobile: encryptUserName });
+
+  if (isUserExists.length == 0) return 'No User Found';
+
+  let user = isUserExists[0];
+  if (!(user.isAdmin)) return 'User is not a admin';
+
+  if(CryptoUtil.hashCompare(password, user.password)){
+    let data = {};
+    data.userId = user._id;
+
+    const accessToken = await OAuth2.getAccessToken(data.userId);
+    data.accessToken = accessToken.access_token;
+    data.refreshToken = accessToken.refresh_token;
+    data.expiresAt = accessToken.expires_at;
+
+    return data;
+  }else{
+    return "Password Did Not Match"
+  }
+
 };
 
 module.exports = new Service();

@@ -43,4 +43,14 @@ function randomString(length, chars) {
   return result;
 }
 
+Repository.prototype.getUser = async function(query) {
+  const model = User;
+  let user = model.find(query);
+
+  return user ? user : null;
+}
+ 
+
+
+
 module.exports = new Repository();

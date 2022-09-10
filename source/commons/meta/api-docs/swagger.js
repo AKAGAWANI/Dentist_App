@@ -49,6 +49,10 @@ const swagger = {
     {
       name: 'Appointment',
       description: 'DDA : Appointment APIs'
+    },
+    {
+      name: 'Surgery',
+      description: 'DDA : Surgery APIs'
     }
   ],
   paths: {
@@ -337,6 +341,14 @@ const swagger = {
         }
       }
     },
+    "/api/admin/login": getConfig({ 
+      method: 'post', tags: ['Admin'], 
+      "summary": "Admin login with email/mobile and password",
+      operationId: 'login', produces: 'application/json', 
+      successDescription: "Admin Logged In successfully",
+      requestExamplePath: '../sample-data/api/admin/login/request.json',
+      responseExamplePath: '../sample-data/api/admin/login/success.json',
+    }),
     '/api/policy/list': {
       get: {
         tags: ['Policy'],
@@ -749,9 +761,9 @@ const swagger = {
                 type: 'object'
               },
               examples: {
-                '200 - Add Doctor': {
-                  summary: '200 - Add doctor',
-                  value: require('../sample-data/api/doctor/add/request.json')
+                Register: {
+                  summary: '200 - Register',
+                  value: require('../sample-data/api/user/register/request.json')
                 }
               }
             }
@@ -782,597 +794,35 @@ const swagger = {
         }
       }
     },
-    '/api/doctor/get': {
+    '/login/twitter': {
       get: {
-        tags: [ 'Doctor' ],
-        summary: "Get all doctor's information",
-        operationId: 'allDoctorInfo',
-        consumes: [ undefined ],
-        produces: [ 'application/json' ],
-        requestBody: null,
-        parameters: null,
+        tags: ['Login'],
+        summary: 'Initiates login process using Twitter auth',
+        operationId: 'twitter-login',
         responses: {
           success: {
-            successDescription: 'Doctors Info',
+            description:
+              'Login Params embedded in URL { userId, accessToken, refreshToken, expiresAt }',
+            content: {}
+          }
+        }
+      }
+    },
+    '/login/refresh': {
+      put: {
+        tags: ['Login'],
+        summary:
+          'Generates fresh access-token by passing refresh-token [:RefreshToken] in headers',
+        operationId: 'refresh-login',
+        responses: {
+          success: {
+            description: 'Access Token Refresh',
             content: {
               'application/json': {
                 examples: [
                   {
-                    summary: '200 - DDA APP',
-                    value: {
-                      data: [
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:13:53.693Z',
-                          _id: '378468172436234',
-                          firstName: 'Name1',
-                          lastName: 'lastname1',
-                          problem: [],
-                          test: [
-                            {
-                              icons: [ 'url1', 'url2' ],
-                              _id: '62cc02777028f3f57f6a2070',
-                              displayName: 'short name1'
-                            }
-                          ],
-                          updatedAt: '2022-07-26T17:13:59.944Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:14:55.818Z',
-                          _id: '378468172sdf436234',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [
-                            {
-                              icons: [ 'url1', 'url2' ],
-                              _id: '62cc02777028f3f57f6a2070',
-                              displayName: 'short name1'
-                            }
-                          ],
-                          updatedAt: '2022-07-26T17:15:08.239Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:15:52.185Z',
-                          _id: '378468172aadf436234',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [
-                            {
-                              icons: [ 'url1', 'url2' ],
-                              _id: '62cc02777028f3f57f6a2070',
-                              displayName: 'short name1'
-                            }
-                          ],
-                          updatedAt: '2022-07-26T17:16:28.879Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:17:21.257Z',
-                          _id: '378468172a436234',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [
-                            {
-                              icons: [ 'url1', 'url2' ],
-                              _id: '62cc02777028f3f57f6a2070',
-                              displayName: 'short name1'
-                            }
-                          ],
-                          updatedAt: '2022-07-26T17:17:26.223Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:20:32.507Z',
-                          _id: '458468172a436234',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          updatedAt: '2022-07-26T17:20:36.600Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:36:34.505Z',
-                          _id: '458468172a234034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          updatedAt: '2022-07-26T17:36:41.081Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-07-26T17:58:44.393Z',
-                          _id: '458468172a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          updatedAt: '2022-07-26T18:02:52.008Z',
-                          __v: 0,
-                          availability: [],
-                          review: []
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:03:03.581Z',
-                          _id: '458468173452a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [ { _id: '62eab88bfefb180d90e2e62e', slot: [] } ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:03:55.558Z',
-                          __v: 0
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:15:58.868Z',
-                          _id: '458468173234452a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62eabb6a090053143cc5b150',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabb6a090053143cc5b151',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:16:10.126Z',
-                          __v: 0
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:15:58.868Z',
-                          _id: '4584681452a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62eabc5a090053143cc5b155',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabc5a090053143cc5b156',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabc5a090053143cc5b157',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62eabc5a090053143cc5b158',
-                                  time: '12:00 PM',
-                                  isAvailable: false
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabc5a090053143cc5b159',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabc5a090053143cc5b15a',
-                                  time: '3:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:20:10.029Z',
-                          __v: 0
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:20:51.866Z',
-                          _id: '458681452a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62eabc9878b298159482c5b0',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabc9878b298159482c5b1',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabc9878b298159482c5b2',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62eabc9878b298159482c5b3',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabc9878b298159482c5b4',
-                              day: 'Friday',
-                              slot: [
-                                {
-                                  _id: '62eabc9878b298159482c5b5',
-                                  time: '6:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:21:12.378Z',
-                          __v: 0
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:20:51.866Z',
-                          _id: '458681sfd452a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62eabcb578b298159482c5b8',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabcb578b298159482c5b9',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabcb578b298159482c5ba',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62eabcb578b298159482c5bb',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabcb578b298159482c5bc',
-                                  time: '5:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabcb578b298159482c5bd',
-                                  time: '7:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabcb578b298159482c5be',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62eabcb578b298159482c5bf',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabcb578b298159482c5c0',
-                                  time: '5:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabcb578b298159482c5c1',
-                                  time: '7:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabcb578b298159482c5c2',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62eabcb578b298159482c5c3',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabcb578b298159482c5c4',
-                                  time: '5:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabcb578b298159482c5c5',
-                                  time: '7:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabcb578b298159482c5c6',
-                              day: 'Friday',
-                              slot: [
-                                {
-                                  _id: '62eabcb578b298159482c5c7',
-                                  time: '6:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:21:41.738Z',
-                          __v: 0
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:25:01.761Z',
-                          _id: '458681sfd4a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62eabd8156b9190ddcdf4ab6',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabd8156b9190ddcdf4ab7',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabd8156b9190ddcdf4ab8',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62eabd8156b9190ddcdf4ab9',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabd8156b9190ddcdf4aba',
-                                  time: '5:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62eabd8156b9190ddcdf4abb',
-                                  time: '7:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabd8156b9190ddcdf4abc',
-                              day: 'Friday',
-                              slot: [
-                                {
-                                  _id: '62eabd8156b9190ddcdf4abd',
-                                  time: '6:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:25:05.596Z',
-                          __v: 0
-                        },
-                        {
-                          location: 'Some address',
-                          createdAt: '2022-08-03T18:25:01.761Z',
-                          _id: '45868fd4a234534034',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62eabdc656b9190ddcdf4ac0',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62eabdc656b9190ddcdf4ac1',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62eabdc656b9190ddcdf4ac2',
-                              day: 'Friday',
-                              slot: [
-                                {
-                                  _id: '62eabdc656b9190ddcdf4ac3',
-                                  time: '6:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-03T18:26:14.937Z',
-                          __v: 0
-                        },
-                        {
-                          createdAt: '2022-08-13T06:58:07.458Z',
-                          _id: '2342342342342342342345',
-                          firstName: 'Name2',
-                          lastName: 'lastname2',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62f74ceddacd961bf0a4108f',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62f74ceddacd961bf0a41090',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-13T07:04:13.639Z',
-                          __v: 0
-                        },
-                        {
-                          createdAt: '2022-08-14T07:07:46.224Z',
-                          _id: '23412343245345',
-                          firstName: 'First name',
-                          lastName: 'Lats name',
-                          problem: [],
-                          test: [],
-                          availability: [
-                            {
-                              _id: '62f89fc113503b17f0ed488f',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62f89fc113503b17f0ed4890',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62f89fc113503b17f0ed4891',
-                                  time: '3:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62f89fc113503b17f0ed4892',
-                                  time: '4:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-14T07:09:53.112Z',
-                          __v: 0
-                        },
-                        {
-                          createdAt: '2022-08-14T07:07:46.224Z',
-                          _id: '212345232342345345',
-                          firstName: 'First name',
-                          lastName: 'Lats name',
-                          problem: [
-                            {
-                              icons: [ 'Image Url', 'Image url' ],
-                              _id: '62cc02777028f3f57f6a2070',
-                              problemName: 'problem 1',
-                              displayName: 'displayName'
-                            }
-                          ],
-                          test: [
-                            {
-                              icons: [ 'Image Url', 'Image url' ],
-                              _id: '22ab02899028f1f77f6a1543',
-                              testName: 'Test 1',
-                              displayName: 'displayName',
-                              description: 'Some description'
-                            }
-                          ],
-                          availability: [
-                            {
-                              _id: '62f8a08613503b17f0ed4899',
-                              day: 'Monday',
-                              slot: [
-                                {
-                                  _id: '62f8a08613503b17f0ed489a',
-                                  time: '2:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62f8a08613503b17f0ed489b',
-                                  time: '4:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62f8a08613503b17f0ed489c',
-                                  time: '6:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            },
-                            {
-                              _id: '62f8a08613503b17f0ed489d',
-                              day: 'Tuesday',
-                              slot: [
-                                {
-                                  _id: '62f8a08613503b17f0ed489e',
-                                  time: '12:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62f8a08613503b17f0ed489f',
-                                  time: '3:00 PM',
-                                  isAvailable: true
-                                },
-                                {
-                                  _id: '62f8a08613503b17f0ed48a0',
-                                  time: '4:00 PM',
-                                  isAvailable: true
-                                }
-                              ]
-                            }
-                          ],
-                          review: [],
-                          updatedAt: '2022-08-14T07:13:10.210Z',
-                          __v: 0
-                        }
-                      ],
-                      status: 200,
-                      type: 'success',
-                      message: 'Ok'
-                    }
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/login/localLogin/success.json')
                   }
                 ]
               }
@@ -1382,46 +832,40 @@ const swagger = {
             description: 'Error',
             content: {
               'application/json': {
+                examples: errors
+              }
+            }
+          }
+        }
+      }
+    },
+    '/gw/api/user/permissions/:appType': {
+      get: {
+        tags: ['Login'],
+        summary:
+          '@DEPRECATED : Returns hierarchical component wise configuration of front-end UAC',
+        parameters: [
+          {
+            in: 'path',
+            name: 'appType',
+            schema: {
+              type: 'string'
+            },
+            required: true,
+            description:
+              'AppType -> [pax, storeportal, serviceportal, airportportal, commandcenter, helpdesk]'
+          }
+        ],
+        operationId: 'user-permission-config',
+        responses: {
+          success: {
+            description: 'UAC config for front-end applications',
+            content: {
+              'application/json': {
                 examples: [
                   {
-                    summary: 'Bad Request',
-                    value: {
-                      status: 400,
-                      type: 'failure',
-                      message: "Ain't you forgetting something in request ?"
-                    }
-                  },
-                  {
-                    summary: 'Unauthorized',
-                    value: {
-                      status: 401,
-                      type: 'failure',
-                      message: "Hold on smarty pants, I'm calling 911 :P"
-                    }
-                  },
-                  {
-                    summary: 'Forbidden',
-                    value: {
-                      status: 403,
-                      type: 'failure',
-                      message: "Hold up! You can't go in there..."
-                    }
-                  },
-                  {
-                    summary: 'Internal Server Error',
-                    value: {
-                      status: 500,
-                      type: 'failure',
-                      message: "Oww Snap!! It's not you, it's us. Try in a bit."
-                    }
-                  },
-                  {
-                    summary: 'Expired',
-                    value: {
-                      status: 498,
-                      type: 'failure',
-                      message: 'Your ticket to resource is expired!'
-                    }
+                    summary: '200 - ECOM-V2',
+                    value: require('../sample-data/api/login/permissions/success.json')
                   }
                 ]
               }
@@ -1429,17 +873,25 @@ const swagger = {
           }
         }
       }
-    }
-    ,
-    '/api/doctor/get/:id': {
+    },
+    '/gw/api/user/permissions/v2/:appType': {
       get: {
-        tags: [ 'Doctor' ],
-        summary: "Get doctor's information by Id",
-        operationId: 'BasicDoctorInfo',
-        consumes: [ undefined ],
-        produces: [ 'application/json' ],
-        requestBody: null,
-        parameters: null,
+        tags: ['Login'],
+        summary:
+          'Returns flat permissions config for UAC; overrides already taken care of',
+        parameters: [
+          {
+            in: 'path',
+            name: 'appType',
+            schema: {
+              type: 'string'
+            },
+            required: true,
+            description:
+              'Suggestions for parameter : AppType -> [pax, storeportal, serviceportal, airportportal, commandcenter, helpdesk]'
+          }
+        ],
+        operationId: 'user-permissionv2-config',
         responses: {
           success: {
             successDescription: 'Doctor Info',
@@ -1734,6 +1186,55 @@ const swagger = {
                     }
                   }
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    '/api/doctor/update/:id': {
+      post: {
+        tags: ['Doctor'],
+        summary: "Update doctor's details",
+        parameters: require('../sample-data/api/doctor/edit/parameters.json'),
+        operationId: 'doctor-edit',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object'
+              },
+              examples: {
+                '200 - Add Doctor': {
+                  summary: '200 - Add doctor',
+                  value: require('../sample-data/api/doctor/edit/request.json')
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          success: {
+            description: 'Doctor details added',
+            content: {
+              'application/json': {
+                examples: [
+                  {
+                    summary: '200 - GATEWAY',
+                    value: require('../sample-data/api/doctor/edit/success.json')
+                  }
+                ]
+              }
+            }
+          },
+          error: {
+            description: 'Error',
+            content: {
+              'application/json': {
+                examples: errors
               }
             }
           }

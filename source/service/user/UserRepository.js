@@ -110,13 +110,19 @@ Repository.prototype.sendOTPThroughEmail = async function (email, otp, name) {
     subject = 'Here comes the Doctor-Dentist validation Otp';
   }
 
-  let template = fs.readFileSync(file, 'utf8')
-  template = ejs.render(template, { USEROTP: otp });
-  let data = {};
-  data.subject = subject;
-  data.body = template;
-  data.email = email;
-  return await mailer.email.send(data, true);
+  await fs.readFile(file, 'utf8', async function(error, data) {
+    data = ejs.render(data, { USEROTP: otp });
+
+      // smsObj.sendTransactionalEmail(data);
+    smsObj.sendTransactionalEmail({
+      to: email,
+      subject: subject,
+      template: data
+    });
+    if (error) {
+      throw error;
+    }
+  });
 };
 
 
