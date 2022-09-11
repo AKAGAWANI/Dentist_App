@@ -341,15 +341,7 @@ const swagger = {
         }
       }
     },
-    "/api/admin/login": getConfig({ 
-      method: 'post', tags: ['Admin'], 
-      "summary": "Admin login with email/mobile and password",
-      operationId: 'login', produces: 'application/json', 
-      successDescription: "Admin Logged In successfully",
-      requestExamplePath: '../sample-data/api/admin/login/request.json',
-      responseExamplePath: '../sample-data/api/admin/login/success.json',
-    }),
-    '/api/policy/list': {
+        '/api/policy/list': {
       get: {
         tags: ['Policy'],
         summary: 'Get policy',
