@@ -1,12 +1,19 @@
-const { Insurance } = require("../../commons/models/mongo/mongodb");
+const { Insurance, Insurancesubmission} = require("../../commons/models/mongo/mongodb");
+
 
 function Repository () {}
 
 /********************* DOCTOR'S REPO ***********************/
 
 
-Repository.prototype.createDocument = async function (dataObj) {
-    modelName = Insurance;
+Repository.prototype.createInsurance= async function (dataObj) {
+   let modelName = Insurance;
+    const instance = await modelName.create(dataObj);
+    return instance;
+
+}
+Repository.prototype.add= async function (dataObj) {
+   let modelName =Insurancesubmission
     const instance = await modelName.create(dataObj);
     return instance;
 

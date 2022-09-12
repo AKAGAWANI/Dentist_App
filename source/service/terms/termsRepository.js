@@ -12,6 +12,10 @@ Repository.prototype.getTermsData = async function (query) {
     const instance = await Terms.find(query).exec();
     return instance.length>0 ? instance : [];
   },
+Repository.prototype.findUser = async function (query) {
+    const instance = await Account.findOne({_id:query}).exec();
+    return instance? instance : {};
+  },
 
 Repository.prototype.updateAccoutTerms = async function(data) {
     const isUpdated = await Account.updateOne(

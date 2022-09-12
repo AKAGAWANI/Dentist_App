@@ -5,35 +5,33 @@ const service       = require('./InsuranceService');
 
 function Controller () {}
 
-Controller.prototype.add = async function (req, res, next) {
+Controller.prototype.add = async function (req,res) {
   try {
-  
-    let { _id, name, email, age, mobile, country,
-    state, city,gender,address, amount,date } = req.body;
-  
-    let isInsuranceAdded = await service.addDetails(
-      { _id, name, email, age, mobile, country,
-        state, city,gender,address, amount,date },
-      "Insurancesubmission"
-    );
-
-    return res.status(Response.success.Ok.code).json(
-      Response.success.Ok.json({
-        data: {
-          name: isInsuranceAdded.name,
-          email: isInsuranceAdded.email,
-          age: isInsuranceAdded.age,
-          mobile: isInsuranceAdded.mobile,
-          country: isInsuranceAdded.country,
-          state: isInsuranceAdded.state,
-          city: isInsuranceAdded.city,
-          gender: isInsuranceAdded.gender,
-          address: isInsuranceAdded.address,
-          amount: isInsuranceAdded.amount,
-          date: isInsuranceAdded.date,
-        },
-      })
-    );
+    const data = await service.addDetails(req.body);
+    if (data) {
+      res.status(Response.success.Ok.code).json(
+        Response.success.Ok.json({
+          dataAdded: {
+            name:data.name,
+            email:data.email,
+            age:data.age,
+            mobile:data.mobile,
+            country:data.country,
+            state:data.state,
+            city:data.city,
+            gender:data.gender,
+            address:data.address,
+            amount:data.amount,
+            date:data.date,
+          },
+        })
+      );
+    } else {
+      res.status(Response.error.InvalidRequest.code).json(Response.error.InvalidRequest.json(
+        'Failed to create the Insurance'
+      ));
+    };
+   
   } catch (e) {
     logger.error(e.message);
     res.status(Response.error.InternalError.code).json(Response.error.InternalError.json());

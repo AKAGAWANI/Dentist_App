@@ -22,4 +22,8 @@ Service.prototype.updateTerms = async function(data) {
   return repository.updateAccoutTerms(data);
 };
 
+Service.prototype.findById = async function(data) {
+  return repository.findUser(data);
+};
+
 module.exports = new Service();
